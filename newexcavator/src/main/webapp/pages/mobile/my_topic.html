@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>我的话题</title>
+<link rel="stylesheet" th:href="@{/assets/css/js_css/grzy.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/htpl.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/load.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="g_top">
+		<div class="g_t_left">
+			<img th:src="@{${user.head == null ? '/assets/images/vip.png' : user.head}}" width="64" height="64" />
+		</div>
+		<div class="g_t_right" th:text="${user.name}">中文名字</div>
+		<div style="clear: both;"></div>
+	</div>
+<div id="topiclist">
+	<div  th:each="to : ${topic}" class="ht_top" style="border-top: none;">
+			<div class="ht_t_t" >
+					<img class="ht_t_t_l_i" th:src="@{${to.head == null ? '/assets/images/vip.png' : to.head}}" width="64" height="64" />
+				<div class="ht_t_t_r">
+						<font class="ht_t_t_r_l"  th:text="${to.createname}">鹿鹿</font>
+					<div style="clear: both;"></div>
+					<br />
+						<font class="ht_t_t_r_t" th:text="${#dates.format(to.createtime, 'yyyy-MM-dd')}">鹿鹿</font>
+					
+				</div>
+				<font class="ht_t_t_r_r" th:text="${to.topic}">鹿鹿</font>
+				<div style="clear: both;"></div>
+				
+			</div>
+			<div class="ht_t_c" >
+				<img th:each="img : ${to.imgList}" width="32.6%" th:src="@{'/img/' + ${#strings.arraySplit(img.img_path, '.')[0]} + '_S' + ${#strings.substring(img.img_path,#strings.indexOf(img.img_path, '.'))}}" alt="" />
+			<div  class="ht_t_e" >
+				<font th:text="${to.content}"></font>
+		   </div>
+			<div class="ht_t_b" >
+				<a class="ht_t_see" th:href="'topic_detail?id='+${to.id}+'&amp;type='+${type}">查看全文</a>
+			
+				<div class="ht_t_b_z_r"  th:onClick="'javascript:window.open(\''+'topic_detail?id='+${to.id}+'&amp;type='+${type}+'\',\'_self\')'">
+					<font class="ht_t_b_z" >回复</font>
+					<img class="ht_t_b_z"  th:src="@{/assets/images/re.png}" width="16" height="16" />
+				</div>
+				
+			<div  class="ht_t_b_z_d"  th:id="${to.id}"  onclick="zan(this)">
+					<font class="ht_t_b_z"  th:text="${to.favour_count==null? '0': to.favour_count}"></font>
+					<img  class="ht_t_b_z"  th:src="@{/assets/images/zan.png}" width="16" height="16" />
+					
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			</div>
+			<div class="ht_t_d" th:if="${to.topicans!=null}">
+				<div  th:each="ans ,status: ${to.topicans}">
+				<font class="ht_t_d_t"  th:text="${ans.ansname}+':'"></font>
+				<font class="ht_t_d_r" th:text="${ans.anscontent}"></font>
+				<div class="ht_t_d_m" th:if="${status.count==3}">......</div>
+				</div>
+				
+			</div>
+	</div>
+	</div>	
+
+<div class="loading" id="loading" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;z-index:100; background-color:#191919;visibility:hidden;height:30px;font-size:20px;   position: relative;bottom:31px;">加载中....</div>
+       <div class="loading" id="nomoreresults" style="display:none;bottom:31px;
+       position:relative;text-align: center;">没有更多数据了.</div>
+
+<div  class="ht_bottom" >
+<div class="ht_bottom_re" id="return" style="cursor:pointer;">返回</div>
+</div>
+
+	<input id="type" type="hidden" name="type" th:value="${type}" />
+
+<script type="text/javascript" th:inline="javascript">
+
+	function zan(v){
+		 var t=document.getElementById(v.id).getElementsByTagName("font")[0];
+		 var id=v.id;
+		 $.ajax({
+		 url : "favour",
+		 data : {
+		 id: id
+		 },
+		 dataType: 'html',
+		 type:	'post',
+		 async: false,
+		 success : function(data, textStatus) {
+		 if(data=="ok"){
+		 t.innerHTML =  parseInt(t.innerHTML)+1;
+		 }else if(data=="no"){
+		 alert("您已经点过赞了");
+		 }
+		
+		 },error : function(XMLHttpRequest, textStatus, errorThrown){
+		 alert("点赞失败，请重试");
+		 }
+		 });
+		
+		
+		
+		 }
+
+	$(document).ready(function() {	
+
+			$("#return").click(function() {
+				window.location.href = "personal_main?type=" + $("#type").val();
+			});
+
+
+	
+		var type=$("#type").val();
+		 var totalheight = 0;   
+	 	    var main = $("div#topiclist");//主体元素 
+	 	  var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+	 	    totalPage = parseInt(totalPage);
+	 	    var currentPage = 1;
+	 	   $(window).scroll(function(){
+	 		 
+	 		 var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+	 	        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+	 	      /*<![CDATA[*/
+	 	      if($(document).height() <= totalheight && currentPage < totalPage){
+	 	    	 /*]]>*/
+	 	    	  $("#loading").css("visibility", "visible");
+	 	        	currentPage++;
+	 	        	$.ajax({
+	 	       			url : [[@{/mobile/loadNextTopicPage}]],
+	 	       			data : {
+	 	       				id : $("#topicnameid").val(),
+	 	       				next:currentPage,
+	 	       				type : type
+	 	       			},
+	 	       			dataType: 'html',
+	 	       			type:	'post',
+	 	       			async: false,
+	 	       			success : function(data, textStatus, jqXHR) {
+	 	       				setTimeout(function () { 
+	 	       					$("#loading").css("visibility", "hidden");
+	 	           				main.append(data);
+	 	       			    }, 1000);
+	 	       				
+	 	       			}
+	 	       		});
+	 	        }else if(currentPage== totalPage){
+	 					$("#nomoreresults").show();
+	 	   				$("#nomoreresults").fadeOut(4000);
+	 	        }
+	 	    });  
+	});	
+	</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	$(document).ready(function() {
+		$("#saveButton").click(function() {
+			var f = $("#file").val();
+			if (f=="" && [[${advertisements}]]==null) {
+				alert("请选择图片！");
+				return;
+			}
+			
+			$("#saveform").submit();
+		});
+		
+		/* $("input[name=delButton]").click(function() {
+			if (confirm("确认删除此广告？")) {
+				var pli = $(this).parent();
+				$.ajax({
+					url: [[@{/admin/adv_setting/del}]],
+					data: {
+						id: $(this).attr("id")
+					},
+					type:	'get',
+					success : function(data, textStatus, jqXHR) {
+						pli.remove();
+					}
+				});
+			}
+		}); */
+		
+		/* $("#addMoreFile").click(function() {
+			var tr = $(this).parents("tr");
+			tr.before('<tr><td><input type="file" class="thumb" name="file" id="file" /></td><td style="padding-left: 10px;"><input type="text" th:value="${img_url}" name="img_url" placeholder="输入地址..." class="dfinput" /><input type="button" name="deleteFile" value="删除" onclick="removeFile(this)"/></td></tr>');
+		}); */
+	});
+	function removeFile(obj) {
+		var tr = $(obj).parents("tr");
+		tr.remove();
+	}
+	/*]]>*/
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>广告管理 </li>
+	    	<li>出租广告设置：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    <div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/rent_b_adv_setting/save}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+	    	<li th:if="${advertisements!=null}">
+		    	<label>当前广告:</label>
+		    	<a target="_blank" th:href="${#strings.startsWith(advertisements.img_url,'http:')? advertisements.img_url:'http://' + advertisements.img_url}"><img alt="当前广告" width="100" th:src="@{'/img/'}+${advertisements.img_path}" /></a>
+		    	
+		    	<!-- <label th:text="${#strings.startsWith(adv.img_url,'http:')? adv.img_url:'http://' + adv.img_url}" style="clear:both;width:200px;word-wrap:break-word;text-align:right"></label> -->
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<table style="width: 345px;">
+		    		<tr>
+		    			<td><input type="file" name="file" id="file" /></td>
+		    			
+		    		</tr>
+		    		
+		    	</table>
+		    </li>
+		    <li>
+		    	<label>图片链接地址</label>
+		    	<input type="text" th:value="${advertisements!=null?advertisements.img_url:''}" name="img_url" placeholder="输入地址..." class="dfinput" />
+		    </li>
+		    <li>
+		    	<label>描述信息</label>
+		    	<textarea name="description" th:text="${advertisements!=null?advertisements.description:''}" style="border:1px solid #a7b5bc" rows="5" cols="55"></textarea>
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input type="hidden" name="id" th:value="${advertisements!=null?advertisements.id:''}" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" th:value="${advertisements!=null?'修改':'添加'}"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

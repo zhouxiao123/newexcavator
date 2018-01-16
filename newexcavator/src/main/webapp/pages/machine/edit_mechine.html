@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/select.css}" />
+<script th:src="@{/assets/js/select-ui.min.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$('#editor1').ckeditor();
+	
+	$("#saveButton").click(function() {
+		var name = $.trim($("input[name=name]").val());
+		if (name.length == 0 || name.length > 50) {
+			alert("名称长度不能为空且不能大于50!");
+			return;
+		}
+		
+		var phone = $.trim($("input[name=phone]").val());
+		if (!isNumber(phone)) {
+			alert("电话号码只能为数字！");
+			return;
+		}
+		
+		$("#saveform").submit();
+	});
+	
+	$(".select1").uedSelect({
+		width : 345			  
+	});
+	
+	$("#addMoreFile").click(function() {
+		var thumbSize = $(".thumb").length;
+		if (5 > thumbSize) {
+			var tr = $(this).parents("tr");
+			tr.before('<tr><td><input type="file" class="thumb" name="file" id="file" onchange="checkImgFile(this)" /><input type="button" name="deleteFile" value="删除" onclick="removeFile(this)"/></td></tr>');
+		} else {
+			alert("图片最多上传5张！");
+		}
+	});
+});
+
+function removeFile(obj) {
+	var tr = $(obj).parents("tr");
+	var id = tr.find("img.thumb").attr("id");
+	// <![CDATA[
+	if (id != '' && parseInt(id) > 0) {
+		$.ajax({
+			url : [[@{/admin/del_thumb}]],
+			data : {
+				id: id
+			},
+			dataType: 'json',
+			type:	'get',
+			async: false,
+			success : function(data, textStatus, jqXHR) {
+			}
+		});
+	}
+	// ]]>
+	tr.remove();
+}
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>机械管理 </li>
+	    	
+	    	<li th:if="${type=='new'}">全新挖掘机修改：</li>
+	    	<li th:if="${type=='old'}">二手机械修改：</li>
+	    	<li th:if="${type=='part'}">零部件修改：</li>
+	    	<li th:if="${type=='lease'}">租赁信息修改：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/saveMechine}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li>
+		    	<label>类别:</label>
+		    	<div class="vocation">
+			    	<select name="category" class="select1">
+						<option th:each="cate : ${categories}" th:value="${cate.id}" th:selected="${cate.id == mi.cat_id}" th:text="${cate.name}"></option>
+					</select>
+				</div>
+		    </li>
+		    <li>
+		    	<label>名称:</label>
+		    	<input type="text" th:value="${mi.name}" name="name" class="dfinput" />
+		    </li>
+		    <li>
+		    	<label>型号:</label>
+		    	<input type="text" th:value="${mi.version}" name="version" class="dfinput" />
+		    </li>
+		    <li>
+		    	<label>金额:</label>
+		    	<input type="text" th:value="${mi.jine}" name="jine" class="dfinput" />
+		    	<i>单位默认为万元，零配件默认金额为元</i>
+		    </li>
+		    
+		       <li>
+		    	<label>付款地址</label>
+		    	<input type="text" th:value="${mi.url}" name="url" class="dfinput" />
+		    	<i>支付链接地址</i>
+		    </li>
+		    <li>
+		    	<label>联系电话:</label>
+		    	<input type="text" th:value="${mi.phone}" name="phone" class="dfinput" />	
+		    	<i>如02865260204，65260204，15908189006</i>
+		    </li>
+		    <li>
+		    	<label>缩略图:</label>
+		    	<table style="width: 345px;">
+		    		<tr th:each="thumb,status:${mi.thumbList}">
+		    			<td>
+							<img alt="缩略图" class="thumb" height="50"  th:id="${thumb.id}" th:src="@{'/img/' + ${thumb.thumb_url}}" />
+							<input type="button" name="deleteFile" value="删除" onclick="removeFile(this)"/>
+		    			</td>
+		    		</tr>
+		    		<tr th:if="${#lists.isEmpty(mi.thumbList) || #lists.size(mi.thumbList) > 5}">
+		    			<td>
+		    				<input type="file" class="thumb" name="file" onchange="checkImgFile(this)" id="file" />
+		    				<input type="button" th:if="${mi.thumbList!=null and not #lists.isEmpty(mi.thumbList)}" name="deleteFile" value="删除" onclick="removeFile(this)"/>
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td align="right"><a href="#" id="addMoreFile">添加更多</a></td>
+		    		</tr>
+		    	</table>
+		    </li>
+		    <li>
+		    	<label>图文介绍:</label>
+		    </li>
+		    <li>
+		    	<textarea cols="100" id="editor1" class="textinput" th:text="${mi.description}" name="content" rows="10"></textarea>
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input type="hidden" name="srctype" th:value="${type}" />
+				<input type="hidden" name="id" th:value="${mi.id}" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="确认保存"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

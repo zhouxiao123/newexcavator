@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+<script th:src="@{/assets/js/swipe.js}"></script>
+<script th:src="@{/assets/js/zepto.js}"></script>
+<script>
+	$(function() {
+		var elem = document.getElementById('slider');
+		window.mySwipe = Swipe(elem, {
+			auto : 3000,
+			callback : function(index, element) {
+				$('#slider_on li').removeClass('on')
+				$('#slider_on li').eq(index).addClass('on');
+			}
+		});
+	});
+</script>
+<title>大至工程机械 </title>
+</head>
+<body style="font-size: 14px;">
+	<div class="head_main">
+		<div class="head_top" style="clear: both;">
+			<div class="m-banner">
+				<div style="visibility: visible;" id="slider" class="swipe">
+					<ul style="width: 2560px;" class="swipe-wrap">
+						<li th:each="adv,status:${advertisement}" data-index="0" style="width: 640px; left: 0px; transition-duration: 300ms; transform: translateX(-640px);">
+							<a th:href="'http://'+${adv.img_url}"><img th:src="@{'/img/'}+${adv.img_path}" height="150" width="300"/></a>
+						</li>
+						
+					</ul>
+					<div id="slider_on">
+						<ul style="float:right; margin-right:2%;">
+							<li th:each="ad,status:${advertisement}">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="head_bottom">
+			<a th:href="@{/mobile/list_mechine(type='new')}">
+				<div class="head_imgbtn">
+					<div class="head_imgtop">
+						<img border="0" class="head_wh" th:src="@{/assets/images/head_img/wj.jpg}" />
+					</div>
+					<div class="head_imgbottom">挖掘机</div>
+				</div>
+			</a>
+			<a th:href="@{/mobile/list_mechine(type='part')}">
+			<div class="head_imgbtn">
+				<div class="head_imgtop">
+					<img border="0" class="head_wh" th:src="@{/assets/images/head_img/lpj.jpg}" />
+				</div>
+				<div class="head_imgbottom">零配件</div>
+			</div>
+			</a>
+			<a th:href="@{/mobile/list_mechine(type='old')}">
+			<div class="head_imgbtn">
+				<div class="head_imgtop">
+					<img border="0" class="head_wh" th:src="@{/assets/images/head_img/esjx.jpg}" />
+				</div>
+				<div class="head_imgbottom">二手机械</div>
+			</div>
+			</a>
+			<a th:href="@{/mobile/list_mechine(type='lease')}">
+			<div class="head_imgbtn">
+				<div class="head_imgtop">
+					<img border="0" class="head_wh" th:src="@{/assets/images/head_img/zlxx.jpg}" />
+				</div>
+				<div class="head_imgbottom">租赁信息</div>
+			</div>
+			</a>
+			<a th:href="@{/mobile/list_news(type='activity')}">
+			<div class="head_imgbtn">
+				<div class="head_imgtop">
+					<img border="0" class="head_wh" th:src="@{/assets/images/head_img/hd.jpg}" />
+				</div>
+				<div class="head_imgbottom">最新活动</div>
+			</div>
+			</a>
+			<a th:href="@{/mobile/list_news(type='news')}">
+			<div class="head_imgbtn">
+				<div class="head_imgtop">
+					<img border="0" class="head_wh" th:src="@{/assets/images/head_img/xw.jpg}" />
+				</div>
+				<div class="head_imgbottom">行业新闻</div>
+			</div>
+			</a>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class="copyright" style="">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/page.css}" />
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$(".select1").uedSelect({
+			width : 168
+		});
+		$(".click").click(function() {
+			return confirm("是否确认删除？");
+		});
+
+		$("#checkAll").click(function() {
+			var checked = $(this).prop("checked");
+			$("input[name='id']").each(function() {
+				$(this).prop("checked", checked);
+			});
+		});
+		
+		$("li[opt=delete]").click(function() {
+			/*[+
+			var url  = [[@{'/admin/del_machine?type=0&amp;'}]];
+			+]*/
+			var ids = $("input[name='id']").serialize();
+			if (ids.length == 0) {
+				alert("未选择删除项目！");
+				return;
+			}
+			if (confirm("是否确认删除？")) {
+				url += ids;
+				window.location.href = url;
+			}
+		});
+	});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>兑换设置 </li>
+	    	<li>兑换查询</li>
+	    </ul>
+    </div>
+
+	<div class="rightinfo">
+		<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		
+		<form id="searchForm" method="post" action="change_list">
+		<ul class="seachform">
+			<li>
+				<label>状态</label>
+			</li>
+			<li>
+				
+				<select name="status" class="select1">
+					<option  value="-1">全部</option>
+					<option th:selected="${status==0}" value="0">已兑换</option>
+					<option th:selected="${status==1}" value="1">已处理</option>
+				</select>
+			</li>
+			
+   			<li><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+    	</ul>
+		<div style="width: 1050px;">
+			<span th:unless="${os!=null and not #lists.isEmpty(os)}" th:utext="暂无数据！"></span>
+		<table class="tablelist" th:if="${os!=null and not #lists.isEmpty(os)}">
+			<thead>
+				<tr>
+					<th width="50">编号</th>
+					<th width="180">图片</th>
+					<th width="100">兑换名称</th>
+					<th width="80">兑换积分</th>
+					<th width="80">兑换人</th>
+					<th width="80">联系方式</th>
+					<th width="100">收货地址</th>
+					<th width="120">兑换时间</th>
+					<th width="60">状态</th>
+					<th width="120">完成时间</th>
+					<th width="80">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="o,status:${os}">
+					<td th:text="${status.count}">编号</td>
+					<td><img alt="缩略图" th:src="@{${#strings.isEmpty(o.co_path) ? '/assets/images/default.jpg' : '/img/' + #strings.replace(o.co_path,'.','_S.')}}" width="150" height="100" /></td>
+					<td th:text="${o.co_name}">名称</td>
+					<td th:text="${o.co_point}">名称</td>
+					<td th:text="${o.name}">名称</td>
+					<td th:text="${o.phone}">名称</td>
+					<td th:text="${o.address}">名称</td>
+					<td th:text="${#dates.format(o.create_time, 'yyyy年MM月dd日  HH:mm:ss')}"></td>
+					<td th:text="${o.status==0?'已兑换':'已处理'}">名称</td>
+					<td th:text="${o.over_time==null?'':#dates.format(o.over_time, 'yyyy年MM月dd日  HH:mm:ss')}"></td>
+					<td>
+						<a th:if="${o.status==0}" th:href="${'change_update?id='+o.id}" class="tablelink" onclick="return confirm('是否确认转到已处理?')">转到已处理</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+        <!-- <div th:if="${mechines!=null and not #lists.isEmpty(mechines)}" class="paginate" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+        	
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=0)}" class="paginate-first">首页</a>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getPrevPage()})}" class="paginate-previous">上一页</a>
+            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getNextPage()})}" class="paginate-next">下一页</a>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getLastPage()})}" class="paginate-last">末页</a>
+        </div> -->
+        <div class="page" th:if="${os!=null and not #lists.isEmpty(os)}" th:include="fragment/cppaginationbar :: paginationbar"></div>
+        </div>
+        </form>
+	</div>
+</body>
+<script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+</script>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$(".click").click(function() {
+			return confirm("是否确认删除？");
+		});
+
+		$("#checkAll").click(function() {
+			var checked = $(this).prop("checked");
+			$("input[name='id']").each(function() {
+				$(this).prop("checked", checked);
+			});
+		});
+		
+		$("li[opt=delete]").click(function() {
+			/*[+
+			var url  = [[@{'/admin/del_news?type=' + ${type} + '&amp;'}]];
+			+]*/
+			var ids = $("input[name='id']").serialize();
+			if (ids.length == 0) {
+				alert("未选择删除项目！");
+				return;
+			}
+			if (confirm("是否确认删除？")) {
+				url += ids;
+				window.location.href = url;
+			}
+		});
+	});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>信息发布管理 </li>
+	    	<li th:if="${type=='activity'}">最新活动编辑：</li>
+			<li th:if="${type=='news'}">新闻编辑：</li>
+	    </ul>
+    </div>
+    <div class="rightinfo">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <div class="tools">
+	    	<ul class="toolbar">
+		        <li opt="delete"><span><img th:src="@{/assets/images/t03.png}" /></span>删除</li>
+	        </ul>
+	    </div>
+	    <div style="width: 700px;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="40"><input id="checkAll" name="checkAll" type="checkbox"/></th>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="180">图片</th>
+			        <th width="100">标题</th>
+			        <th width="60">推送情况</th>
+			        <th width="140">推送时间</th>
+			        <th width="100">操作</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:each="n,status:${news}">
+			        <td><input name="id" type="checkbox" th:value="${n.id}" /></td>
+			        <td th:text="${status.count}">编号</td>
+			        <td>
+			        	<img alt="缩略图" th:src="@{'/img/' + ${n.thumb_url}}" width="150" height="100" />
+			        </td>
+			        <td th:text="${n.title}">标题</td>
+			        <td th:text="${n.issend==1?'已推送':'未推送'}">推送情况</td>
+			        <td th:text="${n.issend==1? #dates.format(n.create_time, 'yyyy-MM-dd HH:mm'):0}">推送时间</td>
+			        <td>
+			        	<a th:href="@{'/admin/add_news?type=' + ${type} + '&amp;id=' + ${n.id}}" class="tablelink">编辑</a>
+			        	<a th:href="@{'/admin/del_news?type=' + ${type} + '&amp;id=' + ${n.id}}" class="tablelink click">删除</a>
+			        </td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+	    	<div class="paginate" th:if="${news!=null and not #lists.isEmpty(news)}" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+	        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+	        	
+	            <a th:href="@{/admin/list_mechine(type=${type},page.offset=0)}" class="paginate-first">首页</a>
+	            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getPrevPage()})}" class="paginate-previous">上一页</a>
+	            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+	            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getNextPage()})}" class="paginate-next">下一页</a>
+	            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getLastPage()})}" class="paginate-last">末页</a>
+	        </div>
+    	</div>
+    </div>
+</body>
+<script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+</script>
+</html>

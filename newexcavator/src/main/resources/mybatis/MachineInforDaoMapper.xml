@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.MachineInforDao">
+	<insert id="saveMachineInfor" parameterType="com.newexcavator.domain.MachineInfor" useGeneratedKeys="true" keyProperty="id">
+		insert into machine_infor(name,type_id,cat_id,version,phone,thumb_url,description,jine,url)
+		values(#{name},#{type_id},#{cat_id},#{version},#{phone},#{thumb_url},#{description},#{jine},#{url})
+	</insert>
+	
+	<insert id="saveThumb" parameterType="com.newexcavator.domain.MachineThumb" useGeneratedKeys="true" keyProperty="id">
+		insert into machine_thumb(thumb_url, machine_id) values(#{thumb_url}, #{machine_id})
+	</insert>
+	
+	<update id="modMachineInfor" parameterType="com.newexcavator.domain.MachineInfor">
+		update machine_infor set name=#{name},type_id=#{type_id},cat_id=#{cat_id},version=#{version},phone=#{phone},description=#{description}
+		,jine=#{jine}
+		<if test="thumb_url!=null">
+		,thumb_url=#{thumb_url}
+		</if>
+		<if test="url!=null">
+		,url=#{url}
+		</if>
+		where id=#{id}
+	</update>
+	
+	<delete id="delMachineInfor" parameterType="map">
+		delete from machine_infor where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</delete>
+	
+	<select id="queryMachineInforByTypeId" resultType="com.newexcavator.domain.MachineInfor">
+		select * from machine_infor where type_id=#{type_id}
+		<if test="cat_id!=null">
+		and cat_id=#{cat_id}
+		</if>
+		<if test="name!=null">
+		and name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="version!=null">
+		and version like CONCAT('%' #{version} '%')  
+		</if>
+		ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryMachineInforByTypeId_count" resultType="java.lang.Integer">
+		select count(1) from machine_infor where type_id=#{type_id}
+		<if test="cat_id!=null">
+		and cat_id=#{cat_id}
+		</if>
+		<if test="name!=null">
+		and name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="version!=null">
+		and version like CONCAT('%' #{version} '%')  
+		</if>
+	</select>
+	
+	<resultMap type="com.newexcavator.domain.MachineInfor" id="queryMachineInforByIdResult">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="type_id" property="type_id"/>
+		<result column="cat_id" property="cat_id"/>
+		<result column="version" property="version"/>
+		<result column="phone" property="phone"/>
+		<result column="thumb_url" property="thumb_url"/>
+		<result column="description" property="description"/>
+		<result column="jine" property="jine"/>
+		<result column="url" property="url"/>
+		<collection property="thumbList" select="queryThumbList" column="id" javaType="List" ofType="com.newexcavator.domain.MachineThumb"/>  
+	</resultMap>
+	
+	<select id="queryMachineInforById" resultMap="queryMachineInforByIdResult">
+		select * from machine_infor where id=#{id} ORDER BY id DESC
+	</select>
+	
+	<select id="queryThumbList" resultType="com.newexcavator.domain.MachineThumb">
+		select * from machine_thumb where machine_id=#{id} ORDER BY id DESC
+	</select>
+	
+	<delete id="delThumbById">
+		delete from machine_thumb where id=#{id}
+	</delete>
+	
+	<select id="queryMachineThumbById" resultType="com.newexcavator.domain.MachineThumb">
+		select * from machine_thumb where id=#{id} ORDER BY id DESC
+	</select>
+	
+	<!--          newexcavator           -->
+	<select id="queryExcavatorType" resultType="com.newexcavator.domain.ExcavatorType">
+		SELECT * FROM excavator_type
+	</select>
+	
+	<select id="queryCityByPid" resultType="com.newexcavator.domain.City">
+		SELECT * FROM city WHERE parent_id=#{pid}
+	</select>
+	
+	<select id="queryBrandByExcavatorTypeId" resultType="com.newexcavator.domain.Brand">
+		SELECT eb.brand_id AS id,b.name FROM excavator_brand eb,brand b WHERE eb.excavator_type_id=#{tid} AND eb.brand_id=b.id ORDER BY b.order DESC
+	</select>
+	
+	<select id="queryVersionByExcavatorTypeIdAndBrandId" resultType="com.newexcavator.domain.Version">
+		SELECT id,name FROM version WHERE category_id=#{tid} AND brand_id=#{bid}
+	</select>
+	
+	<select id="queryMachineById" resultMap="queryMachineByIdResult">
+		SELECT m.*, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name,mp.path AS cover_path FROM machine m,excavator_type t,brand b,version v,city c,machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1  AND m.id=#{id}
+		
+	</select>
+	
+	<select id="queryCommodityById" resultType="com.newexcavator.domain.Commodity">
+		SELECT * FROM commodity WHERE id=#{id}
+		
+	</select>
+	
+	<select id="queryRentMachineById" resultMap="queryRentMachineByIdResult">
+		SELECT m.*, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name,mp.path AS cover_path FROM rent_machine m,excavator_type t,brand b,version v,city c,rent_machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1  AND m.id=#{id}
+		
+	</select>
+	
+	<select id="queryBuyMachineById" resultType="com.newexcavator.domain.Machine">
+		SELECT m.*, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name FROM buy_machine m,excavator_type t,brand b,version v,city c
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND m.id=#{id}
+		
+	</select>
+	
+	<select id="queryPersonById" resultType="com.newexcavator.domain.Person">
+		SELECT p.*, t.name AS type_name,c.name AS p_name,(SELECT name FROM city ci WHERE p.place_c=ci.id) AS c_name FROM person p,excavator_type t,city c
+		WHERE t.id=p.m_type AND c.id=p.place_p AND p.id=#{id}
+		
+	</select>
+	
+	
+	<resultMap type="com.newexcavator.domain.Machine" id="queryRentMachineByIdResult">
+		<id column="id" property="id"/>
+		
+		<collection property="mp" select="queryRentMachinePicList" column="id" javaType="List" ofType="com.newexcavator.domain.MachinePic"/>  
+	</resultMap>
+	
+	<select id="queryRentMachinePicList" resultType="com.newexcavator.domain.MachinePic">
+		select * from rent_machine_pic where m_id=#{id}
+	</select>
+	
+	<resultMap type="com.newexcavator.domain.Machine" id="queryMachineByIdResult">
+		<id column="id" property="id"/>
+		
+		<collection property="mp" select="queryMachinePicList" column="id" javaType="List" ofType="com.newexcavator.domain.MachinePic"/>  
+	</resultMap>
+	
+	<select id="queryMachinePicList" resultType="com.newexcavator.domain.MachinePic">
+		select * from machine_pic where m_id=#{id}
+	</select>
+	
+	<select id="queryMachine" resultType="com.newexcavator.domain.Machine">
+		SELECT m.id,m.used_time,m.verify,m.close,m.price,m.m_type,m.create_time,m.production_date,m.buy_date, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name,mp.path AS cover_path FROM machine m,excavator_type t,brand b,version v,city c,machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1 AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="is_send!=null">
+		AND m.is_send=#{is_send}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		ORDER BY m.create_time DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryMachine_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM machine m,excavator_type t,brand b,version v,city c,machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1 AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="is_send!=null">
+		AND m.is_send=#{is_send}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		
+	</select>
+	
+	
+	<select id="queryCommodity" resultType="com.newexcavator.domain.Commodity">
+		SELECT * FROM commodity
+		WHERE deleted!=1
+		
+		ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCommodity_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM commodity
+		WHERE deleted!=1
+	</select>
+	
+	<select id="queryRentMachine" resultType="com.newexcavator.domain.Machine">
+		SELECT m.id,m.used_time,m.verify,m.close,m.price,m.m_type,m.create_time,m.production_date,m.buy_date, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name,mp.path AS cover_path FROM rent_machine m,excavator_type t,brand b,version v,city c,rent_machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1 AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="is_send!=null">
+		AND m.is_send=#{is_send}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		ORDER BY m.create_time DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryRentMachine_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM rent_machine m,excavator_type t,brand b,version v,city c,rent_machine_pic mp
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1 AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="is_send!=null">
+		AND m.is_send=#{is_send}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		
+	</select>
+	
+	
+	<select id="queryBuyMachine" resultType="com.newexcavator.domain.Machine">
+		SELECT m.id,m.verify,m.close,m.price,m.price2,m.m_type,m.create_time, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name FROM buy_machine m,excavator_type t,brand b,version v,city c
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		ORDER BY m.create_time DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryBuyMachine_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM buy_machine m,excavator_type t,brand b,version v,city c
+		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p  AND m.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(b.name,'_',v.name) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND m.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND m.place_p=#{city}
+		</if>
+		<if test="brand!=null">
+		AND m.brand=#{brand}
+		</if>
+		<if test="list!=null">
+		AND m.verify=1 AND m.close=0
+		</if>
+		<if test="verify!=null">
+		AND m.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND m.close=#{close}
+		</if>
+		<if test="userId!=null">
+		AND m.user_id=#{userId}
+		</if>
+		
+	</select>
+	
+	
+	<select id="queryPerson" resultType="com.newexcavator.domain.Person">
+		SELECT p.id,p.verify,p.close,p.salary,p.m_type,p.create_time,p.job, t.name AS type_name,c.name AS p_name,(SELECT name FROM city ci WHERE p.place_c=ci.id) AS c_name FROM person p,excavator_type t,city c
+		WHERE t.id=p.m_type AND c.id=p.place_p AND p.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(p.job,p.description) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND p.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND p.place_p=#{city}
+		</if>
+		
+		<if test="list!=null">
+		AND p.verify=1 AND p.close=0
+		</if>
+		<if test="verify!=null">
+		AND p.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND p.close=#{close}
+		</if>
+		<if test="userId!=null">
+		AND p.user_id=#{userId}
+		</if>
+		ORDER BY p.create_time DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryPerson_count" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM person p,excavator_type t,city c
+		WHERE t.id=p.m_type AND c.id=p.place_p AND p.deleted!=1
+		<if test="search_name!=null">
+		AND CONCAT(p.job,p.description) LIKE CONCAT('%',#{search_name},'%')
+		</if>
+		<if test="type!=null">
+		AND p.m_type=#{type}
+		</if>
+		<if test="city!=null">
+		AND p.place_p=#{city}
+		</if>
+		
+		<if test="list!=null">
+		AND p.verify=1 AND p.close=0
+		</if>
+		<if test="verify!=null">
+		AND p.verify=#{verify}
+		</if>
+		<if test="close!=null">
+		AND p.close=#{close}
+		</if>
+		<if test="userId!=null">
+		AND p.user_id=#{userId}
+		</if>
+		
+	</select>
+	
+	
+	<select id="queryOrder" resultType="com.newexcavator.domain.Order">
+		SELECT o.*,c.name AS co_name,c.description AS co_description,c.path AS co_path,su.cell_phone FROM sys_users su,`order` o LEFT JOIN commodity c ON c.id=o.co_id
+		WHERE su.id=o.user_id
+		
+		<if test="status!=null">
+		AND o.status=#{status}
+		</if>
+		<if test="user_id!=null">
+		AND o.user_id=#{user_id}
+		</if>
+		<if test="id!=null">
+		AND o.id=#{id}
+		</if>
+		ORDER BY o.create_time DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryOrder_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users su,`order` o LEFT JOIN commodity c ON c.id=o.co_id
+		WHERE su.id=o.user_id
+		
+		<if test="status!=null">
+		AND o.status=#{status}
+		</if>
+		<if test="user_id!=null">
+		AND o.user_id=#{user_id}
+		</if>
+		<if test="id!=null">
+		AND o.id=#{id}
+		</if>
+	</select>
+	
+	<insert id="saveMachine" parameterType="com.newexcavator.domain.Machine" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO machine
+	(
+	m_type,
+	brand,
+	VERSION,
+	used_time,
+	price,
+	change_price,
+	place_p,
+	place_c,
+	imported,
+	qualified,
+	receipt,
+	production_date,
+	buy_date,
+	code_no,
+	modified,
+	FIXED,
+	old_level,
+	`use`,
+	current_status,
+	description,
+	link_name,
+	phone,
+	qq,
+	create_time,
+	user_id
+	)
+	VALUES
+	(
+	#{m_type},
+	#{brand},
+	#{version},
+	#{used_time},
+	#{price},
+	#{change_price},
+	#{place_p},
+	#{place_c},
+	#{imported},
+	#{qualified},
+	#{receipt},
+	#{production_date},
+	#{buy_date},
+	#{code_no},
+	#{modified},
+	#{fixed},
+	#{old_level},
+	#{use},
+	#{current_status},
+	#{description},
+	#{link_name},
+	#{phone},
+	#{qq},
+	now(),
+	#{user_id}
+	);
+	</insert>
+	
+	<insert id="insertMachinePic" parameterType="com.newexcavator.domain.MachinePic" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO machine_pic(m_id,path,cover) VALUES(#{m_id},#{path},#{cover})
+	</insert>
+	
+	<insert id="saveRentMachine" parameterType="com.newexcavator.domain.Machine" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO rent_machine
+	(
+	m_type,
+	brand,
+	VERSION,
+	used_time,
+	price,
+	change_price,
+	place_p,
+	place_c,
+	imported,
+	qualified,
+	receipt,
+	production_date,
+	buy_date,
+	code_no,
+	modified,
+	FIXED,
+	old_level,
+	description,
+	link_name,
+	phone,
+	qq,
+	create_time,
+	user_id
+	)
+	VALUES
+	(
+	#{m_type},
+	#{brand},
+	#{version},
+	#{used_time},
+	#{price},
+	#{change_price},
+	#{place_p},
+	#{place_c},
+	#{imported},
+	#{qualified},
+	#{receipt},
+	#{production_date},
+	#{buy_date},
+	#{code_no},
+	#{modified},
+	#{fixed},
+	#{old_level},
+	#{description},
+	#{link_name},
+	#{phone},
+	#{qq},
+	now(),
+	#{user_id}
+	);
+	</insert>
+	
+	<insert id="insertRentMachinePic" parameterType="com.newexcavator.domain.MachinePic" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO rent_machine_pic(m_id,path,cover) VALUES(#{m_id},#{path},#{cover})
+	</insert>
+	
+	<insert id="saveBuyMachine" parameterType="com.newexcavator.domain.Machine" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO buy_machine
+	(
+	m_type,
+	brand,
+	VERSION,
+	price,
+	price2,
+	place_p,
+	place_c,
+	description,
+	link_name,
+	phone,
+	create_time,
+	user_id
+	)
+	VALUES
+	(
+	#{m_type},
+	#{brand},
+	#{version},
+	#{price},
+	#{price2},
+	#{place_p},
+	#{place_c},
+	#{description},
+	#{link_name},
+	#{phone},
+	now(),
+	#{user_id}
+	);
+	</insert>
+	
+	
+	<insert id="savePerson" parameterType="com.newexcavator.domain.Person" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO person
+	(
+	m_type,
+	salary,
+	place_p,
+	place_c,
+	job,
+	description,
+	link_name,
+	phone,
+	create_time,
+	user_id
+	)
+	VALUES
+	(
+	#{m_type},
+	#{salary},
+	#{place_p},
+	#{place_c},
+	#{job},
+	#{description},
+	#{link_name},
+	#{phone},
+	now(),
+	#{user_id}
+	);
+	</insert>
+	
+	<insert id="insertCommodity" parameterType="com.newexcavator.domain.Commodity" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO commodity
+	(
+	`name`,
+	description,
+	point,
+	path
+
+	)
+	VALUES
+	(
+	#{name},
+	#{description},
+	#{point},
+	#{path}
+	
+	);
+	</insert>
+	
+	<insert id="saveOrder" parameterType="com.newexcavator.domain.Order" useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO `order`
+	(
+	user_id,
+	co_id,
+	co_point,
+	name,
+	phone,
+	create_time,
+	address
+	)
+	VALUES
+	(
+	#{user_id},
+	#{co_id},
+	#{co_point},
+	#{name},
+	#{phone},
+	now(),
+	#{address}
+	);
+	</insert>
+	
+	
+	<update id="updateCommodity">
+		UPDATE commodity SET `name`=#{name},description=#{description},point=#{point}
+		<if test="path!=null">
+			,path=#{path}
+		</if> 
+		WHERE id=#{id}
+	</update>
+	
+	
+	<update id="delMachine" parameterType="map">
+		UPDATE machine SET deleted=1,deleted_time=now() where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</update>
+	
+	<update id="delRentMachine" parameterType="map">
+		UPDATE rent_machine SET deleted=1,deleted_time=now() where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</update>
+	
+	<update id="delBuyMachine" parameterType="map">
+		UPDATE buy_machine SET deleted=1,deleted_time=now() where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</update>
+	
+	<update id="delPerson" parameterType="map">
+		UPDATE person SET deleted=1,deleted_time=now() where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</update>
+	
+	<delete id="delCommodity" parameterType="map">
+		UPDATE commodity SET deleted=1,deleted_time=now() where id in  
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</delete>
+	
+	
+	<update id="updateMachineVerify">
+		UPDATE machine SET verify=#{verify} where id=#{id}
+	</update>
+	
+	<update id="updateRentMachineVerify">
+		UPDATE rent_machine SET verify=#{verify} where id=#{id}
+	</update>
+	
+	<update id="updateOrderStatus">
+		UPDATE `order` SET status=#{status},over_time=now() where id=#{id}
+	</update>
+	
+	<update id="updateBuyMachineVerify">
+		UPDATE buy_machine SET verify=#{verify} where id=#{id}
+	</update>
+	
+	<update id="updatePersonVerify">
+		UPDATE person SET verify=#{verify} where id=#{id}
+	</update>
+	
+	<update id="updateMachineClose">
+		UPDATE machine SET close=#{close} where id=#{id}
+	</update>
+	
+	<update id="updateRentMachineClose">
+		UPDATE rent_machine SET close=#{close} where id=#{id}
+	</update>
+	
+	<update id="updateBuyMachineClose">
+		UPDATE buy_machine SET close=#{close} where id=#{id}
+	</update>
+	
+	<update id="updatePersonClose">
+		UPDATE person SET close=#{close} where id=#{id}
+	</update>
+	
+	<select id="queryMachinePicById" resultType="com.newexcavator.domain.MachinePic">
+		select * from machine_pic where id=#{id}
+	</select>
+	
+	<delete id="deleteMachinePicById">
+		DELETE FROM machine_pic WHERE id=#{id}
+	</delete>
+	
+	<select id="queryRentMachinePicById" resultType="com.newexcavator.domain.MachinePic">
+		select * from rent_machine_pic where id=#{id}
+	</select>
+	
+	<delete id="deleteRentMachinePicById">
+		DELETE FROM rent_machine_pic WHERE id=#{id}
+	</delete>
+	
+	<update id="updateSendTime">
+		UPDATE send_time SET send_time=now()
+	</update>
+	
+	<update id="updateMachineCover">
+		UPDATE machine_pic SET cover=1 WHERE m_id=#{m_id} LIMIT 1
+	</update>
+	
+	<update id="updateRentMachineCover">
+		UPDATE rent_machine_pic SET cover=1 WHERE m_id=#{m_id} LIMIT 1
+	</update>
+	
+	<select id="querySendTime" resultType="com.newexcavator.domain.SendTime">
+		select * from send_time WHERE send_time=DATE_FORMAT(now(),'%Y-%m-%d') LIMIT 1
+	</select>
+	
+	<update id="updateMachineSendById">
+		UPDATE machine SET is_send=1 WHERE id=#{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<!--STYLESHEETS-->
+<link rel="stylesheet" th:href="@{/assets/css/js_css/binduserstyle.css}" />
+<!--SCRIPTS-->
+<script type="text/javascript" th:inline="javascript">
+	function saveBindInfo() {
+		var phone = $.trim($("input[name=phone]").val());
+		var name = $.trim($("input[name=name]").val());
+		var isOK=1;
+		if (phone.length == 0||phone.indexOf('电话') != -1) {
+			alert("请注意填写电话号码");
+			isOK=2;
+			return false;
+		}
+
+		if (name.length == 0||phone.indexOf('姓名') != -1) {
+			isOK=2;
+			alert("请注意填写姓名");
+			return false;
+		}
+		if(isOK==1){
+			//this.document.forms[0].submit();
+		$("#bindForm").submit();
+		alert("绑定成功");
+		return true;
+		}
+		
+		return false;
+	}
+</script>
+
+<!--Slider-in icons-->
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".username").focus(function() {
+			$(".user-icon").css("left", "-48px");
+		});
+		$(".username").blur(function() {
+			$(".user-icon").css("left", "0px");
+		});
+
+		$(".password").focus(function() {
+			$(".pass-icon").css("left", "-48px");
+		});
+		$(".password").blur(function() {
+			$(".pass-icon").css("left", "0px");
+		});
+	});
+</script>
+</head>
+<body>
+
+	<!--WRAPPER-->
+	<div id="wrapper">
+
+		<!--SLIDE-IN ICONS-->
+		<div class="user-icon"></div>
+		<div class="pass-icon"></div>
+		<!--END SLIDE-IN ICONS-->
+
+		<!--LOGIN FORM-->
+		<form  id="bindForm" name="bindForm" class="login-form"
+			th:action="@{/mobile/saveBindInfo}" method="post">
+
+			<!--HEADER-->
+			<div class="header">
+				<!--TITLE-->
+				<h1>
+					<img th:src="@{/assets/images/head_img/logo.jpg}" width="100%"/>
+				</h1>
+				<!--END TITLE-->
+				<!--DESCRIPTION-->
+				<span>请填写姓名以及手机号以便于我们为您提供更周到的服务.</span>
+				<!--END DESCRIPTION-->
+			</div>
+			<!--END HEADER-->
+
+			<!--CONTENT-->
+			<div class="content">
+				<!--USERNAME-->
+				<input name="name" type="text" class="input username" value="姓名"
+					onfocus="this.value=''" />
+				<!--END USERNAME-->
+				<!--PASSWORD-->
+				<input name="phone" type="tel" class="input password" value="电话"
+					onfocus="this.value=''" />
+				<!--END PASSWORD-->
+				<input type="hidden" name="openid" th:value="${openid}" />
+			</div>
+			<!--END CONTENT-->
+
+			<!--FOOTER-->
+			<div class="footer">
+				<!--LOGIN BUTTON-->
+				<input type="submit" name="submit" value="绑定" class="button"
+					onclick="return saveBindInfo()" />
+				<!--END LOGIN BUTTON-->
+				<!--REGISTER BUTTON-->
+				<input type="submit" name="register" value="Register" class="register"
+					style="display: none" />
+				<!--END REGISTER BUTTON-->
+			</div>
+			<!--END FOOTER-->
+
+		</form>
+		<!--END LOGIN FORM-->
+
+	</div>
+	<!--END WRAPPER-->
+
+	<!--GRADIENT-->
+	<div class="gradient"></div>
+	<!--END GRADIENT-->
+
+</body>
+</html>

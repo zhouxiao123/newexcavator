@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+        <header class="header">
+        	<a th:href="@{/mobile/index}" class="fl ml10"><img th:src="@{/assets/images/home.png}" width="20" /></a>
+            <h4>邀请朋友</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img th:src="@{/assets/images/header_r.png}" width="20" /></a>
+        </header>   
+        <section>
+            <div class="main">
+            	<img class="logoImg" width="120" th:src="${qrcode}" />
+            	<div class="tc">
+                	<h4 style="font-size:19px;width:50%;margin: 0 auto">分享二维码到朋友圈,或发送给朋友即可邀请朋友加入挖友圈</h4>
+                </div>
+            </div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+   var si = [[${sign}]];
+
+ wx.config({
+	debug: false,
+	appId: 'wx0f60a8adb6eeb889',
+	timestamp: si.timestamp,
+	nonceStr: si.nonceStr,
+	signature: si.signature,
+	jsApiList: [
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage'
+	  ]
+});
+
+wx.ready(function () {
+	wx.hideMenuItems({
+	    menuList: ["menuItem:share:qq",
+	               "menuItem:share:weiboApp",
+	               "menuItem:share:facebook",
+	               "menuItem:share:QZone"
+	               ] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+	});
+	
+	
+	var shareData = {
+		title: '您的好友邀请您加入挖友圈',
+		desc: '我们每日提供最新二手挖掘机信息',
+		link: 'http://app.wayouquan.com/newexcavator/mobile/reg?invited='+[[${user.username}]],
+		imgUrl: 'http://app.wayouquan.com/newexcavator/assets/images/wyqLogo.png',
+		success: function () { 
+			
+		},
+		      fail: function (res) {
+		        alert(JSON.stringify(res));
+		      }
+	};
+	wx.onMenuShareTimeline(shareData);
+	wx.onMenuShareAppMessage(shareData);
+});
+
+wx.error(function (res) {
+  alert(res.errMsg);
+});
+        
+           
+           
+	
+
+	
+	/*]]>*/
+</script>
+</html>

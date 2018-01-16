@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<div class="two_li" th:each="mechine,status:${mechines}" th:onclick="'location.href=\''+@{/mobile/detail_mechine(type=${type},id=${mechine.id})}+'\''">
+	<div class="two_li_left">
+		<img style="border-radius: 5px;" width="76" height="76" th:src="@{'/img/' + ${mechine.thumb_url}}" src="head_img/ftlw.jpg" />
+	</div>
+	<div class="two_li_right">
+		<div class="two_right_top">
+			<h3 style="color: #4F93E8;" th:text="${mechine.name}">福特雷沃液压挖掘机</h3>
+			<p style="margin-top: 4px;" th:utext="${'型号:' + mechine.version + '&lt;br /&gt; 联系电话：' + mechine.phone+ '&lt;br /&gt;'+ mechine.jine}">
+				型号：FR75-7<br /> 联系电话：12345678910 <br/>100万
+			</p>
+		</div>
+		<div class="two_right_bottom">
+			<a th:href="@{/mobile/detail_mechine(type=${type},id=${mechine.id})}">
+				<img border="0" align="right" width="63" height="23" th:src="@{/assets/images/head_img/blue.jpg}" />
+			</a>
+		</div>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/page.css}" />
+<script type="text/javascript" th:inline="javascript">
+
+	$(document).ready(function() {
+	
+		
+		$("#saveButton").click(function(){
+			var point = $("input[name=point]").val();
+			if(point.length==0){
+				alert("改变积分不可为空!");
+				return;
+			}
+			var pointExp = /^\d+$/;
+			if(!pointExp.test(point)){
+				alert("积分必须为数字！");
+				return;
+			}
+			
+			$("#saveForm").submit();
+		});
+		
+		
+		
+	});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>兑换管理 </li>
+	    	<li>邀请积分：</li>
+	    </ul>
+    </div>
+    <div class="rightinfo">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<form th:action="@{/admin/commodity/invited_point_set_save}" id="saveForm" method="post">
+			<ul class="forminfo">
+				<li>
+					<label>当前邀请积分:</label>
+					<label th:text="${point.point}">当前邀请积分:</label>
+				</li>
+				<li>
+					<label>设置邀请积分:</label>
+					<input type="text" name="point" class="dfinput"/>
+				</li>
+				<li>
+					<input name="saveButton" id="saveButton" type="button" class="btn" value="修改"/>
+				</li>
+			</ul>
+	    </form>
+	    
+    </div>
+</body>
+</html>

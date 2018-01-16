@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/common.js}"></script>
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+            <a th:href="@{/mobile/buy_list}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>求购</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+        	<h4 class="titleH4" th:text="${type==null?'全部机械':type==1?'挖掘机':'装载机'}">大型挖掘机</h4>
+        	<form  id="searchForm" method="post" th:action="@{/mobile/buy_list}">
+        	<div class="search">
+        		<input type="search" name="search_name" th:value="${search_name}" style=" font-family:'微软雅黑'; color:#666;" placeholder="可以搜索 品牌，名字" />
+                	
+                    <input type="button" onclick="submit()"  style="background:url('/newexcavator/assets/images/search.jpg') no-repeat scroll center center rgba(0, 0, 0, 0)"/>
+                    <div class="clr"></div>
+                    </div>
+            <nav>
+            	<ul class="navLi">
+                	<li class="navLili"><a class="navLilia" id="na_ex" href="#" th:text="${type==null?'全部机械':type==1?'挖掘机':'装载机'}">挖掘机</a><input type="hidden" name="type" th:value="${type}"/></li>
+                    <li class="navLili"><a class="navLilia" id="na_city" href="#" th:text="${city_name!=null?city_name:'全部地区'}">全部地区</a><input type="hidden" name="city_id" th:value="${city_id}"/><input type="hidden" th:value="${city_name}" name="city_name"/></li>
+                    <li class="navLili"><a class="navLilia" id="na_brand" href="#" th:text="${exb_name!=null?exb_name:'全部品牌'}">全部品牌</a><input type="hidden" name="exb_id" th:value="${exb_id}"/><input type="hidden" th:value="${exb_name}" name="exb_name"/></li>
+                    <div class="clr"></div>
+                </ul>
+            </nav>
+            </form>
+            	<div class="liTable li1">
+                	<div class="liTableSpanBox" style="padding-left:15%;">
+                		<span class="liTableSpan"></span>
+                    </div>
+                    <table  id="ex">
+                        <tr>
+                        	<td width="32%"><a href="#" id="ex_0">全部机械</a></td>
+                            <td width="33%"><a href="#" id="ex_1">挖掘机</a></td>
+                            <td width="33%"><a href="#" id="ex_2">装载机</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="liTable li2">
+                	<div class="liTableSpanBox" style="padding-left:50%;">
+                		<span class="liTableSpan"></span>
+                    </div>
+                    <table id="city">
+                        
+                    </table>
+                </div>
+                <div class="liTable li3">
+                	<div class="liTableSpanBox" style="padding-left:82%;">
+                		<span class="liTableSpan"></span>
+                    </div>
+                    <table id="exb">
+                        
+                    </table>
+                </div>
+            <div class="place">
+            	<ul>
+                	<li><a th:href="@{/mobile/buy_list}">挖友圈</a></li>
+                    <li>&gt;</li>
+                    <li th:text="${type==null?'全部机械':type==1?'挖掘机':'装载机'}">大型挖掘机</li>
+                </ul>
+                <div class="clr"></div>
+            </div>
+            <div class="main">
+            	<ul class="listMain">
+                    <li th:each="m,status:${ms}">
+                    	<a th:href="@{'/mobile/buy_detail?id='+${m.id}+'#mp.weixin.qq.com'}">
+                        <div style="word-break:break-all;width:95%; padding-left:10px;" class="listR1">
+                        	<h3>求购</h3>
+                        	<h4 style="display:inline" th:text="${m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+                        	<div class="fr time0">
+                        		<!-- <span th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm')+'发布'}">8000</span> -->
+                        		<span th:text="${beans.dateFormatter.fromNowToDate(m.create_time)}">8000</span>
+                        	</div>
+                        	<div class="clr"></div>
+                        	<div class="fl mt20 mb10">
+                                <span class="price" style="color:#f7ac0a;" th:text="${m.price+'~'+m.price2}">15</span>
+                                <span class="priceD" style="color:#f7ac0a;">万</span>
+                                <div class="clr"></div>
+                            </div>
+                            <div class="listAddr fr mt20 mb10">
+                            	<img width="15" src="/newexcavator/assets/images/dingwei.png" />
+                            	<span th:text="${m.p_name}">山东</span>
+                                <span th:text="${m.c_name}">东营市</span>
+                            </div>
+                            <div class="clr"></div>
+                        </div>
+                        <div class="clr"></div>
+                        
+                        </a>
+                    </li>
+                </ul>
+                
+               <!--  <div class="page">
+                	<a href="#">上一页</a>
+                    <a href="#">下一页</a>
+                </div> -->
+                <div class="page" th:if="${ms!=null and not #lists.isEmpty(ms)}" th:include="fragment/paginationbar :: paginationbar"></div>
+            </div>
+        </section>
+        
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+var cs = [[${cs}]];           
+if(cs!=null){
+	var i=0;
+	var ct = "";
+	for(i=0;i<cs.length;i++){
+		if(i==0){
+			ct+='<tr><td width="33%"><a href="#" id="city_0">全部地区</a></td>'
+		}
+		if((i+1)%3==0){
+			ct+='<tr>';
+		}
+		ct+='<td width="33%"><a href="#" id="city_'+cs[i].id+'">'+cs[i].name+'</a></td>';
+		if((i+1)%3==2){
+			ct+='</tr>';
+		}
+	}
+	if((i+1)%3!=2){
+		ct+='</tr>';
+	}
+	$("#city").append(ct);
+}
+
+var bs = [[${bs}]]; 
+//alert(bs.length)
+if(bs!=null){
+	var i=0;
+	var ct = "";
+	for(i=0;i<bs.length;i++){
+		if(i==0){
+			ct+='<tr><td width="33%"><a href="#" id="exb_0">全部品牌</a></td>'
+		}
+		if((i+1)%3==0){
+			ct+='<tr>';
+		}
+		ct+='<td width="33%"><a href="#" id="exb_'+bs[i].id+'">'+bs[i].name+'</a></td>';
+		console.log(bs[i].name);
+		if((i+1)%3==2){
+			ct+='</tr>';
+		}
+	}
+	if((i+1)%3!=2){
+		ct+='</tr>';
+	}
+	$("#exb").append(ct);
+}
+
+$(document).ready(function(){
+	$(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+	
+	$('.navLi li').each(function(index) {
+		$(this).click(function(){
+			//console.log(11);
+			$('.liTable').hide();
+        	$('.liTable').eq(index).show();
+			$('.navLi li').removeClass('navLiliA');
+			$('.navLi li').addClass("navLili");
+			$(this).addClass('navLiliA');
+			$('.navLi li a').removeClass("navLiliaA");
+			$('.navLi li a').addClass("navLilia");
+			$(this).find("a").removeClass("navLilia");
+			$(this).find("a").addClass("navLiliaA");
+			//$(this).find('a').addClass("navLiliaA");
+		})
+    });
+	$("#ex td a").click(function(){
+		$("input[name='type']").val(parseInt($(this).attr("id").split("_")[1]));
+		$("#na_ex").text($(this).text());
+		$("input[name='exb_id']").val(0);
+		$("input[name='exb_name']").val('');
+		$("#searchForm").submit();
+	});
+	$("#city td a").click(function(){
+		$("input[name='city_id']").val(parseInt($(this).attr("id").split("_")[1]));
+		$("input[name='city_name']").val($(this).text());
+		$("#searchForm").submit();
+	});
+	$("#exb td a").click(function(){
+		$("input[name='exb_id']").val(parseInt($(this).attr("id").split("_")[1]));
+		$("input[name='exb_name']").val($(this).text());
+		$("#searchForm").submit();
+	});
+	var winW = $(window).width();
+	//$('.tel').css('width',winW+'px');
+});
+/*]]>*/
+</script>
+</html>

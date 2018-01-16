@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/swipe.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/dis.css}" />
+<script th:src="@{/assets/js/swipe.js}"></script>
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+<body style="line-height: 20px;">
+	<div id="outerdiv"
+		style="position:absolute; top: 0; left: 0; background: rgba(0, 0, 0, 0.7); z-index: 2; width: 100%; height: 100%; display: none;">
+		<div class="three_dis">
+			<div class="three_dis_dt" style="">
+				<font style="color: #3478B9;" th:if="${type=='part'}">在线下单</font><font
+					style="color: #3478B9;" th:if="${type!='part'}">在线预约</font><img
+					id="qx" align="right" width="23" height="23"
+					th:src="@{/assets/images/head_img/qx.jpg}" />
+			</div>
+			<div class="three_dis_d" id="disdiv" style="display: none;">
+				<font>数量</font>
+				<div>
+					<img id="minus" align="absbottom" width="33" height="33"
+						th:src="@{/assets/images/head_img/-.jpg}" /> <input id="No"
+						type="number" class="text" style="width: 66px;" value="1" /><img
+						id="add" align="absbottom" width="33" height="33"
+						style="margin-left: 8px;"
+						th:src="@{/assets/images/head_img/+.jpg}" />
+				</div>
+			</div>
+			<div class="three_dis_d" id="disdiv2" style="display: none;">
+				<font>收货地址</font>
+				<div>
+					<input type="text" id="address" class="text" />
+				</div>
+			</div>
+			
+			<div class="three_dis_d">
+				<font th:if="${type=='part'}">收货人姓名</font><font
+					th:if="${type!='part'}">姓名</font>
+				<div>
+					<input type="text" id="name" class="text" />
+				</div>
+			</div>
+			<div class="three_dis_d">
+				<font th:if="${type=='part'}">收货电话</font><font
+					th:if="${type!='part'}">电话</font>
+				<div>
+					<input type="tel" id="phone" class="text" />
+					<input type="hidden" id="mechineid"  th:value="${mi.id}" />
+					<input type="hidden" id="mechinejine"  th:value="${mi.jine}" />
+				</div>
+			</div>
+			<div class="three_dis_d"
+				style="text-align: center; margin-top: 20px;">
+				<div>
+					<img id="submit" width="140" height="30"
+						th:src="@{/assets/images/head_img/tj.jpg}" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:inline="javascript">  
+    $(function(){  
+         $("#btn").click(function(){ 
+         var jine = document.getElementById("mechinejine").value;
+       	 if(jine>0){
+       		 var _orderUrl=[[@{${mi.url}}]];
+			 window.location.href = _orderUrl;
+       	 }else{
+       		 alert("请拨打电话联系");
+       		 return;
+       	 }
+         }); 
+         $("#btnxd").click(function(){  
+        	 var _this = document.getElementById("outerdiv"); 
+			   _this.style.display="block";
+         }); 
+         $("#qx").click(function(){
+        	 var _this = document.getElementById("outerdiv"); 
+			 _this.style.display="none";
+         });
+       $("#minus").click(function(){
+    	   var No=document.getElementById("No");
+    	   if(No.value>1){
+    		   No.value=No.value-1;
+    	   }
+       });
+       $("#add").click(function(){
+    	   var No=document.getElementById("No");
+    		   No.value++;    	   
+       });
+         
+       $("#submit").click(function(){
+    	 // var ok = false;
+    	  var nameE = document.getElementById("name").value;
+    	  var addressE=document.getElementById("address").value;
+          var phoneE=document.getElementById("phone").value;
+          var quantityE=document.getElementById("No").value;
+          var mechineidE=document.getElementById("mechineid").value;
+         var phonetest=/^(([0\+]\d{2,3})?(0\d{2,3}))?(\d{7,8})((\d{3,}))?$/;
+  		 var mphonetest=/^(1[3,5,8,7]{1}[\d]{9})|(((400)-(\d{3})-(\d{4}))|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{3,7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)$/;
+  		if(phonetest.test(phoneE)||mphonetest.test(phoneE)){
+  			//close pop window
+	  		    var outerdiv = document.getElementById("outerdiv"); 
+               var disdiv = document.getElementById("disdiv"); 
+               var disdiv2 = document.getElementById("disdiv2"); 
+				outerdiv.style.display="none";
+				disdiv.style.display="none";
+				disdiv2.style.display="none";
+	  		   // alert('close the  pop');
+  			
+  		}else{
+  			alert("电话号码格式不对！");
+  			return;
+  		}
+  		
+  		
+    	  $.ajax({
+   			url : [[@{/mobile/saveOrderList}]],
+   			data : {
+   				name: nameE, phone: phoneE,address: addressE, quantity: quantityE,mechineid:mechineidE
+   			},
+   			dataType: 'json',
+   			type:	'post',
+   			async: true,
+ 			beforeSend : function() {
+ 			
+   			},
+   			
+   			success : function(data, textStatus, jqXHR) {
+   				if (data == "ok") {
+   					if(addressE.length>0){
+   						alert("提交订单成功");
+   					}else{
+   						alert("预约成功，工作人员稍候与您联系");
+   					}
+   					
+   				}
+   			}
+   		});
+    	   
+    	   
+       });
+     }); 
+ </script>
+
+	<div class="three_main">
+		<h3 th:if="${type=='new'}">全新挖掘机</h3>
+		<h3 th:if="${type=='old'}">二手机械</h3>
+		<h3 th:if="${type=='part'}">零部件</h3>
+		<h3 th:if="${type=='lease'}">租赁</h3>
+	</div>
+	<div class="three_top">
+		<div class="three_t_top">
+			<h3 th:text="${mi.name}">雷沃液压挖掘机</h3>
+		</div>
+		<div class="three_t_bottom">
+			<div class="addWrap">
+				<div id="mySwipe" class="swipe" style="text-align:center;">
+					<div class="swipe-wrap">
+						<div th:each="thumb,status:${mi.thumbList}" >
+							<img
+								th:src="@{'/img/' + ${#strings.arraySplit(thumb.thumb_url, '.')[0] + '_S.' + #strings.arraySplit(thumb.thumb_url, '.')[1]}}"
+								height="50%"/>
+						</div>
+					</div>
+				</div>
+				<ul id="position">
+					<li th:each="thumb,status:${mi.thumbList}"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="three_bottom">
+		<div class="three_b_top">
+			<div class="three_bt_left">
+				<div class="three_btl_top">
+					<img align="top" width="20" height="20" style="width:20px"
+						th:src="@{/assets/images/head_img/cpxh.jpg}" /> <font
+						style="margin-left: 3px;" th:text="${'产品型号：' + mi.version}">产品型号：FR370</font>
+				</div>
+				<div class="three_btl_bottom">
+					<img align="top" width="20" height="20" style="width:20px"
+						th:src="@{/assets/images/head_img/lxdh.jpg}" /> <font
+						style="margin-left: 3px;" th:text="${'联系电话：' + mi.phone}">联系电话：12345678910</font>
+				</div>
+			</div>
+			<div class="three_bt_right">
+				<a th:href="@{'tel:'+${mi.phone}}"> <img align="right"
+					width="60" height="50" style="width:60px"
+					th:src="@{/assets/images/head_img/phone.jpg}" />
+				</a>
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+
+		<div class="three_b_center" th:if="${type=='part'}"
+			style="line-height: 35px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #E8E8E8; padding: 5px 0; border-top-style: solid; border-top-width: 1px; border-top-color: #E8E8E8;">
+			<font
+				style="margin-left: 3px; font-size: 16px; font-weight: bolder; color: #DC4444;"
+				th:text="${'金额：' + (mi.jine&gt;0?(mi.jine+'元'):'面议')}">￥18.2万</font>
+				<font>
+				<img id="btn"  th:src="@{/assets/images/head_img/xdbtn.jpg}" width="180" height="35" align="right" /></font> 
+			<div style="clear: both;"></div>
+		</div>
+		<div class="three_b_center" th:if="${type!='part'}"
+			style="line-height: 35px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #E8E8E8; padding: 5px 0; border-top-style: solid; border-top-width: 1px; border-top-color: #E8E8E8;">
+			<font
+				style="margin-left: 3px; font-size: 16px; font-weight: bolder; color: #DC4444;"
+				th:text="${'报价：' +(mi.jine&gt;0?(mi.jine+'万'):'面议')}">￥18.2万</font>
+				<font><img id="btnxd" th:src="@{/assets/images/head_img/yybtn.jpg}" width="180"
+				height="35" align="right" /></font>
+			<div style="clear: both;"></div>
+		</div>
+
+		<div class="three_b_center">
+			<img align="top" width="20" height="20" style="width:20px"
+				th:src="@{/assets/images/head_img/gs.jpg}" /> <font
+				style="margin-left: 3px;">概述：</font>
+		</div>
+		<div class="three_b_bottom" th:utext="${mi.description}"></div>
+	</div>
+	<div class="copyright2" style="text-align: center;">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+<script type="text/javascript">
+	var bullets = document.getElementById('position').getElementsByTagName('li');
+	var banner = Swipe(document.getElementById('mySwipe'), {
+			auto : 2000,
+			continuous : true,
+			disableScroll : false,
+			callback : function(pos) {
+				var i = bullets.length;
+				while (i--) {
+					bullets[i].className = ' ';
+				}
+				bullets[pos].className = 'cur';
+			}
+	});
+
+</script>
+</html>

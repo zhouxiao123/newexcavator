@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" >
+</head>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		var historyPwd = $.trim($("input[name='historywechatNo']").val());
+		var newPwd = $.trim($("input[name='wechatNo']").val());
+		var reNewPwd = $.trim($("input[name='rewechatNo']").val());
+		
+		var success = true;/*
+		if (historyPwd == '') {
+			alert("原始密码不能为空!");
+			success = false;
+		} else*/ if (newPwd != reNewPwd) {
+			alert("新账号不一致!");
+			success = false;
+		} else if (newPwd == '' || reNewPwd == '') {
+			alert("新账号不能为空!");
+			success = false;
+		}
+		
+		if (success) {
+			$("#saveForm").submit();
+		}
+	});
+});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>微信账号管理</li>
+	    	<li th:if="${type=='update'}">微信账号修改</li>
+	    	<li th:if="${type=='add'}">微信账号添加 </li>
+	    </ul>
+    </div>
+    <div class="formbody">    	
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg}"></b>
+		</div>
+    	<span th:if="${type=='update'}" th:unless="${wc!=null}" th:utext="暂无数据！"></span>
+	    <form th:action="@{/admin/saveWechat_tb}" name="saveForm" id="saveForm" method="post">
+	    <input type="hidden" name="type" id="type" th:value="${type}" />
+	    <ul class="forminfo" th:if="${type=='add'}">
+	      
+		    <li>
+		    	<label>新账号:</label>
+		    	<input type="text" class="dfinput" name="wechatNo" />
+		    </li>
+		    <li>
+		    	<label>再次输入:</label>
+		    	<input type="text" class="dfinput" name="rewechatNo" />
+		    </li>
+		    <li  >
+		    	<label>&nbsp;</label>
+		    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认添加"/>
+		    </li>
+		</ul>
+		
+		 <ul class="forminfo" th:if="${type=='update'}">
+	      <li th:if="${wc!=null}">
+		    	<label>原账号:</label>
+		    	<input type="text" class="dfinput" name="historywechatNo" th:value="${wc.wechatNo}" />
+		    </li>
+		    <li th:if="${wc!=null}">
+		    	<label>新账号:</label>
+		    	<input type="text" class="dfinput" name="wechatNo" />
+		    </li>
+		    <li th:if="${wc!=null}">
+		    	<label>再次输入:</label>
+		    	<input type="text" class="dfinput" name="rewechatNo" />
+		    </li>
+		    <li th:if="${wc!=null}">
+		    	<label>&nbsp;</label>
+		    	 <input type="hidden" name="id" id="id" th:value="${wc.id}" />
+		    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认修改"/>
+		    </li>
+		</ul>
+		</form>
+	</div>
+</body>
+</html>

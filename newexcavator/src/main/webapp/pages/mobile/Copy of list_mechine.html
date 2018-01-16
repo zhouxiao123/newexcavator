@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+	<style>
+*{margin:0px;padding:0px;}
+.tips{width:702px;margin:0 auto;line-height:24px;padding-top:10px;}
+.bredcolor{color:#fff;}
+.radiotabs {width:702px; margin:30px auto;}
+input.tabs {display:none;}
+input.tabs + label {
+display:block; font:normal 12px/30px arial, sans-serif; border:1px solid #aaa; background:#69c; text-decoration:none; color:#fff; 
+float:left;position:relative; padding:0 20px; margin-right:2px;
+border-radius:5px 5px 0 0; 
+background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, rgba(255, 255, 255, 0.7)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.5, transparent), to(rgba(255, 255, 255, 0.3)));
+background-image:-moz-linear-gradient(top, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.2) 50%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+background-image:-ms-linear-gradient(top, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.2) 50%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+background-image:-o-linear-gradient(top, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.2) 50%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+background-image:linear-gradient(top, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.2) 50%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+}
+input.tabs + label img {position:absolute; left:0; top:0; width:100%; height:100%; cursor:pointer;}
+.tabcontent {width:700px; padding:20px; border:1px solid #aaa; border-radius:0 5px 5px 5px; background:#fff; position:relative; z-index:10; display:none; clear:left; top:-1px;
+ box-shadow:0 15px 10px -15px rgba(0,0,0,0.4);
+}
+.tabcontent p {padding:0 0 5px 0; margin:0; font:normal 12px/20px arial, sans-serif; color:#333;}
+.tabcontent h4 {padding:0 0 10px 0; margin:0; font:bold 14px/25px arial, sans-serif; color:#000;}
+.tabcontent {display:none;color:#000;}
+input.tabs:checked + label {background-color:#fff; border-bottom:1px solid #fff; color:#000; z-index:20;}
+input#tab1:checked ~ section#view1 {display:block;}
+input#tab2:checked ~ section#view2 {display:block;}
+input#tab3:checked ~ section#view3 {display:block;}
+input#tab4:checked ~ section#view4 {display:block;}
+input#tab5:checked ~ section#view5 {display:block;}
+</style>
+</head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("#imgbtn").click(function() {
+		
+		var url  = [[@{'/mobile/list_mechine'}]];
+	
+		$("#searchform").attr("action", url);
+		$("#searchform").submit();
+	});
+	
+	var totalheight = 0;   
+	
+    var main = $("div#datalist");//主体元素 
+    var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+    totalPage = parseInt(totalPage);
+    var currentPage = 1;
+    $(window).scroll(function(){  
+        var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+          
+        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+        
+        /*<![CDATA[*/
+        if($(document).height() <= totalheight && currentPage < totalPage) {
+        	/*]]>*/
+        	currentPage++;
+        	$.ajax({
+       			url : [[@{/mobile/loadNextPage}]],
+       			data : {
+       				type:[[${type}]],
+       				next:currentPage,
+       				searchName:$("input[name=searchName]").val(),
+       				cat_id:$("#cat_id").val()
+       			},
+       			dataType: 'html',
+       			type:	'post',
+       			async: false,
+       			success : function(data, textStatus, jqXHR) {
+       				main.append(data);
+       			}
+       		});
+             
+             
+        }  
+    }); 
+});
+</script>
+<body>
+	<div class="two_top" style="">
+	<div style="display:none" id="listsize" th:value="${#lists.size(categories)}"></div>
+		<div class="two_top_left" th:if="${(#lists.size(categories))==1}" style="width:100%; text-align:center;" th:each="cat,status:${categories}" type="cat" th:id="${cat.id}">
+			<h3  th:text="${cat.name}">类别</h3>
+		</div>
+		<div class="two_top_left"  th:if="${#lists.size(categories)!=1}" th:each="cat,status:${categories}" type="cat" th:id="${cat.id}">
+			<input type="radio" name="tab" id="tab1" class="tabs" th:text="${cat.name}">类别</input>
+		</div>
+		
+		<div style="clear: both;"></div>
+	</div>
+	<div class="two_content">
+	<div class="two_content_top">
+	<form th:action="@{/mobile/list_mechine}" id="searchform" method="get">
+<div class="two_c_t_left">
+		<input type="hidden" name="cat_id" id="cat_id" th:value="${cat_id}" />
+		<input type="hidden" name="type" id="type" th:value="${type}" />
+<input name="searchName" th:value="${name}" type="text" class="scinput" style="height:40px;font-size:26px; width:100%;border-style:none;"/>
+</div>
+<div class="two_c_t_right">
+<img id="imgbtn" width="58" height="40" align="right" style="border-radius: 0 5px 5px 0; cursor:pointer;" th:src="@{/assets/images/head_img/check.jpg}" />
+</div>
+<div style="clear:both;"></div>
+</form>
+</div>
+		<span th:unless="${mechines!=null and not #lists.isEmpty(mechines)}">暂无数据</span>
+		<div id="datalist">
+		<div class="two_li" th:each="mechine,status:${mechines}">
+		    <a th:href="@{/mobile/detail_mechine(type=${type},id=${mechine.id})}">
+			<div class="two_li_left">
+				<img style="border-radius: 5px;" width="76" height="76" th:src="@{${#strings.isEmpty(mechine.thumb_url) ? '/assets/images/default.jpg' : '/img/' + #strings.arraySplit(mechine.thumb_url, '.')[0] + '_S.' + #strings.arraySplit(mechine.thumb_url, '.')[1]}}" src="head_img/ftlw.jpg" />
+			</div>
+			<div class="two_li_right">
+				<div class="two_right_top">
+					<h3 style="color: #4F93E8;" th:text="${mechine.name}">福特雷沃液压挖掘机</h3>
+					<p style="margin-top: 4px;" th:utext="${'型号:' + mechine.version + '&lt;br /&gt; 联系电话：' + mechine.phone+ '&lt;br /&gt;'+ mechine.jine}">
+						型号：FR75-7<br /> 联系电话：12345678910 <br/>100万
+					</p>
+				</div>
+				<div class="two_right_bottom">
+					<a th:href="@{/mobile/detail_mechine(type=${type},id=${mechine.id})}">
+						<img border="0" align="right" width="63" height="23" th:src="@{/assets/images/head_img/blue.jpg}" />
+					</a>
+				</div>
+			</div>
+			
+			<div style="clear: both;"></div>
+		    </a>
+		</div>
+		
+		</div>
+	</div>
+
+	
+	<div class="copyright">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	$("div[type=cat]").click(function() {
+		var id = $(this).attr("id");
+		var url = [[@{/mobile/list_mechine(type=${type})}]];
+		/*<![CDATA[*/
+		window.location.href =  url + '&cat_id=' + id;
+		/*]]>*/
+	});
+});
+	
+var cat_id=[[${cat_id}]];
+
+$("div[type=cat]").each(function() {
+	var id = $(this).attr("id");
+    var size= $("#listsize").attr("value");
+	if(size==1){
+		$(this).css("background", "#43484C");
+		$(this).css("color", "#FFFFFF");
+	}
+	else if (id == cat_id) {
+		$(this).css("background", "#FFFFFF");
+		$(this).css("color", "#43484C");
+	} else {
+		$(this).css("background", "#43484C");
+		$(this).css("color", "#FFFFFF");
+	}
+});
+
+</script>
+</html>

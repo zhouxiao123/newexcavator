@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>我的话题</title>
+<link rel="stylesheet" th:href="@{/assets/css/js_css/grzy.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/htpl.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/load.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="g_top">
+		<div class="g_t_left">
+			<img th:src="@{${user.head == null ? '/assets/images/vip.png' : user.head}}" width="64" height="64" />
+		</div>
+		<div class="g_t_right" th:text="${user.name}">中文名字</div>
+		<div style="clear: both;"></div>
+	</div>
+	
+		<div class="ht_top" style="border-top: none;">
+			<div class="ht_t_t" >
+					<img class="ht_t_t_l_i" th:src="@{${topic.head == null ? '/assets/images/vip.png' : topic.head}}" width="64" height="64" />
+				<div class="ht_t_t_r">
+						<font class="ht_t_t_r_l" th:text="${topic.createname}">鹿鹿</font>
+						
+					<div style="clear: both;"></div>
+					<br />
+						<font class="ht_t_t_r_t" th:text="${#dates.format(topic.createtime, 'yyyy-MM-dd')}">鹿鹿</font>
+					
+				</div>
+				<font class="ht_t_t_r_r" th:text="${topic.topic}">鹿鹿</font>
+				<div style="clear: both;"></div>
+				
+			</div>
+			<div class="ht_t_c" ><!-- th:onClick="'javascript:window.open(\''+'topic_detail?openid='+${openid}+'&amp;id='+${to.id}+' \',\'_self\')'" -->
+				<img th:each="img : ${topic.imgList}" width="32.6%" th:src="@{'/img/' + ${#strings.arraySplit(img.img_path, '.')[0]} + '_S' + ${#strings.substring(img.img_path,#strings.indexOf(img.img_path, '.'))}}" alt="" />
+			<div  class="ht_t_e" >
+				<font th:text="${topic.content}"></font>
+		   </div>
+			<div class="ht_t_b" >
+				<div class="ht_t_b_z_r" onclick="javascript:document.all.content.focus(); ">
+					
+					<font id="ans1" class="ht_t_b_z" >回复</font>	
+					<img class="ht_t_b_z" th:src="@{/assets/images/re.png}" width="16" height="16" />
+					
+				</div>
+				
+			<div  class="ht_t_b_z_d"  th:id="${topic.id}"  onclick="zan(this)">
+					<font class="ht_t_b_z"  th:text="${topic.favour_count==null? '0': topic.favour_count}"></font>
+					<img  class="ht_t_b_z" th:src="@{/assets/images/zan.png}" width="16" height="16" />
+					
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			</div>		
+			<div id="anslist" class="ht_t_d" th:if="${topicans!=null}">
+				<div  th:each="ta : ${topicans}">
+				<font class="ht_t_d_t"  th:text="${ta.ansname}+':'"></font>
+				<font class="ht_t_d_r" th:text="${ta.anscontent}"></font>
+				</div>
+		</div>
+	</div>
+	<div class="h_bottom">
+		<form method="post" action="save_ans" id="replyForm">
+				<input id="id" type="hidden" name="id" th:value="${topic.id}" />
+				<input id="type" type="hidden" name="type" th:value="${type}"/>
+				<div class="sendBorder">
+					<textarea id="content" name="content" cols="" rows="" class="sInput" placeholder="回两句吧..."></textarea>
+				</div>	
+					<div class="operBtn">
+						<font id="send"  class="operBtn_s" style="cursor: pointer;">发送</font>
+						 <font id="return" class="operBtn_c" style="cursor: pointer;">取消</font>
+						<!--</a> -->
+					</div>
+			</form>
+		</div>
+	<div class="load"> </div>
+	<div class="loading" id="loading" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;z-index:100; background-color:#191919;visibility:hidden;height:30px;font-size:20px;   position: relative;bottom:1px">加载中....</div>
+       <div class="loading" id="nomoreresults" style="display:none;bottom:0px;
+       position:relative;text-align: center;">没有更多数据了.</div>
+   
+       
+
+
+
+	
+	
+	
+	
+
+	<script type="text/javascript" th:inline="javascript">
+
+	function zan(v){
+		 var t=document.getElementById(v.id).getElementsByTagName("font")[0];
+		 var id=v.id;
+		 $.ajax({
+		 url : "favour",
+		 data : {
+		 id: id
+		 },
+		 dataType: 'html',
+		 type:	'post',
+		 async: false,
+		 success : function(data, textStatus) {
+		 if(data=="ok"){
+		 t.innerHTML =  parseInt(t.innerHTML)+1;
+		 }else if(data=="no"){
+		 alert("您已经点过赞了");
+		 }
+		
+		 },error : function(XMLHttpRequest, textStatus, errorThrown){
+		 alert("点赞失败，请重试");
+		 }
+		 });
+		
+		
+		
+		 }
+
+	
+	function zanre(v) {
+		var t = document.getElementById(v.id).getElementsByTagName("font")[0];
+		var id = parseInt(v.id.match(/\d+$/gi));
+
+		//alert(v.id);
+		$.ajax({
+			url : "ansfavour",
+			data : {
+				id : id
+			},
+			dataType : 'html',
+			type : 'post',
+			async : false,
+			success : function(data, textStatus) {
+				if (data == "ok") {
+					t.innerHTML = parseInt(t.innerHTML) + 1;
+				} else if (data == "no") {
+					alert("您已经点过赞了");
+				}
+
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				//alert("点赞失败，请重试");
+				alert(errorThrown);
+			}
+		});
+	}
+	
+	
+	$(document).ready(function() {
+			$("#return").click(function() {
+				var type= $("#type").val();
+				/*<![CDATA[*/
+				var url = "topic_main?type="+type;
+				/*]]>*/
+				window.location.href = url;
+
+			});
+			
+			
+			$("#send").click(function() {
+				var content = $("#content").val();
+				if (content.length == 0) {
+					alert("回复内容不可为空");
+					return;
+				}
+				$("#replyForm").submit();
+
+			});
+
+			
+			
+			
+			var totalheight = 0;   
+	 	    var main = $("div#anslist");//主体元素 
+	 	   var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+	 	    totalPage = parseInt(totalPage);
+	 	    var currentPage = 1;
+	 	    var id=$("#id").val();
+	 	   $(window).scroll(function(){
+	 		   
+	 	        var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+	 	        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+	 	      /*<![CDATA[*/
+	 	      if($(document).height() <= totalheight && currentPage < totalPage){
+	 	    	 /*]]>*/
+	 	    	  $("#loading").css("visibility", "visible");
+	 	        	currentPage++;
+	 	        	$.ajax({
+	 	       			url : [[@{/mobile/loadNextTopicAnsPage}]],
+	 	       			data : {
+	 	       				id : id,
+	 	       				next:currentPage,
+	 	       				type: $("#type").val()
+	 	       			},
+	 	       			dataType: 'html',
+	 	       			type:	'post',
+	 	       			async: false,
+	 	       			success : function(data, textStatus, jqXHR) {
+	 	       				setTimeout(function () { 
+	 	       					$("#loading").css("visibility", "hidden");
+	 	           				main.append(data);
+	 	       			    }, 1000);
+	 	       				
+	 	       			}
+	 	       		});
+	 	        }else if(currentPage== totalPage){
+	 					$("#nomoreresults").show();
+	 	   				$("#nomoreresults").fadeOut(4000);
+	 	        }
+	 	    });
+	});
+	</script>
+</body>
+</html>

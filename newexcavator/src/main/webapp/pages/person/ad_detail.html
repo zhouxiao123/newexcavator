@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+ <div class="place1">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>发布管理 </li>
+	    	<li>详情</li>
+	    </ul>
+    </div>
+	<div class="webPage2">
+    	<!-- <header class="header">
+        	<a href="#" class="fl ml10"><img src="../assets/images/left.jpg" width="11" /></a>
+            <h4>挖友圈</h4>
+            <a href="publicList" class="fr mr10"><img src="../assets/images/header_r.png" width="20" /></a>
+        </header> -->
+        <section>
+            <!-- <div class="place">
+            	<ul>
+                    <li>大至机械</li>
+                    <li>&gt;</li>
+                    <li th:text="${m.type_name}">大型挖掘机</li>
+                    <li>&gt;</li>
+                    <li th:text="${m.p_name+m.c_name+'&nbsp;'+m.brand_name+'_'+m.version_name}">挖掘机型号</li>
+                </ul>
+                <div class="clr"></div>
+            </div> -->
+   
+            <div class="main">
+            	<table class="detailTable">
+            		<tr>
+            			<th th:text="${m.type_name}">类型</th>
+            			<td th:text="${m.job}"></td>
+            			<th>地区</th>
+            			<td th:text="${m.p_name+'-'+m.c_name}"></td>
+            		</tr>
+                	
+                    <tr>
+                        <th>发布日期：</th>
+                        <td th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm:ss')}">2009-05-01</td>
+                        <th>工资：</th>
+                        <td th:text="${m.salary+'元/月'}"></td>
+                    </tr>
+                    
+                    <tr>
+                    	<th>联系人</th>
+                    	<td th:text="${m.link_name}"></td>
+                    	<th>联系电话</th>
+                    	<td th:text="${m.phone+'('+m.p_name+'&nbsp;&nbsp;'+m.c_name+')'}"></td>
+                    </tr>
+                    <tr>
+                    	<th>招聘描述：</th>
+                    </tr>
+                    
+                    <tr>
+                    	<td colspan="4" th:text="${m.description}">新车</td>
+                    </tr>
+                    <tr th:if="${type==0}">
+                    	<td colspan="2" class="tc" ><a style="display:block; width:120px; margin:0 auto; background:#3f97c9; color:#fff;  border-radius:5px;"  th:href="${'per_verify_save?id='+m.id+'&amp;verify=1'}">审核通过</a></td>
+                    	<td colspan="2" class="tc" ><a style="display:block; width:120px; margin:0 auto; background:#3f97c9; color:#fff;  border-radius:5px;" th:href="${'per_verify_save?id='+m.id+'&amp;verify=2'}">审核不通过</a></td>
+                    </tr>
+                    <tr th:if="${type==1}">
+                    	<th colspan="2">当前状态：</th>
+                    	<td colspan="2" th:if="${m.verify==0}">待审核</td>
+                    	<td colspan="2" th:if="${m.verify==1}">审核通过</td>
+                    	<td colspan="2" th:if="${m.verify==2}">审核不通过</td>
+                    </tr>
+                    <tr th:if="${m.verify==1 and type==1}">
+                    	<th colspan="2">关闭状态：</th>
+                    	<td colspan="2" th:if="${m.close==0}">开启</td>
+                    	<td colspan="2" th:if="${m.close==1}">关闭</td>
+                    	<td colspan="2" th:if="${m.close==2}">已完成</td>
+                    </tr>
+                </table>
+                
+            </div>
+        </section>
+        <!-- <footer class="tel">
+        	<div class="telLeft">
+        		<dl>
+        			<dt th:text="${m.link_name}">赵先生(个人)</dt>
+        			<dd th:text="${m.phone+'('+m.p_name+'&nbsp;&nbsp;'+m.c_name+')'}">4008167360(江苏&nbsp;&nbsp;徐州)</dd>
+        		</dl>
+        	</div>
+        	
+        	<div class="clr"></div>
+        </footer> -->
+        
+    </div>
+    <div class="blackBg"></div>
+    <img class="bigImg" id="bigImg" src="" />
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+          
+     /* var winW = $(window).width();
+     var winH = $(window).height();
+	 $('.picture img').each(function(){
+		 $(this).click(function(){
+			 $(".blackBg").fadeIn();
+			 $(".blackBg").css({"height":winH+'px'});
+			 var imgSrc = $(this).attr("src");
+			 $("#bigImg").attr("src",imgSrc);
+			 $("#bigImg").fadeIn();
+			 console.log($("#bigImg").is(":visible"));
+			 $(".bigImg").css("width",winW+'px');
+			 //$(this).removeClass("pictureimg");
+			 //$(this).addClass("pictureimgA");
+		 })
+		 $("#bigImg").click(function(){
+		 	$(".blackBg").fadeOut();
+		 	$("#bigImg").fadeOut();
+		 	//$('.picture img').eq(index).removeClass("pictureimgA");
+		 	//$('.picture img').eq(index).addClass("pictureimg");
+	 	})
+	 }) */
+	 $(document).ready(function(){
+		 
+	 });
+           
+/*]]>*/
+</script>
+</body>
+</html>

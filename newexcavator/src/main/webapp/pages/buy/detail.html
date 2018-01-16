@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title th:text="${'求购:'+m.brand_name+'_'+m.version_name+m.type_name+' '+m.price+'万'+m.p_name+m.c_name+'  挖友圈'}">挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="webPage">
+	
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+        	<a th:href="@{/mobile/buy_list}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>求购</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            <div class="place">
+            	<ul>
+                    <li><a th:href="@{/mobile/buy_list}">挖友圈</a></li>
+                    <li>&gt;</li>
+                    <li><a th:text="${m.type_name}" th:href="${'buy_list?type='+m.m_type}">大型挖掘机</a></li>
+                    <li>&gt;</li>
+                    <li th:text="${m.p_name+m.c_name+'&nbsp;'+m.brand_name+'_'+m.version_name}">挖掘机型号</li>
+                </ul>
+                <div class="clr"></div>
+            </div>
+            <div class="main">
+            	<h4 class="tc lh30 mt20" th:text="${m.p_name+m.c_name+'&nbsp;'+m.brand_name+'_'+m.version_name}"></h4>
+            	<div class="lh30 tc" style="color:#999;" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm:ss')}"></div>
+            	<div class="qiugouDetail">
+            		<ul>
+            			<li>
+            				<label>设备报价：</label>
+            				<span th:text="${m.price+'~'+m.price2+'万'}"></span>
+            				<div class="clr"></div>
+            			</li>
+            			<li>
+            				<label>设备描述：</label>
+            				<span th:text="${m.description}"></span>
+            				<div class="clr"></div>
+            			</li>
+            			<li th:if="${m.verify==1}">
+            				<label>关闭状态：</label>
+            				<span th:if="${m.close==0}">开启</span>
+                    		<span th:if="${m.close==1}">关闭</span>
+                    		<span th:if="${m.close==2}">已完成</span>
+            				<div class="clr"></div>
+            			</li>
+            			<li th:if="${type=='own'}">
+            				<label>当前状态：</label>
+            				<span th:if="${m.verify==0}">>开启</span>
+                    		<span th:if="${m.verify==1}">关闭</span>
+                    		<span th:if="${m.verify==2}">已完成</span>
+            				<div class="clr"></div>
+            			</li>
+            		</ul>
+            	</div>
+            	
+            	<!-- <table class="detailTable">
+                    <tr>
+                    	<th class="solid">发布日期：</th>
+                        <td class="solid" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm:ss')}">2009-05-01</td>
+                    </tr>
+                    <tr>
+                    	<th class="solid">设备报价：</th>
+                        <td class="solid" th:text="${m.price+'~'+m.price2+'万'}"></td>
+                    </tr>
+                    <tr>
+                    	<th class="solid">设备描述：</th>
+                    	<td class="solid" colspan="2" th:text="${m.description}">新车</td>
+                    </tr>
+                    <tr th:if="${type=='own'}">
+                    	<th class="solid">当前状态：</th>
+                    	<td class="solid" th:if="${m.verify==0}">待审核</td>
+                    	<td class="solid" th:if="${m.verify==1}">审核通过</td>
+                    	<td class="solid" th:if="${m.verify==2}">审核不通过</td>
+                    </tr>
+                    <tr th:if="${m.verify==1}">
+                    	<th class="solid">关闭状态：</th>
+                    	<td class="solid" th:if="${m.close==0}">开启</td>
+                    	<td class="solid" th:if="${m.close==1}">关闭</td>
+                    	<td class="solid" th:if="${m.close==2}">已完成</td>
+                    </tr>
+                    <tr th:if="${type=='own' and m.verify==1 and m.close!=2}">
+                    	<th class="solid">改变上架状态：</th>
+                    	<td class="solid">
+                    		<select name="change_close">
+                    			<option th:if="${m.close!=0}" value="0">上架</option>
+                    			<option th:if="${m.close!=1}" value="1">下架</option>
+                    			<option value="2">已出售</option>
+                    		</select>
+                    		<input type="button" id="change_close_button" value="改变状态"/>
+                    	</td>
+                    </tr>
+                </table> -->
+               <div class="picture">
+                	<div th:if="${adv!=null}" style="margin-top:50px">
+                	<div style="text-align:center;margin:5px 20px auto;width:90%">
+                		<label th:text="${adv.description}" ></label>
+                	</div>
+                	<a target="_blank" th:href="${#strings.isEmpty(adv.img_url)?'javascript:void(0)':#strings.startsWith(adv.img_url,'http:')? adv.img_url:'http://' + adv.img_url}">
+                		<img class="pictureimg" th:src="@{${'/img/'+adv.img_path}}" />
+                	</a>
+                	</div>
+                </div>
+                
+            </div>
+        </section>
+        <footer class="tel">
+        	<div class="telLeft">
+        		<label th:text="${m.link_name}" style="float:left;">赵先生(个人)</label>
+        		<div style="float:left;" th:text="${m.phone+'('+m.p_name+'&nbsp;&nbsp;'+m.c_name+')'}">4008167360(江苏&nbsp;&nbsp;徐州)</div>
+        		<div class="clr"></div>
+        	</div>
+        	<a class="telRight" th:href="${'tel:'+m.phone}">拨打电话</a>
+        	<div class="clr"></div>
+        </footer>
+        <footer style="margin-bottom:100px">
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+    
+
+    <!-- <div class="blackBg"></div>
+    <img class="bigImg" id="bigImg" src="" /> -->
+    <!--< div class="bigPicBg"></div>
+	<div class="bigPicBox">
+			<div class="closeTop">
+				<span id="closeSpan">&times;</span>
+				<div class="clr"></div>
+			</div>
+			<img class="bigPic" id="bigPic" />
+	</div> -->
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+   var si = [[${sign}]];
+
+ /*wx.config({
+	debug: false,
+	appId: 'wx0f60a8adb6eeb889',
+	timestamp: si.timestamp,
+	nonceStr: si.nonceStr,
+	signature: si.signature,
+	jsApiList: [
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage'
+	  ]
+});
+
+wx.ready(function () {
+	wx.hideMenuItems({
+	    menuList: ["menuItem:share:qq",
+	               "menuItem:share:weiboApp",
+	               "menuItem:share:facebook",
+	               "menuItem:share:QZone"
+	               ] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+	});
+	var shareData = {
+			title: [[${'求购:'+m.brand_name+'_'+m.version_name+m.type_name+' '+m.price+'万'+m.p_name+m.c_name+' 挖友圈'}]],
+			desc: '我们每日提供最新二手挖掘机信息',
+			link: 'http://wayouquan.com/newexcavator/mobile/buy_detail?id='+[[${m.id}]],
+			imgUrl: 'http://wayouquan.com/newexcavator/assets/images/wyqLogo.png',
+		success: function () { 
+			// 用户确认分享后执行的回调函数
+			window.location.href="detail_share?user_id="+[[${m.user_id}]];
+		},
+		      fail: function (res) {
+		        alert(JSON.stringify(res));
+		      }
+	};
+	wx.onMenuShareTimeline(shareData);
+	wx.onMenuShareAppMessage(shareData);
+});
+
+wx.error(function (res) {
+  alert(res.errMsg);
+});*/
+        
+           
+           
+	
+
+	
+	/*]]>*/
+</script>	
+	
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+     if([[${change}]]!=null && [[${change}]]==1){
+    	 alert("修改成功");
+     }     
+     $(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+    /*  $("img.pictureimg").click(function(){
+    	 $(".blackBg").css("display","block");
+    	 $(".bigImg").css("display","block");
+    	 $(".bigImg").attr("src",$(this).attr("src"));
+     }); */
+     
+   /* //点击显示大图
+ 	$('img.pictureimg').each(function(index){
+ 		$(this).click(function(){
+ 			var winH = document.body.scrollHeight;
+ 			var winS = document.body.scrollTop;
+ 			var winW = $(window).width();
+ 			var picW = $(this).width();
+ 			var picLeft = winW-picW>0?(winW-picW)/2:0;
+ 			alert(picLeft);
+ 			alert(winW);
+ 			alert(picW);
+ 			$('.bigPicBox').css({'left':picLeft,'top':'40px'});
+ 			$('.bigPicBox').fadeIn();
+ 			$('.bigPicBg').fadeIn();
+ 			$('.bigPicBg').css({'height':winH+'px','width':winW+'px'});
+ 			var bigSrc = $(this).attr('src');
+ 			$('#bigPic').attr('src',bigSrc);
+ 		})
+ 	})
+ 	$('#closeSpan').click(function(){
+ 		$('.bigPicBg,.bigPicBox').fadeOut();
+ 	}) */
+    /*  $(document).ready(function(){
+    	 $("#change_close_button").click(function(){
+    		if(confirm("是否确认更改?")){ 
+    	 	window.location.href='change_close?id='+[[${m.id}]]+'&close='+$("select[name=change_close]").val();
+    		}
+    	 });
+     });   */    
+           
+     /* var winW = $(window).width();
+     var winH = $(window).height();
+	 $('.picture img').each(function(){
+		 $(this).click(function(){
+			 $(".blackBg").fadeIn();
+			 $(".blackBg").css({"height":winH+'px'});
+			 var imgSrc = $(this).attr("src");
+			 $("#bigImg").attr("src",imgSrc);
+			 $("#bigImg").fadeIn();
+			 console.log($("#bigImg").is(":visible"));
+			 $(".bigImg").css("width",winW+'px');
+			 //$(this).removeClass("pictureimg");
+			 //$(this).addClass("pictureimgA");
+		 })
+		 $("#bigImg").click(function(){
+		 	$(".blackBg").fadeOut();
+		 	$("#bigImg").fadeOut();
+		 	//$('.picture img').eq(index).removeClass("pictureimgA");
+		 	//$('.picture img').eq(index).addClass("pictureimg");
+	 	})
+	 }) */
+	 
+           
+/*]]>*/
+</script>
+</body>
+</html>

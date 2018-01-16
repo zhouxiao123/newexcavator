@@ -1,0 +1,220 @@
+<!DOCTYPE html >
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/htpl.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/load.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+	<title>v圈主页</title>
+</head>	
+<script type="text/javascript" th:inline="javascript">  
+
+	function zan(v){
+		var t=document.getElementById(v.id).getElementsByTagName("font")[0];
+		var id=v.id;
+		$.ajax({
+   			url : [[@{/mobile/favour}]],
+   			data : {
+   				id: id
+   			},
+   			dataType: 'html',
+   			type:	'post',
+   			async: false,
+   			success : function(data, textStatus) {
+   				if(data=="ok"){
+   					t.innerHTML =  parseInt(t.innerHTML)+1;
+   				}else if(data=="no"){
+   					alert("您已经点过赞了");
+   				}
+   				
+   				},error : function(XMLHttpRequest, textStatus, errorThrown){
+   					alert("点赞失败，请重试");
+   				}
+   		});
+		
+		
+		
+	}
+ 
+$(document).ready(function() {
+	
+	
+    	$("#topic_re").click(function(){  
+        	window.location.href="topic_release";
+    	});   
+    	
+    	$("#personal").click(function(){  
+        	window.location.href="personal_main";
+    	});  
+	  
+
+         $("#btn").click(function(){  
+
+             var _this = document.getElementById("outerdivH"); 
+			 _this.style.display="block";                
+
+         });  
+      
+
+         $("#outerdivH").click(function(){  
+
+             var _this = document.getElementById("outerdivH"); 
+			 _this.style.display="none";
+                
+
+         });  
+      
+
+         $(".re").click(function(){              
+         	window.location.href="topic_detail";
+         });   
+	
+        var totalheight = 0;   
+ 	    var main = $("div#topiclist");//主体元素 
+ 	   var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+ 	    totalPage = parseInt(totalPage);
+ 	    var currentPage = 1;
+ 	   $(window).scroll(function(){
+ 	        var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+ 	        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+ 	      /*<![CDATA[*/
+ 	      if($(document).height() <= totalheight && currentPage < totalPage){
+ 	    	 /*]]>*/
+ 	    	  $("#loading").css("visibility", "visible");
+ 	        	currentPage++;
+ 	        	$.ajax({
+ 	       			url : [[@{/mobile/loadNextTopicPage}]],
+ 	       			data : {
+ 	       				id : $("#topicnameid").val(),
+ 	       				next:currentPage
+ 	       			},
+ 	       			dataType: 'html',
+ 	       			type:	'post',
+ 	       			async: false,
+ 	       			success : function(data, textStatus, jqXHR) {
+ 	       				setTimeout(function () { 
+ 	       					$("#loading").css("visibility", "hidden");
+ 	           				main.append(data);
+ 	       			    }, 1000);
+ 	       				
+ 	       			}
+ 	       		});
+ 	        }else if(currentPage== totalPage){
+ 					$("#nomoreresults").show();
+ 	   				$("#nomoreresults").fadeOut(4000);
+ 	        }
+ 	    });  
+ 
+	   
+	    });
+ </script>
+<body>
+<div class="ht_t_t_t" >
+<div class="ht_t_t_l"><img th:src="@{/assets/images/title.png}" width="70" height="50" /></div>
+<div class="ht_t_t_r">V圈</div>
+<div style="clear:both;"></div>
+</div>
+<div id="topiclist">
+	<div  th:each="to : ${topic}" class="ht_top" style="border-top: none;">
+			<div class="ht_t_t" >
+					<img class="ht_t_t_l_i" th:src="@{${to.head == null ? '/assets/images/vip.png' : to.head}}" width="64" height="64" />
+				<div class="ht_t_t_r">
+						<font class="ht_t_t_r_l"  th:text="${to.createname}">鹿鹿</font>
+					<div style="clear: both;"></div>
+					<br />
+						<font class="ht_t_t_r_t" th:text="${#dates.format(to.createtime, 'yyyy-MM-dd')}">鹿鹿</font>
+					
+				</div>
+				<font class="ht_t_t_r_r" style="height:46px;overflow:hidden;" th:text="${to.topic}">鹿鹿</font>
+				<div style="clear: both;"></div>
+				
+			</div>
+			<div class="ht_t_c" >
+				<img th:each="img : ${to.imgList}" width="32.6%" th:src="@{'/img/' + ${#strings.arraySplit(img.img_path, '.')[0]} + '_S' + ${#strings.substring(img.img_path,#strings.indexOf(img.img_path, '.'))}}" alt="" />
+			<div  style="overflow:hidden;height:42px;" class="ht_t_e" >
+				<font  th:text="${to.content}"></font>
+		   </div>
+			<div class="ht_t_b" >
+				<a  class="ht_t_see" th:href="'topic_detail?id='+${to.id}">查看全文</a>
+			
+				<div class="ht_t_b_z_r"  th:onClick="'javascript:window.open(\''+'topic_detail?id='+${to.id}+' \',\'_self\')'">
+					<font class="ht_t_b_z"  >回复</font><img class="ht_t_b_z"   th:src="@{/assets/images/re.png}" width="16" height="16" />
+				</div>
+				
+			<div  class="ht_t_b_z_d"  th:id="${to.id}"  onclick="zan(this)">
+					<font class="ht_t_b_z"  th:text="${to.favour_count==null? '0': to.favour_count}"></font><img  class="ht_t_b_z"  th:src="@{/assets/images/zan.png}" width="16" height="16" />
+					
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			</div>
+			<div class="ht_t_d" th:if="${to.topicans!=null}">
+				<div  th:each="ans ,status: ${to.topicans}">
+				<font class="ht_t_d_t"  th:text="${ans.ansname}+':'"></font>
+				<font class="ht_t_d_r" th:text="${ans.anscontent}"></font>
+				<div class="ht_t_d_m" th:if="${status.count==3}">......</div>
+				</div>
+				
+			</div>
+	</div>
+	</div>
+	<div class="loading" id="loading" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;z-index:100; background-color:#191919;visibility:hidden;height:30px;font-size:20px;   position: relative;bottom:31px;">加载中....</div>
+       <div class="loading" id="nomoreresults" style="display:none;bottom:31px;position:relative;text-align: center;">没有更多数据了.</div>
+       
+       
+       
+<!--<div style="position:fixed; margin:0px 0px 0px 0px; bottom:5px;">  -->
+<div class="ht_dh">
+<div class="ht_dh_a"><a th:href="'topic_main'" style="text-decoration:none;color:#4090c0;">&lt; 返回</a></div>
+<div  id="topic_re"  class="ht_dh_b" >发表话题</div>
+<div id="btn" class="ht_dh_c" >●●●</div>
+</div>
+<!--</div>  -->
+
+  <div  id="outerdivH" style="position:fixed;top:0px;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%; display:none;">
+<div class="sideBar" style="float:right;position:relative;">
+<div style="width:100%; background:#4090c0; color:#FFFFFF; padding:10px;">
+  <font style="font-size:16px;">话题筛选</font>
+  
+  </div>
+  	<!--<select name="category" class="select1">
+		<option th:each="t : ${tn}" th:value="${t.id}" th:text="${t.topicname}"></option>
+	</select>-->
+  <ul class="ht_ul"  style="overflow:auto;">
+  <li th:onClick="'javascript:window.open(\''+'topic_main'+'\',\'_self\')'">全部</li>
+  <li th:each="t : ${tn}" th:onClick="'javascript:window.open(\''+'topic_main?id='+${t.id}+'\',\'_self\')'" th:text="${t.topicname}"></li>
+  </ul>
+  <div class="ht_s_b">
+  <img th:src="@{/assets/images/person.png}" style="float:left;padding:7px;" width="16" height="16" />
+  <font  id="personal" style="cursor:pointer;" >个人主页</font>
+  </div>
+</div>
+</div> 
+
+<input id="topicnameid" type="hidden" name="topicnameid" th:value="${topicnameid}"/>
+<!-- <div  id="outerdiv" style="position:fixed;top:0px;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;  display:none;">
+<div class="popLayer" style="width:86%; margin-top:100px;">
+<form method="post" action="" id="replyForm">
+   
+    <div class="sendBorder">
+        <textarea id="content" name="content" cols="" rows="" class="sInput" placeholder="回两句吧..."></textarea>
+    </div>
+    <div class="sendOperate">
+        <a href="javascript:;" class="expreSelect" title=""></a>
+        <div class="operBtn">
+            <span class="pText" id="pText">140</span>
+            <font id="cbtn" style="cursor:pointer;">取消</font>
+            <a href="" id="comBtn" title=""><font>发送</font></a>
+    </div>
+    </div>
+</form>
+</div>
+</div> -->
+
+</body>
+</html>

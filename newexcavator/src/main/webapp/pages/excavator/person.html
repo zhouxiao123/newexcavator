@@ -1,0 +1,133 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>个人主页</title>
+<link rel="stylesheet" th:href="@{/assets/css/js_css/grzy.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+<div class="g_top">
+<div class="g_t_left">
+	<img th:src="@{${user.head == null ? '/assets/images/wyqLogo.png' : user.head}}" width="100" height="100" />
+</div>
+<div class="g_t_right" >
+	<label th:text="${user.name}" style="display:block">中文名字</label>
+	<label th:text="${user.cell_phone}"  style="display:block">电话</label>
+	<div>
+		<label>积分</label>
+		<label style="color:red" th:text="${user.point}">10000</label>
+	</div>
+	<div>
+		<a style="font-size:15px;color:black" th:href="@{/mobile/change_commodity}">兑换商品</a>
+		<a style="font-size:15px;color:black" th:href="@{/mobile/rank}">排行榜</a>
+	</div>
+</div>
+<div style="clear:both;"></div>
+</div>
+<div class="g_bottom" id="fabu_t">
+<div  class="g_b_l">发布帖子</div><div class="g_b_r"><img src="/newexcavator/assets/images/down.gif" width="20" /></div>
+<div style="clear:both;"></div>
+</div>
+<div style="padding:0 5% 0 5%;text-align:center;display:none" class="fabu_t">
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/add}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">发布出售</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/buy_add}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">发布求购</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/rent_add}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">发布出租</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/per_add}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">发布招聘</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+</div>
+<div  class="g_bottom1" id="fabu_m">
+<div class="g_b_l">我的发布</div><div class="g_b_r"><img src="/newexcavator/assets/images/down.gif" width="20" /></div>
+<div style="clear:both;"></div>
+</div>
+<div style="padding:0 5% 0 5%;text-align:center;display:none" class="fabu_m">
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/publicList}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">我发布的出售</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/publicBuyList}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">我发布的求购</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/publicRentList}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">我发布的出租</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+	<div th:onClick="'javascript:window.open(\''+@{/mobile/publicPerList}+'\',\'_self\')'" class="g_bottom1" >
+	<div  class="g_b_l">我发布的招聘</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+	<div style="clear:both;"></div>
+	</div>
+</div>
+<div th:onClick="'javascript:window.open(\''+@{/mobile/user_detail}+'\',\'_self\')'" class="g_bottom1">
+<div class="g_b_l">个人资料</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+<div style="clear:both;"></div>
+</div>
+<div th:onClick="'javascript:window.open(\''+@{/mobile/my_commodity}+'\',\'_self\')'" class="g_bottom1">
+<div class="g_b_l">我兑换的商品</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+<div style="clear:both;"></div>
+</div>
+<div th:onClick="'javascript:window.open(\''+@{/mobile/person_share}+'\',\'_self\')'" class="g_bottom1">
+<div class="g_b_l">邀请好友</div><div class="g_b_r"><img src="/newexcavator/assets/images/next.gif" width="20" /></div>
+<div style="clear:both;"></div>
+</div>
+
+<footer style="padding:50px 0 0 0;margin:0 auto;width:98%">
+  <div style="text-align:center;margin-bottom:10px">
+	<a href="http://www.sojump.com/jq/5058621.aspx">【提建议送挖掘机模型】</a>  
+  </div>
+  <div style="text-align:center">
+   	客服电话：028-85379570
+  </div>
+  <div style="text-align:center">
+   	QQ:968276
+  </div>
+  <div style="text-align:center">
+   	 微信:wjjjy666
+  </div>
+  <div style="text-align:center">
+   	 成都贝格畅斯科技有限公司
+  </div>
+  <div style="text-align:center">
+     <script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+  </div>
+</footer>
+
+
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(function(){  
+	if([[${update}]]!=null && [[${update}]]==1){
+		alert("修改成功!");
+	}
+	$("#fabu_t").click(function(){
+		$(".fabu_m").slideUp();
+		$(".fabu_t").slideDown();
+		
+	});
+	$("#fabu_m").click(function(){
+		$(".fabu_t").slideUp();
+		$(".fabu_m").slideDown();
+		
+	});
+	
+}); 
+/*]]>*/
+</script>
+</body>
+</html>

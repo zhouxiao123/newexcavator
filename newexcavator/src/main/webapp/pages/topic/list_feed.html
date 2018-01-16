@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>v圈管理 </li>
+	    	<li>反馈意见查询：</li>
+	    </ul>
+    </div>
+     <div class="rightinfo">
+	    <div style="width: 800px;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="300">内容</th>
+			        <th width="200">联系方式</th>
+			        <th width="300">留言时间</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:each="fb,status:${feedbackList}">
+			        <td th:text="${status.count}">编号</td>
+			        <td th:text="${fb.content}">内容</td>
+			        <td th:text="${fb.contact}">联系方式</td>
+			        <td th:text="${beans.dateFormatter.formatDateToStr(fb.createtime)}">时间</td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+	    	<div class="paginate" th:if="${feedbackList!=null and not #lists.isEmpty(feedbackList)}" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+	        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+	        	
+	            <a th:href="@{/admin/list_feed(page.offset=0)}" class="paginate-first">首页</a>
+	            <a th:href="@{/admin/list_feed(page.offset=${ps.getPrevPage()})}" class="paginate-previous">上一页</a>
+	            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+	            <a th:href="@{/admin/list_feed(page.offset=${ps.getNextPage()})}" class="paginate-next">下一页</a>
+	            <a th:href="@{/admin/list_feed(page.offset=${ps.getLastPage()})}" class="paginate-last">末页</a>
+		    </div>
+    	</div>
+   </div>
+</body>
+</html>

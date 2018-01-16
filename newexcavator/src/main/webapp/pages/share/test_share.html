@@ -1,0 +1,536 @@
+<html 
+	xmlns:th="http://www.thymeleaf.org"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+  <script>
+  /*<![CDATA[*/
+function rds(n,m){
+    var c = m-n+1;  
+    return Math.floor(Math.random() * c + n);
+}
+function randomString(len) {
+　　len = len || 32;
+　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+function randomWord(randomFlag, min, max){
+    var str = "",
+        range = min,
+        arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+ 
+    // 随机产生
+    if(randomFlag){
+        range = Math.round(Math.random() * (max-min)) + min;
+    }
+    for(var i=0; i<range; i++){
+        pos = Math.round(Math.random() * (arr.length-1));
+        str += arr[pos];
+    }
+    return str;
+}
+//图片滚动 调用方法 imgscroll({speed: 30,amount: 1,dir: "up"});
+$.fn.imgscroll = function(o){
+    var defaults = {
+        speed: 40,
+        amount: 0,
+        width: 1,
+        dir: "left"
+    };
+    o = $.extend(defaults, o);
+    
+    return this.each(function(){
+        var _li = $("li", this);
+        _li.parent().parent().css({overflow: "hidden", position: "relative"}); //div
+        _li.parent().css({margin: "0", padding: "0", overflow: "hidden", position: "relative", "list-style": "none"}); //ul
+        _li.css({position: "relative", overflow: "hidden"}); //li
+        if(o.dir == "left") _li.css({float: "left"});
+        
+        //初始大小
+        var _li_size = 0;
+        for(var i=0; i<_li.size(); i++)
+            _li_size += o.dir == "left" ? _li.eq(i).outerWidth(true) : _li.eq(i).outerHeight(true);
+        
+        //循环所需要的元素
+        if(o.dir == "left") _li.parent().css({width: (_li_size*3)+"px"});
+        _li.parent().empty().append(_li.clone()).append(_li.clone()).append(_li.clone());
+        _li = $("li", this);
+        //滚动
+        var _li_scroll = 0;
+        function goto(){
+            _li_scroll += o.width;
+            if(_li_scroll > _li_size)
+            {
+                _li_scroll = 0;
+                _li.parent().css(o.dir == "left" ? { left : -_li_scroll } : { top : -_li_scroll });
+                _li_scroll += o.width;
+            }
+                _li.parent().animate(o.dir == "left" ? { left : -_li_scroll } : { top : -_li_scroll }, o.amount);
+        }
+        
+        //开始
+        var move = setInterval(function(){ goto(); }, o.speed);
+        _li.parent().hover(function(){
+            //clearInterval(move);
+        },function(){
+            clearInterval(move);
+            move = setInterval(function(){ goto(); }, o.speed);
+        });
+    });
+};
+//随机产生N条数据:设N=40
+ //订购日期
+var curDate=new Date();
+var year=curDate.getFullYear();//年
+var month=curDate.getMonth()+1;//月
+var date=curDate.getDate()//日
+//姓名
+names=new Array();
+names[1]='张**';
+names[2]='刘**';
+names[3]='周**';
+names[4]='吴**';
+names[5]='朱**';
+names[6]='陈**';
+names[7]='田**';
+names[8]='钟**';
+names[9]='马**';
+names[10]='韩**';
+names[11]='顾**';
+names[12]='王**';
+names[13]='李**';
+names[14]='卢**';
+names[15]='崔**';
+names[16]='段**';
+names[17]='胡**';
+names[18]='古**';
+names[19]='陈**';
+names[20]='林**';
+names[21]='代**';
+names[22]='苏**';
+names[23]='周**';
+names[24]='吴**';
+names[25]='朱**';
+names[26]='郭**';
+names[27]='田**';
+names[28]='钟**';
+names[29]='马**';
+names[30]='韩**';
+names[31]='顾**';
+names[32]='王**';
+names[33]='李**';
+names[34]='卢**';
+names[35]='崔**';
+names[36]='段**';
+names[37]='胡**';
+names[38]='古**';
+names[39]='陈**';
+names[40]='林**';
+ //订购商品
+ var goods=new Array();
+goods[1]='《微营销成功秘笈经济套餐》';
+goods[2]='《微营销成功秘笈黄金套装》';
+
+
+
+
+
+//快递方式
+var ems = new Array();
+ems[1]='顺丰速运';
+ems[2]='EMS';
+//配送地址
+address=new Array();
+address[1]=' 陕西'; 
+address[2]=' 安徽';
+address[3]=' 安徽';
+address[4]=' 福建';
+address[5]=' 福建';
+address[6]=' 甘肃';
+address[7]=' 甘肃';
+address[8]=' 广东';
+address[9]=' 广东';
+address[10]=' 北京';
+address[11]=' 贵州';
+address[12]=' 贵州';
+address[13]=' 北京';
+address[14]=' 海南';
+address[15]=' 海南';
+address[16]=' 河北';
+address[17]=' 河北';
+address[18]=' 天津';
+address[19]=' 河南';
+address[20]=' 河南';
+address[21]=' 天津';
+address[22]=' 湖北';
+address[23]=' 湖北';
+address[24]=' 上海';
+address[25]=' 湖南';
+address[26]=' 湖南';
+address[27]=' 上海';
+address[28]=' 吉林';
+address[29]=' 吉林';
+address[30]=' 四川';
+address[31]=' 江苏';
+address[32]=' 江苏';
+address[33]=' 江西';
+address[34]=' 江西';
+address[35]=' 辽宁';
+address[36]=' 辽宁';
+address[37]=' 青海';
+address[38]=' 山东';
+address[39]=' 山东';
+address[40]=' 陕西';
+//订购人电话
+//商品数量
+//订货状态
+var str='';
+var name='';
+var good='';
+var addr='';
+var weixins='';
+var tel='';
+var qty='';
+
+//微信号
+var weixin = new Array();
+
+weixin[1]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[2]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[3]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[4]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[5]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[6]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[7]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[8]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[9]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[10]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[11]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[12]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[13]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[14]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[15]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[16]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[17]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[18]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+weixin[19]='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+''; //手机号
+weixin[20]=randomWord(true,2,4)+'****'+randomWord(true,2,4);
+
+for(var i=1;i<=10;i++){
+    name=names[parseInt(Math.random()*40+1)];
+    good=goods[parseInt(Math.random()*2+1)];
+    kuai=ems[parseInt(Math.random()*2+1)];
+    addr=address[parseInt(Math.random()*40+1)];
+	weixins='13'+parseInt(Math.random()*9+1) + '****' + parseInt(Math.random()*9+1)+ parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+parseInt(Math.random()*9+1)+'';
+	weixin2=randomWord(true,6,18);
+	
+	money=rds(100,4096);
+    qty=(parseInt(Math.random()*2)+1)+'套';
+	
+	
+    str+='<li>'+month+'月'+date+'日 微信号:('+weixin[parseInt(Math.random()*20+1)]+')';
+    str+='领取'+money+'MB流量</li>';
+
+}
+str+=str;
+//alert(str);
+$(document).ready(function(){
+    //把数据写到ul中
+    $('.element_id').html(str);
+    
+    
+    //数据向上无缝滚动
+    
+    $(".scrollleft").imgscroll({
+        speed: 60,    //图片滚动速度
+        amount: 0,    //图片滚动过渡时间
+        width: 1,     //图片滚动步数
+        dir: "up"   // "left" 或 "up" 向左或向上滚动
+    });
+});
+ 
+/*]]>*/
+</script>
+  <title>领取100MB-4G流量</title> 
+
+
+
+</head>
+<body bgcolor="#BF172E" id="activity-detail" class="zh_CN ">
+
+<script type="text/javascript">window.onerror=function(){return true;}</script>
+    
+        
+    <div class="rich_media ">
+
+                <div class="rich_media_inner">
+            <h2 class="rich_media_title" id="activity-name">
+            
+
+           </h2>
+
+            <div class="rich_media_meta_list">
+                <em id="post-date" class="rich_media_meta text"></em>
+                 <!-- <a class="rich_media_meta link nickname" href="javascript:void(0);" id="post-user">十姑娘</a> -->
+            </div>
+
+               <div id="page-content">
+                <div id="img-content" align="center"> 
+					
+				</div>
+
+				<h2 class="rich_media_title" id="activity-name">
+			<p style="font-size:13px;border:1px dashed #FFFFFF;display:block;margin-top:10px;text-align:center;padding:5px"><a onClick="javascript:document.getElementById('share-wx').style.display='block'" style="text-decoration: underline" id="click_share"><img th:src="@{/assets/images/118.jpg}" width="256" height="310"/></a></p>
+</h2></div>           
+
+
+<div class="scrollleft" style="color: rgb(255, 255, 255); height: 150px; text-align: center; overflow: hidden; position: relative;">
+    <ul class="element_id" style="margin: 0px; padding: 0px; overflow: hidden; position: relative; list-style: none; top: -324px;"><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(132****1451)领取3937MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(LHD****8Bh)领取2035MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取689MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(138****1233)领取1065MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取3841MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Jt****hQK)领取2877MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取1210MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(136****8135)领取657MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(IQi****yje)领取3117MB流量</li><li style="position: relative; overflow: hidden;">5月14日 微信号:(Q7Y****f6fc)领取3324MB流量</li></ul>
+    </div>
+	
+				</div>
+	
+	
+				</div>
+
+				<h2 class="rich_media_title" id="activity-name">
+		
+              
+				
+				
+				
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+		
+				
+				
+				
+				
+				
+				<script type="text/javascript">
+                        var first_sceen__time = (+new Date());
+                    </script>
+				<div class="rich_media_tool" id="js_toobar">
+					<div id="js_read_area" class="media_tool_meta link_primary meta_primary" style="display:none;">
+						阅读 <span id="readNum"></span>
+					</div>
+					<a style="display:none;" class="media_tool_meta meta_primary link_primary meta_praise" href="javascript:void(0);" id="like"><i class="icon_praise_gray"></i><span class="praise_num" id="likeNum"></span></a>
+				</div>
+			
+			<div id="js_ad_area">
+			</div>
+			<div id="js_iframetest" style="display:none;">
+			</div>
+		
+		<div id="js_pc_qr_code" class="qr_code_pc_outer">
+			<div class="qr_code_pc_inner">
+			</div>
+		</div>
+		<div style="text-align:center;margin-top:50px">
+		<script src="http://s11.cnzz.com/stat.php?id=1255062901&amp;web_id=1255062901" language="JavaScript"></script>
+		</div>
+	
+
+
+
+
+
+
+ 
+<script th:src="@{/assets/js/zepto.min.js}" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+function randomString(len) {
+　　len = len || 32;
+　　var $chars = 'abcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+
+function getSymbols(len)
+{
+　　len = len || 4;
+  var $chars = '△▽○◇□☆▷◁♤♡♢♧☼☺☏•▲▼●★▶◀♠♥♦♣☀☻☎‥▪•*☉⊙⊕Θ◎❤¤✪の⊿☜☞………⊱⋛⋌⋚⊰⊹⌒☌☍☋╱▁╲↖↑↗®©¢℡™ª㈱▬〓≡▏㊣▕←↔→▧▤▨▥▩▥▨▤▧▦╲▔╱↙↓↘♀※#&♩♪♫♬€§¶†¬♂∷№@♭♯$Ψ¥∮‖‡￢▫◈▣◐◑◕░▒▓☑☒Ω囍☄☢☣☭❂☪➹☃☂❦❧✎✄Ю✟۩＊❈❉✿❀❃❁ღஐ☠♨۞๑♈♉♊♋♌♍♎♏♐♐♑♒♓♒♍';
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+function getSymbols2(len)
+{
+　　len = len || 1;
+  var $chars = '△▽○◇□☆▷◁♤♡♢♧☼☺☏•▲▼●★▶◀♠♥♦♣☀☻☎‥▪•*☉⊙⊕Θ◎❤¤✪の⊿☜☞………⊱⋛⋌⋚⊰⊹⌒☌☍☋╱▁╲↖↑↗®©¢℡™ª㈱▬〓≡▏㊣▕←↔→▧▤▨▥▩▥▨▤▧▦╲▔╱↙↓↘♀※#&♩♪♫♬€§¶†¬♂∷№@♭♯$Ψ¥∮‖‡￢▫◈▣◐◑◕░▒▓☑☒Ω囍☄☢☣☭❂☪➹☃☂❦❧✎✄Ю✟۩＊❈❉✿❀❃❁ღஐ☠♨۞๑♈♉♊♋♌♍♎♏♐♐♑♒♓♒♍';
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+
+
+    (function($){
+        $.fn.capacityFixed = function(options) {
+            var opts = $.extend({},$.fn.capacityFixed.deflunt,options);
+            var FixedFun = function(element) {
+                var top = opts.top;
+                element.css({
+                    "top":top
+                });
+                $(window).scroll(function() {
+                    var scrolls = $(this).scrollTop();
+                    if (scrolls > top) {
+
+                        if (window.XMLHttpRequest) {
+                            element.css({
+                                position: "fixed",
+                                top: 0              
+                            });
+                        } else {
+                            element.css({
+                                top: scrolls
+                            });
+                        }
+                    }else {
+                        element.css({
+                            position: "absolute",
+                            top: top
+                        });
+                    }
+                });
+                element.find(".close-ico").click(function(event){
+                    element.remove();
+                    event.preventDefault();
+                })
+            };
+            return $(this).each(function() {
+                FixedFun($(this));
+            });
+        };
+        $.fn.capacityFixed.deflunt={
+        right : 0,//相对于页面宽度的右边定位
+            top:0
+      };
+    })($);
+
+
+
+
+
+    /*]]>*/
+</script>
+
+﻿<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+   var si = [[${sign}]];
+
+ wx.config({
+	debug: false,
+	appId: 'wx10053f602890b71a',
+	timestamp: si.timestamp,
+	nonceStr: si.nonceStr,
+	signature: si.signature,
+	jsApiList: [
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage'
+	  ]
+});
+
+wx.ready(function () {
+	var shareData = {
+		title: '免费送100MB-4G流量,我已经领取了500MB流量了！',
+		desc: '快来领取流量，别怪我没告诉你。',
+		link: 'http://a.ohless.net/get',
+		imgUrl: 'http://a.ohless.net/newexcavator/assets/images/118.jpg',
+		success: function () { 
+			// 用户确认分享后执行的回调函数
+			window.location.href="get2";
+		},
+		      fail: function (res) {
+		        alert(JSON.stringify(res));
+		      }
+	};
+	wx.onMenuShareTimeline(shareData);
+	wx.onMenuShareAppMessage(shareData);
+});
+
+wx.error(function (res) {
+  alert(res.errMsg);
+});
+        
+           
+           
+	
+
+	
+	/*]]>*/
+</script>
+
+
+  <style type="text/css">
+    #share-wx {
+    background: rgba(0,0,0,0.8);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
+    }
+  </style>
+
+ <div id="share-wx" onClick="javascript:this.style.display='none'"><p style="text-align: right; padding-left: 10px;color:#fff;font-size:16px">分享后显示流量额度<img th:src="@{/assets/images/arron.png}" id="share-wx-img" style="max-width: 280px; padding-right: 25px;"/></p></div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<div style="display:none">
+
+
+
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1254849546'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/stat.php%3Fid%3D1254849546' type='text/javascript'%3E%3C/script%3E"));</script><span id="cnzz_stat_icon_1254849546"></span><script src=" http://s11.cnzz.com/stat.php?id=1254849546" type="text/javascript"></script>
+
+
+
+
+</div>
+
+
+
+</h2></body></html>

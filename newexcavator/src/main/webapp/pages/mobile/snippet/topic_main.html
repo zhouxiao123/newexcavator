@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+	<div  th:each="to : ${topic}" >
+		
+			<div class="ht_t_t">
+				
+					<img  class="ht_t_t_l_i" th:src="@{/assets/images/vip.png}" width="60" height="60" />
+				
+				<div class="ht_t_t_r">
+						<font class="ht_t_t_r_l" th:text="${to.createname}">鹿鹿</font>
+						
+					<div style="clear: both;"></div>
+					<br />
+						<font class="ht_t_t_r_t" th:text="${#dates.format(to.createtime, 'yyyy-MM-dd')}">鹿鹿</font>
+					
+				</div>
+				<font class="ht_t_t_r_r" style="height:46px;overflow:hidden;" th:text="${to.topic}">鹿鹿</font>
+				<div style="clear: both;"></div>
+				
+			</div>
+			<div class="ht_t_c" ><!-- th:onClick="'javascript:window.open(\''+'topic_detail?id='+${to.id}+' \',\'_self\')'" -->
+				<img th:each="img : ${to.imgList}" width="32.6%" th:src="@{'/img/' + ${#strings.arraySplit(img.img_path, '.')[0]} + '_S' + ${#strings.substring(img.img_path,#strings.indexOf(img.img_path, '.'))}}" alt="" />
+			<div style="overflow:hidden;height:42px;" class="ht_t_e"  >
+				<font th:text="${to.content}"></font>
+		   </div>
+			<div class="ht_t_b" >
+				<a th:if="${type==null}" class="ht_t_see" th:href="'topic_detail?id='+${to.id}">查看全文</a>
+				
+				<a th:if="${type!=null}" class="ht_t_see" th:href="'topic_detail?id='+${to.id}+'&amp;type='+${type}">查看全文</a>
+			
+				<div th:if="${type==null}" class="ht_t_b_z_r" th:onClick="'javascript:window.open(\''+'topic_detail?id='+${to.id}+' \',\'_self\')'">
+					<font class="ht_t_b_z">回复</font>
+					<img  class="ht_t_b_z"  th:src="@{/assets/images/re.png}" width="16" height="16" />	
+				</div>
+				
+				<div class="ht_t_b_z_r" th:if="${type!=null}" th:onClick="'javascript:window.open(\''+'topic_detail?id='+${to.id}+'&amp;type='+${type}+' \',\'_self\')'">
+					<font class="ht_t_b_z">回复</font>
+					<img   class="ht_t_b_z"  th:src="@{/assets/images/re.png}" width="16" height="16" />
+						
+				</div>
+				
+				
+			<div class="ht_t_b_z_d" th:id="${to.id}"  onclick="zan(this)">
+					<font class="ht_t_b_z" th:text="${to.favour_count==null? '0': to.favour_count}"></font>
+					<img  class="ht_t_b_z" th:src="@{/assets/images/zan.png}" width="20" height="20" />
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			</div>
+			<div class="ht_t_d" th:if="${to.topicans!=null}">
+				<div  th:each="ans ,status: ${to.topicans}">
+				<font class="ht_t_d_t"  th:text="${ans.ansname}+':'"></font>
+				<font class="ht_t_d_r" th:text="${ans.anscontent}"></font>
+				<div class="ht_t_d_m" th:if="${status.count==3}">......</div>
+				</div>
+				
+			</div>
+	</div>
+	
+	
+</html>

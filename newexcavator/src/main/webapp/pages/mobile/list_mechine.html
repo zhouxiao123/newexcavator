@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+	<link rel="stylesheet" th:href="@{'/assets/css/js_css/tabcss'+${#lists.size(categories)}+'.css'}" />
+</head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("#imgbtn").click(function() {
+		var url  = [[@{'/mobile/list_mechine'}]];
+		$("#searchform").attr("action", url);
+		$("#searchform").submit();
+	});
+	
+	var totalheight = 0;   
+    var main = $("div#datalist");//主体元素 
+    var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+    totalPage = parseInt(totalPage);
+    var currentPage = 1;
+    $(window).scroll(function(){  
+        var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+        /*<![CDATA[*/
+        if($(document).height() <= totalheight && currentPage < totalPage) {
+        	/*]]>*/
+        	//$("#loading").show(3000);
+        	//$("#loading").show();
+        	$("#loading").css("visibility", "visible");
+        	//showLoader();
+        	currentPage++;
+        	$.ajax({
+       			url : [[@{/mobile/loadNextPage}]],
+       			data : {
+       				type:[[${type}]],
+       				next:currentPage,
+       				searchName:$("input[name=searchName]").val(),
+       				cat_id:$("#cat_id").val()
+       			},
+       			dataType: 'html',
+       			type:	'post',
+       			async: false,
+       			success : function(data, textStatus, jqXHR) {
+       				setTimeout(function () { 
+       					//$("#loading").hide();
+       					$("#loading").css("visibility", "hidden");
+           				//hideLoader();
+           				main.append(data);
+       			    }, 1000);
+       				
+       			}
+       		});
+        }else if(currentPage== totalPage){
+				$("#nomoreresults").show();
+				//$('html, body').animate({
+                  //  scrollTop: $("#nomoreresults").offset().top
+                //}, 1000);
+   				$("#nomoreresults").fadeOut(4000);
+        }  
+    }); 
+});
+
+</script>
+<body>
+	<div class="top" style="">
+	<div style="display:none" id="listsize" th:value="${#lists.size(categories)}"></div>
+		<div class="lis"  th:each="cat,status:${categories}" >
+		<input type="radio" name="tab" class="tabs"  th:width="${100/#lists.size(categories)+'%'}" th:checked="${cat.id==cat_id}" th:id="${cat.id}">
+		<label style="font-size: 18px;" th:for="${'tab'+cat.id}" th:text="${cat.name}"  th:width="${100/#lists.size(categories)+'%'}" type="label" th:id="${cat.id}" >
+			tab1
+		</label>
+		</input>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	<div class="two_content">
+	<div class="two_content_top">
+	<form th:action="@{/mobile/list_mechine}" id="searchform" method="get">
+<div class="two_c_t_left">
+		<input type="hidden" name="cat_id" id="cat_id" th:value="${cat_id}" />
+		<input type="hidden" name="type" id="type" th:value="${type}" />
+<input name="searchName" th:value="${name}" type="text" class="scinput" style="height:40px;font-size:26px; width:100%;border-style:none;"/>
+</div>
+<div class="two_c_t_right">
+<img id="imgbtn" width="58" height="40" align="right" style="border-radius: 0 5px 5px 0; cursor:pointer;" th:src="@{/assets/images/head_img/check.jpg}" />
+</div>
+<div style="clear:both;"></div>
+</form>
+</div>
+		<span th:unless="${mechines!=null and not #lists.isEmpty(mechines)}">暂无数据</span>
+		<div id="datalist">
+		<div class="two_li" th:each="mechine,status:${mechines}" th:onclick="'location.href=\''+@{/mobile/detail_mechine(type=${type},id=${mechine.id})}+'\''">
+			<div class="two_li_left" >
+				<img style="border-radius: 5px;" width="76" height="76" th:src="@{${#strings.isEmpty(mechine.thumb_url) ? '/assets/images/default.jpg' : '/img/' + #strings.arraySplit(mechine.thumb_url, '.')[0] + '_S.' + #strings.arraySplit(mechine.thumb_url, '.')[1]}}" src="head_img/ftlw.jpg" />
+			</div>
+			<div class="two_li_right">
+				<div class="two_right_top">
+					<h3 style="color: #4F93E8;" th:text="${mechine.name}">福特雷沃液压挖掘机</h3>
+					<p style="margin-top: 4px;" th:utext="${'型号:' + mechine.version + '&lt;br /&gt; 联系电话：' + mechine.phone+ '&lt;br /&gt;'+(type=='part'?'售价：':'报价：')+ (mechine.jine&gt;0?(mechine.jine+(type=='part'?'元':'万')):'面议')}">
+						型号：FR75-7<br /> 联系电话：12345678910 <br/>100万
+					</p>
+				</div>
+				<div class="two_right_bottom">
+					<a th:href="@{/mobile/detail_mechine(type=${type},id=${mechine.id})}">
+						<img border="0" align="right" width="63" height="23" th:src="@{/assets/images/head_img/blue.jpg}" />
+					</a>
+				</div>
+			</div>
+			
+			<div style="clear: both;"></div>
+		</div>
+		</div>
+		<div class="loading" id="loading" style="filter:alpha(Opacity=80);-moz-opacity:0.5;opacity: 0.5;z-index:100; background-color:#191919;visibility:hidden;height:30px;font-size:20px;   position: relative;">加载中....</div>
+       <div class="loading" id="nomoreresults" style="display:none;bottom:20px;
+       position:relative;text-align: center;padding-top: -20px;">没有更多数据了.</div>
+	</div>
+	<div class="copyright" style="position:fixed;">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+
+<script th:inline="javascript">
+$(document).ready(function() {
+	$("label[type=label]").click(function() {
+		var id = $(this).attr("id");
+		var url = [[@{/mobile/list_mechine(type=${type})}]];
+		/*<![CDATA[*/
+		window.location.href =  url + '&cat_id=' + id;
+		/*]]>*/
+	});
+});
+</script>
+</html>

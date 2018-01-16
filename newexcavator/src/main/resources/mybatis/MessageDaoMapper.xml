@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.MessageDao">
+	<insert id="saveMessage" parameterType="com.newexcavator.domain.Message" useGeneratedKeys="true" keyProperty="id">
+		insert into message(open_id,content,msg_id,msg_type,media_id,pic_url,create_time)
+		values(#{open_id},#{content},#{msg_id},#{msg_type},#{media_id},#{pic_url},now())
+	</insert>
+	
+	<update id="updateMessage">
+		update message set replied=1 where id=#{id}
+	</update>
+	
+	<insert id="saveReply" parameterType="com.newexcavator.domain.Reply" useGeneratedKeys="true" keyProperty="id">
+		insert into reply(message_id,content,msg_type,media_id,create_time, path)
+		values(#{message_id},#{content},#{msg_type},#{media_id},now(), #{path})
+	</insert>
+	
+	
+	<select id="queryMessage" resultType="com.newexcavator.domain.Message">
+		select m.*, r.msg_type as r_msg_type  from message m left join reply r on m.id = r.message_id
+		order by m.replied asc, m.create_time desc
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryMessage_count" resultType="java.lang.Integer">
+		select count(1) from message
+	</select>
+	
+	<select id="queryReplyByMessageId" resultType="com.newexcavator.domain.Reply">
+		select * from reply where message_id=#{message_id}
+	</select>
+</mapper>

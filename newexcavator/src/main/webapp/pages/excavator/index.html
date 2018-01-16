@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+        <header class="header">
+        	<a th:href="@{/mobile/index}" class="fl ml10"><img th:src="@{/assets/images/home.png}" width="20" /></a>
+            <h4>挖友圈</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img th:src="@{/assets/images/header_r.png}" width="20" /></a>
+        </header>   
+        <section class="headerNav">
+        	<a href="#" class="borderR headerNavA">挖掘机</a>
+        	<a href="#">装载机</a>
+        </section>     
+        <section>
+            <div class="main">
+            	<form class="search" id="search" method="post" th:action="@{/mobile/list}">
+                	<input type="search" name="search_name" style=" font-family:'微软雅黑'; color:#666;" placeholder="可以搜索 品牌，名字" />
+                	<input type="hidden" name="type" value="1"/>
+                    <input type="button" id="search_button" style="background:url('/newexcavator/assets/images/search.jpg') no-repeat scroll center center rgba(0, 0, 0, 0)"/>
+                    <div class="clr"></div>
+                </form>
+                <div class="wjj">
+	                <div class="list1Title">
+	                	<h4>挖掘机</h4>
+	                    <a th:href="@{/mobile/list?type=1}">更多</a>
+	                    <div class="clr"></div>
+	                </div>
+	            	<ul class="listMain2">
+	                	<li th:each="m,status:${ms1}" th:if="${status.count lt 13}">
+	                    	<a th:href="@{'/mobile/detail?id='+${m.id}+'#mp.weixin.qq.com'}">
+	                    	<img th:src="@{'/img/'+${#strings.replace(m.cover_path,'.','_S.')}}"/>
+	                        <div class="listR">
+	                        	<h4 th:text="${m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+	                            <div class="timeDiv">
+	                            	<!-- <span class="time" th:text="${m.used_time}">8000</span>
+	                                <span class="timeD">小时</span> -->
+	                                
+	                                <div class="clr"></div>
+	                            </div>
+	                            <div class="comPrice">
+	                            	<span th:text="${m.p_name}">山东</span>
+	                                <!-- <span th:text="${m.c_name}">东营市</span> -->
+	                                <span class="price" th:text="${m.price}">15</span>
+	                                <span class="priceD">万</span>
+	                                <div class="clr"></div>
+	                            </div>
+	                        </div>
+	                        <!-- <div class="fr" style="padding:5px;">
+	                        	<span class="time" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm')+'发布'}">8000</span>
+	                        </div> -->
+	                        <div class="clr"></div>
+	                        </a>
+	                    </li>
+	                    <div class="clr"></div>
+	                </ul>
+	            </div>
+	            <div class="zzj">
+	                <div class="list1Title">
+	                	<h4>装载机</h4>
+	                    <a th:href="@{/mobile/list?type=2}">更多</a>
+	                    <div class="clr"></div>
+	                </div>
+	            	<ul class="listMain2">
+	                	<li th:each="m,status:${ms2}" th:if="${status.count lt 13}">
+	                    	<a th:href="@{'/mobile/detail?id='+${m.id}+'#mp.weixin.qq.com'}">
+	                    	<img th:src="@{'/img/'+${#strings.replace(m.cover_path,'.','_S.')}}"/>
+	                        <div class="listR">
+	                        	<h4 th:text="${m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+	                            <div class="timeDiv">
+	                            	<!-- <span class="time" th:text="${m.used_time}">8000</span>
+	                                <span class="timeD">小时</span> -->
+	                                
+	                                <div class="clr"></div>
+	                            </div>
+	                            <div class="comPrice">
+	                            	<span th:text="${m.p_name}">山东</span>
+	                                <!-- <span th:text="${m.c_name}">东营市</span> -->
+	                                <span class="price" th:text="${m.price}">15</span>
+	                                <span class="priceD">万</span>
+	                            </div>
+	                        </div>
+	                        <!-- <div class="fr" style="padding:5px;">
+	                        	<span class="time" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm')+'发布'}">8000</span>
+	                        </div> -->
+	                        <div class="clr"></div>
+	                        </a>
+	                    </li>
+	                    <div class="clr"></div>
+	                </ul>
+	        	</div>
+                
+            </div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript">
+/*<![CDATA[*/
+	$(document).ready(function(){
+		$(".header h4").css("margin-left",($(".header").width()-102)/2+"px");
+		$("#search_button").click(function(){
+			var search_name=$("input[name=search_name]").val();
+			if(search_name.length > 0){
+				$("#search").submit();
+			}
+		});
+		
+		$('.headerNav a').each(function(index){
+			$(this).click(function(){
+				if(index==0){
+					$('.wjj').fadeIn();
+					$('.zzj').fadeOut();
+					$('.headerNav a').removeClass('headerNavA');
+					$(this).addClass('headerNavA');
+					$("input[name=type]").val(1);
+				}
+				else{
+					$('.wjj').fadeOut();
+					$('.zzj').fadeIn();
+					$('.headerNav a').removeClass('headerNavA');
+					$(this).addClass('headerNavA');
+					$("input[name=type]").val(2);
+				}
+			})
+			
+		})
+		/* $('.listMain2 img').each(function(){
+			var imgH = $(this).height();
+			var imgW = $(this).width();
+			var imgB = imgW/imgH;
+			if(imgB>2){
+				$(this).css('width','100px');
+				var imgH2 = $(this).height();
+				$(this).css('marginTop',((50-imgH2)/2)+'px');
+			}
+			else{
+				$(this).css({'height':'50px','margin':'0 auto'});
+			}
+			
+		}) */
+		
+	});
+	/*]]>*/
+</script>
+</html>

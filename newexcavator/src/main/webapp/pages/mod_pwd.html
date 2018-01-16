@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header" >
+</head>
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		var historyPwd = $.trim($("input[name='historyPwd']").val());
+		var newPwd = $.trim($("input[name='newPwd']").val());
+		var reNewPwd = $.trim($("input[name='reNewPwd']").val());
+		
+		var success = true;
+		if (historyPwd == '') {
+			alert("原始密码不能为空!");
+			success = false;
+		} else if (newPwd != reNewPwd) {
+			alert("新密码不一致!");
+			success = false;
+		} else if (newPwd == '' || reNewPwd == '') {
+			alert("新密码不能为空!");
+			success = false;
+		}
+		
+		if (success) {
+			$("#saveForm").submit();
+		}
+	});
+});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>其它管理</li>
+	    	<li>修改密码 </li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${state!=null}"><b th:text="${state==null?'':state}"></b></div>
+	    <form th:action="@{/admin/modPassword}" name="saveForm" id="saveForm" method="post">
+	    <ul class="forminfo">
+		    <li>
+		    	<label>原始密码:</label>
+		    	<input type="password" class="dfinput" name="historyPwd" />
+		    </li>
+		    <li>
+		    	<label>新密码:</label>
+		    	<input type="password" class="dfinput" name="newPwd" />
+		    </li>
+		    <li>
+		    	<label>再次输入:</label>
+		    	<input type="password" class="dfinput" name="reNewPwd" />
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input name="saveButton" id="saveButton" type="button"  class="btn" value="确认修改"/>
+		    </li>
+		</ul>
+		</form>
+	</div>
+</body>
+</html>

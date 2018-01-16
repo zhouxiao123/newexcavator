@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/bdjm.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+</head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	var exist = [[${saved}]];
+	if(exist == 1){
+		alert("参与成功，谢谢您的支持，请耐心等待开奖!")
+	} else if(exist == 2){
+		alert("您已经报名参加了，不可重复报名!")
+	}
+});
+function saveBindInfo() {
+	var phone = $.trim($("input[name=phone]").val());
+	var name = $.trim($("input[name=name]").val());
+	/*<![CDATA[*/
+	if (phone.length <= 0 || phone.length>20) {
+		alert("请输入正确的电话号码")
+		return;
+	}
+	
+	if (name.length <= 0 || name.length >10) {
+		alert("请填写您的姓名")
+		return;
+	}
+	/*]]>*/
+	$("#bindForm").submit();
+}
+</script>
+<body  style="font-size:16px">
+<div>
+<form th:action="@{/mobile/saveLotteryInfo}" id="bindForm" method="post">
+	
+<div class="content">
+<div class="top"><img th:src="@{/assets/images/head_img/logo.jpg}" width="153" height="48" /></div>
+<div class="center" style="position:absolute;width:70%;left:15%">
+<div class="center_t"><div style="float:left; width:4em;"><font >姓 &nbsp;名：</font></div><div class="in" style="float:left; "><input  name="name" class="text" type="text" />
+</div>
+<div style="clear:both;"></div>
+</div>
+<div class="center_t"><div style="float:left; width:4em;"><font >手机号：</font></div><div class="in" style="float:left;"><input  name="phone" class="text" type="text" />
+<input type="hidden" name="openid" th:value="${openid}" />
+</div>
+<div style="clear:both;"></div>
+</div>
+</div>
+<div class="bottom" style="position:absolute;top:200px"><img  name="bindButton" onclick="saveBindInfo()" th:src="@{/assets/images/head_img/tj.jpg}" width="164" height="30" /></div>
+</div>
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.TopicDao">
+	<select id="queryAllTopicName" resultType="com.newexcavator.domain.TopicName">
+		SELECT * FROM topic_name; 
+	</select>
+	
+	<select id="queryAllTopic" resultMap="queryAllTopicResult">
+		SELECT t.*, su.head as head FROM topic t, sys_users su WHERE t.createid = su.id ORDER BY t.anstime DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryAllTopic_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM topic ; 
+	</select>
+	
+	<select id="selectFeedback" resultType="com.newexcavator.domain.Feedback">
+		SELECT * FROM feedback ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="selectFeedback_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM feedback
+	</select>
+	
+	
+	<resultMap type="com.newexcavator.domain.Topic" id="queryAllTopicResult">
+		<id column="id" property="id"/>
+		<result column="topic" property="topic"/>
+		<result column="content" property="content"/>
+		<result column="createtime" property="createtime"/>
+		<result column="createid" property="createid"/>
+		<result column="createname" property="createname"/>
+		<result column="topicid" property="topicid"/>
+		<result column="favour" property="favour"/>
+		<result column="favour_count" property="favour_count"/>
+		<result column="head" property="head"/>
+		<collection property="imgList" select="queryTopicImgByTopicId" column="id" javaType="List" ofType="com.newexcavator.domain.TopicImg"/>  
+	</resultMap>
+	
+	<select id="queryTopic" resultMap="queryAllTopicResult">
+		SELECT t.*, su.head as head FROM topic t, sys_users su WHERE t.createid = su.id
+		<if test="topicid!=null">
+		AND t.topicid=#{topicid}
+		</if>  
+		<if test="createid!=null">
+		AND t.createid=#{createid}			
+		</if>
+		ORDER BY t.anstime DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryTopic_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM topic WHERE 1=1 
+		<if test="topicid!=null">
+		AND topicid=#{topicid}
+		</if>  
+		<if test="createid!=null">
+		AND createid=#{createid}			
+		</if> 
+	</select>
+	
+	<select id="queryTopicImgByTopicId" resultType="com.newexcavator.domain.TopicImg">
+		SELECT * FROM topic_img WHERE topic_id=#{id}; 
+	</select>
+	
+	<select id="queryTopicById" resultMap="queryAllTopicResult">
+		SELECT t.*, su.head as head FROM topic t, sys_users su WHERE t.createid = su.id AND t.id=#{id}; 
+	</select>
+	
+	<select id="queryTopicAnsByTopicAnsId" resultType="com.newexcavator.domain.TopicAns">
+		SELECT * FROM topic_ans WHERE id=#{id}; 
+	</select>
+	
+	<select id="queryTopicAnsByTopicId" resultType="com.newexcavator.domain.TopicAns">
+		SELECT t.*, su.head AS head FROM topic_ans t, sys_users su WHERE t.ansid = su.id AND topicid=#{id}
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if> 
+	</select>
+	
+	<select id="queryTopicAnsByTopicId_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM topic_ans WHERE topicid=#{id}; 
+	</select>
+	
+	
+	
+	<insert id="saveTopicName" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO topic_name(topicname) VALUES (#{topicname});
+	</insert>
+	
+	
+	<insert id="saveFeedBack" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO feedback(content,contact,createtime) VALUES (#{content},#{contact},now());
+	</insert>
+	
+	<insert id="saveTopicImg" parameterType="com.newexcavator.domain.TopicImg" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO topic_img(img_path, topic_id) VALUES (#{img_path}, #{topic_id});
+	</insert>
+	
+	<insert id="saveTopicAns" parameterType="com.newexcavator.domain.TopicAns"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO topic_ans (topicid,ansname,ansid,anstime,anscontent) VALUES (#{topicid},#{ansname},#{ansid},now(),#{anscontent});
+	</insert>
+	
+	<insert id="saveTopic" parameterType="com.newexcavator.domain.Topic"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO topic (topic,createtime,content,createid,topicid,createname,anstime) VALUES (#{topic},now(),#{content},#{createid},#{topicid},#{createname},now());
+	</insert>
+	
+	<update id="updateTopicTime">
+		UPDATE topic SET anstime=now() WHERE id=#{id};
+	</update>
+	
+	<update id="updateTopicFavour">
+		UPDATE topic SET favour=#{favour},favour_count=#{favour_count} WHERE id=#{id};
+	</update>
+	
+	<update id="updateTopicAnsFavour">
+		UPDATE topic_ans SET favour=#{favour},favour_count=#{favour_count} WHERE id=#{id};
+	</update>
+	
+	<delete id="deleteTopicName">
+		DELETE FROM topic_name where id=#{id};
+	</delete>
+</mapper>

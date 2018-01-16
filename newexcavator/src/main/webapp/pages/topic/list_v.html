@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$(".click").click(function() {
+			return confirm("是否确认取消？");
+		});
+	});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>v圈管理 </li>
+	    	<li>v圈权限：</li>
+	    </ul>
+    </div>
+    <div class="rightinfo">
+    <div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<form th:action="@{/admin/list_v}" id="searchform" method="post">
+		<ul class="seachform">
+			<li><label>姓名</label><input name="searchName" th:value="${searchName}" type="text" class="scinput" /></li>
+			<li><label>联系电话</label><input name="searchPhone" th:value="${searchPhone}" type="text" class="scinput" /></li>
+   			<li><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+    	</ul>
+	    </form>
+	    <div style="width: 600px;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="180">姓名</th>
+			        <th width="100">联系电话</th>
+			        <th width="150">是否有v圈权限</th>
+			        <th width="100">操作</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:each="user,status:${users}">
+			        <td th:text="${status.count}">编号</td>
+			        <td th:text="${user.name}">姓名</td>
+			        <td th:text="${user.cell_phone}">联系电话</td>
+			        <td th:text="${user.ispermission==1?'有':'无'}">是</td>
+			        <td>
+			        	<a th:if="${user.ispermission!=1}" th:href="@{'/admin/add_v_permission?id=' + ${user.id}}" class="tablelink">添加权限</a>
+			        	<a th:if="${user.ispermission==1}" th:href="@{'/admin/del_v_permission?id=' + ${user.id}}" class="tablelink click">取消权限</a>
+			        </td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+	    	<div class="paginate" th:if="${users!=null and not #lists.isEmpty(users)}" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+	        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+	        	
+	            <a th:href="@{/admin/list_v(page.offset=0,searchName=${searchName},searchPhone=${searchPhone})}" class="paginate-first">首页</a>
+	            <a th:href="@{/admin/list_v(page.offset=${ps.getPrevPage()},searchName=${searchName},searchPhone=${searchPhone})}" class="paginate-previous">上一页</a>
+	            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+	            <a th:href="@{/admin/list_v(page.offset=${ps.getNextPage()},searchName=${searchName},searchPhone=${searchPhone})}" class="paginate-next">下一页</a>
+	            <a th:href="@{/admin/list_v(page.offset=${ps.getLastPage()},searchName=${searchName},searchPhone=${searchPhone})}" class="paginate-last">末页</a>
+		    </div>
+    	</div>
+    </div>
+</body>
+</html>

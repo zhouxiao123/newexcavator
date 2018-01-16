@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$("#saveButton").click(function() {
+			var name = $('input[name=name]').val();
+			if(name.length == 0 || name.length > 50){
+				alert("商品名不可为空,字数不可超过50");
+				return false;
+			}
+			
+			var point = $('input[name=point]').val();
+			if(point.length == 0){
+				alert("积分设置不可为空");
+				return false;
+			}
+			
+			var priceExp = /^\d+$/;
+			if(!priceExp.test(point)){
+				alert("积分必须为数字！");
+				return;
+			} 
+			
+			var des = $('textarea[name=description]').val();
+			if(des.length == 0 || des.length > 500){
+				alert("商品描述不可为空,字数不可超过500字");
+				return false;
+			}
+			
+			
+			
+			$("#saveform").submit();
+		});
+		
+	});
+		
+		
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>兑换设置 </li>
+	    	<li>修改商品：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    <div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/commodity/save}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li>
+		    	<label>商品名</label>
+		    	<input type="text" th:value="${co.name}" name="name" class="dfinput"/>
+		    </li>
+		    <li>
+		    	<label>所需积分</label>
+		    	<input type="text" th:value="${co.point}" name="point" class="dfinput"/>
+		    </li>
+		    <li>
+		    	<label>商品描述</label>
+		    	<textarea type="text" th:text="${co.description}" name="description" style="border:1px solid #a7b5bc" rows="5" cols="55"></textarea>
+		    </li>
+		     <li>
+		    	<label>商品图片</label>
+		    	<img width="100" th:src="@{'/img/'+${#strings.replace(co.path,'.','_S.')}}"/>
+		    	<input type="file" name="file" id="file"/>
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input type="hidden" name="id" th:value="${co.id}"/>
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="修改"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

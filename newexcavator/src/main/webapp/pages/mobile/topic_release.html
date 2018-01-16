@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<title>话题发布</title>
+
+<link rel="stylesheet" th:href="@{/assets/css/js_css/htfb.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+</head>
+
+<body>
+	<form id="savetopic" action="save_topic" method="post"
+		enctype="multipart/form-data">
+		<div id="topic_type" class="h_s" >
+			<font class="h_s_l">话题筛选</font>
+			<font class="h_s_r">﹀</font>
+			<!-- <select name="topic_id" class="h_select"  style="height: 30px; font-size: 18px;">
+				<option th:each="t : ${tn}" th:value="${t.id}" th:text="${t.topicname}">挖掘机</option>
+			</select> -->
+		</div>
+		<div  id="select_bar" class="select_">
+			<ul>
+				<li style="font-size:16px;color:#fff;background:#4090c0;margin-top:0px;padding:5px;">话题筛选</li>
+				<li th:each="t : ${tn}" th:id="${t.id}" th:text="${t.topicname}" onclick="selected_t(this)"></li>
+			</ul>
+		</div>
+		<div class="selected" id="selected">
+			<font id="selected_font" >挖掘机</font>
+			<input id="topic_id" name="topic_id" type="hidden"/>
+		</div>
+		<div class="h_title">
+			<textarea id="topictitle" name="topicname" cols="1" rows="" class="h_sInputs" placeholder="标题..."></textarea> 
+		</div>
+		<div class="h_content">
+			<textarea id="topiccontent" name="topiccontent" cols="1" rows="" class="h_sInput" placeholder="说两句吧...."></textarea>
+		</div>
+		<div class="h_bottom">
+			<div id="send" class="h_b_r" style="cursor: pointer;">发表</div>
+			<div id="return" class="h_b_l" style="cursor: pointer;">取消</div>
+			<div style="clear: both;"></div>
+		</div>
+		<div>
+	    	<div id="filelist">您的浏览器不支持Flash, Silverlight或者HTML5，不能够上传.</div>
+			<br />
+			<div id="container">
+				<input type="hidden" name="filename" id="filename" />
+			    <input type="button" id="pickfiles" value="[添加文件]" />
+			    <input type="button" id="uploadfiles" value="[开始上传]" />
+			    <span style="color: red;">仅支持JPG/JPEG格式文件</span>
+			</div>
+			<br />
+		</div>
+	</form>
+<script type="text/javascript" th:inline="javascript">
+
+ 	function selected_t(t){
+		var _d= document.getElementById("selected");
+		var _d_f=document.getElementById("selected_font");
+			_d_f.innerHTML=t.innerHTML;
+			document.getElementById("topic_id").value=t.id;
+	        _d.style.display="block";
+		}
+ 	/*<![CDATA[*/           
+	$(function() {
+		$("#topic_type").click(function(){
+			 var _this = document.getElementById("select_bar"); 
+			 _this.style.display="block"; 
+		});
+		
+		 $("#select_bar").click(function(){  
+
+             var _this = document.getElementById("select_bar"); 
+			 _this.style.display="none";
+         });  
+		
+		$("#send").click(function() {
+			var title = $("#topictitle").val();
+			var content = $("#topiccontent").val();
+			var type=$("input[name=topic_id]").val();
+			if(type==0){
+				alert("请选择发布话题类型");
+				return;
+			}
+			
+			if (title.length == 0 || content.length == 0) {
+				alert("标题和内容不可为空");
+				return;
+			}
+			
+			/*var filename = $("#filename").val();
+			if (filename.length == 0) {
+				alert("请先上传选择的图片");
+				return;
+			}*/
+			$("#savetopic").submit();
+
+		});
+
+		$("#return").click(function() {
+			window.location.href = "topic_main";
+		});
+	});
+	
+	var upload_finished = true;
+	var uploader = new plupload.Uploader({
+		runtimes : 'html5,flash,silverlight,html4',
+		browse_button : 'pickfiles',
+		container: document.getElementById('container'),
+		url : [[@{/admin/uploadFile}]],
+		flash_swf_url : [[@{/assets/js/Moxie.swf}]],
+		silverlight_xap_url : [[@{/assets/js/Moxie.xap}]],
+		chunk_size: '200kb',
+		max_retries: 5,
+		prevent_duplicates: true,
+		unique_names: true,
+		filters : {
+			max_file_size : '30mb',
+			mime_types: [
+				{title : "图片文件", extensions : "jpg,jpeg"}
+			]
+		},
+
+		init: {
+			PostInit: function() {
+				document.getElementById('filelist').innerHTML = '';
+
+				document.getElementById('uploadfiles').onclick = function() {
+					$("a.class_fileupload").each(function() {
+						$(this).hide();
+					});
+					$("#filename").val('');
+					uploader.start();
+					$("#pickfiles").prop("disabled", true);
+					$("#uploadfiles").prop("disabled", true);
+					upload_finished = false;
+					return false;
+				};
+			},
+
+			FilesAdded: function(up, files) {
+				plupload.each(files, function(file) {
+					var fi = file.id;
+					document.getElementById('filelist').innerHTML += '<div id="' + fi + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <a href="#" class="class_fileupload" onclick="removeFile(' + fi + ')">删除</a><b></b></div>';
+				});
+			},
+			
+			FileUploaded: function(up, file, response) {
+				var name = $("#filename").val();
+				if (name != '') {
+					name += ";";
+				}
+				$("#filename").val(name + response.response);
+			},
+			
+			UploadComplete: function(up, file) {
+				upload_finished = true;
+			},
+
+			UploadProgress: function(up, file) {
+				document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span style="display:inline;">' + file.percent + "%</span>";
+			},
+
+			Error: function(up, err) {
+				var alt = false;
+				switch(err.code) {
+				case -601:
+					alert("仅支持JPG、JPEG格式图片!");
+					alt = true;
+					break;
+				case -602:
+					alert("不能选择重复的文件!");
+					alt = true;
+					break;
+				case -200:
+					alert("网络异常上传失败，请重新上传!");
+					$("#pickfiles").prop("disabled", false);
+					$("#uploadfiles").prop("disabled", false);
+					alt = true;
+					break;
+				}
+				if (!alt) 
+					alert("\nError #" + err.code + ": " + err.message);
+			},
+			FilesRemoved: function(up, files) {
+				plupload.each(files, function(file) {
+					$("div#" + file.id).remove();
+				});
+			}
+		}
+	});
+
+	uploader.init();
+
+	function removeFile(id) {
+		if (confirm("确认删除？")) {
+			uploader.removeFile(id);
+		}
+	}
+/*]]>*/
+</script>
+</body>
+</html>

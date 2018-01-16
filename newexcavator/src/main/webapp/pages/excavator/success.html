@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title >挖友圈</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="webPage">
+	
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+        	<a th:href="@{/mobile/index}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>挖友圈</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            
+            <div class="main">
+            <div class="tc mt100">
+            	<h4 style="font-size:21px;width:50%;margin: 0 auto;color:red">分享成功</h4>
+                </div>
+                
+            </div>
+        </section>
+        
+        <footer class="mt100" style="margin-bottom:100px">
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+    
+
+
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+     if([[${change}]]!=null && [[${change}]]==1){
+    	 alert("修改成功");
+     }     
+     $(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+    /*  $("img.pictureimg").click(function(){
+    	 $(".blackBg").css("display","block");
+    	 $(".bigImg").css("display","block");
+    	 $(".bigImg").attr("src",$(this).attr("src"));
+     }); */
+     
+   /* //点击显示大图
+ 	$('img.pictureimg').each(function(index){
+ 		$(this).click(function(){
+ 			var winH = document.body.scrollHeight;
+ 			var winS = document.body.scrollTop;
+ 			var winW = $(window).width();
+ 			var picW = $(this).width();
+ 			var picLeft = winW-picW>0?(winW-picW)/2:0;
+ 			alert(picLeft);
+ 			alert(winW);
+ 			alert(picW);
+ 			$('.bigPicBox').css({'left':picLeft,'top':'40px'});
+ 			$('.bigPicBox').fadeIn();
+ 			$('.bigPicBg').fadeIn();
+ 			$('.bigPicBg').css({'height':winH+'px','width':winW+'px'});
+ 			var bigSrc = $(this).attr('src');
+ 			$('#bigPic').attr('src',bigSrc);
+ 		})
+ 	})
+ 	$('#closeSpan').click(function(){
+ 		$('.bigPicBg,.bigPicBox').fadeOut();
+ 	}) */
+    /*  $(document).ready(function(){
+    	 $("#change_close_button").click(function(){
+    		if(confirm("是否确认更改?")){ 
+    	 	window.location.href='change_close?id='+[[${m.id}]]+'&close='+$("select[name=change_close]").val();
+    		}
+    	 });
+     });   */    
+           
+     /* var winW = $(window).width();
+     var winH = $(window).height();
+	 $('.picture img').each(function(){
+		 $(this).click(function(){
+			 $(".blackBg").fadeIn();
+			 $(".blackBg").css({"height":winH+'px'});
+			 var imgSrc = $(this).attr("src");
+			 $("#bigImg").attr("src",imgSrc);
+			 $("#bigImg").fadeIn();
+			 console.log($("#bigImg").is(":visible"));
+			 $(".bigImg").css("width",winW+'px');
+			 //$(this).removeClass("pictureimg");
+			 //$(this).addClass("pictureimgA");
+		 })
+		 $("#bigImg").click(function(){
+		 	$(".blackBg").fadeOut();
+		 	$("#bigImg").fadeOut();
+		 	//$('.picture img').eq(index).removeClass("pictureimgA");
+		 	//$('.picture img').eq(index).addClass("pictureimg");
+	 	})
+	 }) */
+	 
+           
+/*]]>*/
+</script>
+</body>
+</html>

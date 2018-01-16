@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+        <header class="header">
+        	<a th:href="@{/mobile/index}" class="fl ml10"><img th:src="@{/assets/images/home.png}" width="20" /></a>
+            <h4>登陆</h4>
+            <!-- <a href="#" class="fr mr10"><img src="../assets/images/header_r.png" width="20" /></a> -->
+        </header>        
+        <section>
+            <div class="main">
+            	<img class="logoImg" width="120" th:src="@{/assets/images/wyqLogo.png}" />
+                <form class="loginForm" id="saveForm" method="post" th:action="@{/mobile/login_save}">
+                	<ul>
+                    	<li>
+                        	<input type="tel" name="phone" placeholder="请输入手机号" />
+                        </li>
+                        <li>
+                        	<input type="password" name="password" placeholder="请输入密码"/>
+                        </li>
+                        <li>
+                        	<div style="width:250px;text-align:right;margin:0 auto">
+                        		<a style="margin-right:5px;font-size:14px" th:href="@{/mobile/reg}">注册账号</a>
+                        		<a style="margin-right:5px;font-size:14px" th:href="@{/mobile/find_pwd}">忘记密码</a>
+                        	</div>
+                        </li>
+                        <li>
+                        	<input type="button" id="blind" value="登录" />
+                        	<!-- <input type="hidden" name="openid" th:value="${openid}" />
+                        	<input type="hidden" name="head" th:value="${head}" />
+                        	<input type="hidden" name="nick_name" th:value="${nick_name}" /> -->
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript"  th:inline="javascript">
+/*<![CDATA[*/
+    if([[${state}]] != null && [[${state}]] == 1){
+    	alert("账号密码错误!")
+    }       
+           
+	$('#blind').click(function(){
+		var password=$("input[name=password]").val();
+		var phone=$("input[name=phone]").val();
+		
+		if(phone.length==0){
+			alert("请输入电话号码");
+			return;
+		}
+		if(password.length==0){
+			alert("请输入密码");
+			return;
+		}
+		$("#saveForm").submit();
+    }); 
+	/*]]>*/
+</script>
+</html>

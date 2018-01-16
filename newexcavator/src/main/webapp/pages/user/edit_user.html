@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		var newPwd = $.trim($("input[name='password']").val());
+		var reNewPwd = $.trim($("input[name='re_password']").val());
+		if (newPwd != reNewPwd) {
+			alert("新密码不一致!");
+			return false;
+		} else if (newPwd == '' || reNewPwd == '') {
+			alert("新密码不能为空!");
+			return false;
+		}
+			
+		$("#saveform").submit();
+	});
+});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>用户管理 </li>
+	    	<li>密码修改：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/update_user_password_save}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li>
+		    	<label>姓名:</label>
+		    	<label th:text="${user.name}"></label>
+		    </li>
+		    <li>
+		    	<label>联系电话:</label>
+		    	<label th:text="${user.cell_phone}"></label>
+		    </li>
+		    <li>
+		    	<label>创建时间:</label>
+		    	<label style="width:180px" th:text="${#dates.format(user.create_time, 'yyyy年MM月dd日  HH:mm')}" ></label>
+		    </li>
+		    <li>
+		    	<label>新密码:</label>
+		    	<input type="password"  name="password" class="dfinput" />
+		    </li>
+		    <li>
+		    	<label>重复新密码:</label>
+		    	<input type="password"  name="re_password" class="dfinput" />
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input type="hidden" name="id" th:value="${user.id}" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="确认保存"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

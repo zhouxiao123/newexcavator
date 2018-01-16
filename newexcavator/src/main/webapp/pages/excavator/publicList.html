@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/common.js}"></script>
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+     if([[${change}]]!=null && [[${change}]]==1){
+    	 alert("修改成功");
+     }     
+     $(document).ready(function(){
+    	 $(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+    	 $(".closeBut").click(function(){
+    		
+    		if(confirm("是否确认更改?")){ 
+    			var id = parseInt($(this).attr("id").split("_")[1]);
+    			var close = parseInt($(this).attr("id").split("_")[2]);
+    			window.location.href='change_close?id='+id+'&close='+(close+1)%2; 
+    			return false;
+    	 	//window.location.href='change_close?id='+[[${m.id}]]+'&close='+$("select[name=change_close]").val();
+    		}
+    		return false;
+    	 });
+     });      
+               
+/*]]>*/
+</script>
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+            <a th:href="@{/mobile/index}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>挖友圈</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            <div class="place" style="background:#fff; margin-top:10px; border-top:2px solid #e6e6e6;">
+            	<ul>
+                    <li>我发布的</li>
+                </ul>
+                <div class="clr"></div>
+            </div>
+            <div class="main">
+            	<ul class="listMain">
+            	 <li th:each="m,status:${ms}">
+                    	<a th:href="@{'/mobile/detail?type=own&amp;id='+${m.id}}">
+                    	<img width="100p" height="75" th:src="@{'/img/'+${#strings.replace(m.cover_path,'.','_S.')}}"/>
+                        <div style="word-break:break-all;width:60%"  class="listR1">
+                        	<h4 th:text="${m.type_name+'_'+m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+                            <div class="timeDiv">
+                            	<span class="time" th:text="${m.used_time}">8000</span>
+                                <span class="timeD">小时</span>
+                                <span class="price" th:text="${m.price}">15</span>
+                                <span class="priceD">万</span>
+                                <div class="clr"></div>
+                            </div>
+                            <div class="listAddr">
+                            	<span th:text="${m.p_name}">山东</span>
+                                <span th:text="${m.c_name}">东营市</span>
+                            </div>
+                            <div class="listAddr">
+                            	<span th:text="${m.verify==2?'审核不通过':m.verify==1?'审核通过':'待审核'}">山东</span>
+                                <span th:if="${m.verify==1}" th:text="${m.close==2?'已出售':m.close==1?'下架':'上架'}">东营市</span>
+                            </div>
+                        </div>
+                        <div class="clr"></div>
+                        <div class="fr time0">
+                        <div>
+                        	<span th:text="${beans.dateFormatter.fromNowToDate(m.create_time)}">8000</span>
+                        </div>
+                        
+                    		<!-- <select name="change_close">
+                    			<option th:if="${m.close!=0}" value="0">上架</option>
+                    			<option th:if="${m.close!=1}" value="1">下架</option>
+                    			<option value="2">已出售</option>
+                    		</select> -->
+                        </div>
+                        <div class="clr"></div>
+                        </a>
+                        <div class="mt20">
+                        	<input th:if="${m.verify==1 and m.close!=2}" type="button" th:id="${'close_'+m.id+'_'+m.close}" class="closeBut" style="display:block; width:100px;padding:5px; margin:0 auto 10px; background:#3f97c9; color:#fff;  border-radius:5px; font-family:'微软雅黑'; font-size:12px;" th:value="${m.close==0?'下架':'上架'}"/>
+                        </div>
+                    </li>
+                </ul>
+                <form id="searchForm" method="post" action="publicList">
+                </form>
+                <div class="page" th:if="${ms!=null and not #lists.isEmpty(ms)}" th:include="fragment/paginationbar :: paginationbar"></div>
+            </div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

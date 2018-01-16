@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/index/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/index/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/js_css/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+<script th:src="@{/assets/js/swipe.js}"></script>
+<script th:src="@{/assets/js/zepto.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+        <header class="header">
+        	<!-- <a href="#" class="fl ml10"><img src="assets/images/left.jpg" width="11" /></a> -->
+            <h4 style="margin-left:45%">挖友圈</h4>
+            <!-- <a href="mobile/person" class="fr mr10"><img src="assets/images/header_r.png" width="20" /></a> -->
+        </header>        
+        <section>
+            <div class="main">
+            	<div class="mainImg0">
+                	<div class="m-banner">
+				<div style="visibility: visible;" id="slider" class="swipe">
+					<ul style="width: 2560px;" class="swipe-wrap">
+						<li th:each="adv,status:${advertisement}" data-index="0" style="width: 640px; left: 0px; transition-duration: 300ms; transform: translateX(-640px);">
+							<a th:href="${#strings.startsWith(adv.img_url,'http:')? adv.img_url:'http://' + adv.img_url}"><img th:src="@{'/img/'}+${adv.img_path}" /></a>
+						</li>
+						
+					</ul>
+					<div id="slider_on">
+						<ul style="float:right; margin-right:2%;">
+							<li th:each="ad,status:${advertisement}">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+                </div>
+                <div class="mainImgNav">
+                	<a href="#">二手挖掘机</a>
+                    <a href="#">二手装载机</a>
+                    <div class="clr"></div>
+                </div>
+                <div class="wjj">
+                <div class="list1Title" style="margin-top:2px;">
+                	<h4>挖掘机</h4>
+                    <a th:href="@{/mobile/list?type=1}">更多</a>
+                    <div class="clr"></div>
+                </div>
+            	<ul class="listMain2">
+	                	<li th:each="m,status:${ms1}" th:if="${status.count lt 13}">
+	                    	<a th:href="@{'/mobile/detail?id='+${m.id}+'#mp.weixin.qq.com'}">
+	                    	<img th:src="@{'/img/'+${#strings.replace(m.cover_path,'.','_S.')}}"/>
+	                        <div class="listR">
+	                        	<h4 th:text="${m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+	                            <div class="timeDiv">
+	                            	<!-- <span class="time" th:text="${m.used_time}">8000</span>
+	                                <span class="timeD">小时</span> -->
+	                                
+	                                <div class="clr"></div>
+	                            </div>
+	                            <div class="comPrice">
+	                            	<span th:text="${m.p_name}">山东</span>
+	                                <!-- <span th:text="${m.c_name}">东营市</span> -->
+	                                <span class="price" th:text="${m.price}">15</span>
+	                                <span class="priceD">万</span>
+	                                <div class="clr"></div>
+	                            </div>
+	                        </div>
+	                        <!-- <div class="fr" style="padding:5px;">
+	                        	<span class="time" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm')+'发布'}">8000</span>
+	                        </div> -->
+	                        <div class="clr"></div>
+	                        </a>
+	                    </li>
+	                    <div class="clr"></div>
+	                </ul>
+                </div>
+                <div class="zzj">
+                <div class="list1Title" style="margin-top:2px;">
+                	<h4>装载机</h4>
+                    <a th:href="@{/mobile/list?type=2}">更多</a>
+                    <div class="clr"></div>
+                </div>
+            	<ul class="listMain2">
+	                	<li th:each="m,status:${ms2}" th:if="${status.count lt 13}">
+	                    	<a th:href="@{'/mobile/detail?id='+${m.id}+'#mp.weixin.qq.com'}">
+	                    	<img th:src="@{'/img/'+${#strings.replace(m.cover_path,'.','_S.')}}"/>
+	                        <div class="listR">
+	                        	<h4 th:text="${m.brand_name+'_'+m.version_name}">挖掘机名称</h4>
+	                            <div class="timeDiv">
+	                            	<!-- <span class="time" th:text="${m.used_time}">8000</span>
+	                                <span class="timeD">小时</span> -->
+	                                
+	                                <div class="clr"></div>
+	                            </div>
+	                            <div class="comPrice">
+	                            	<span th:text="${m.p_name}">山东</span>
+	                                <!-- <span th:text="${m.c_name}">东营市</span> -->
+	                                <span class="price" th:text="${m.price}">15</span>
+	                                <span class="priceD">万</span>
+	                                <div class="clr"></div>
+	                            </div>
+	                        </div>
+	                        <!-- <div class="fr" style="padding:5px;">
+	                        	<span class="time" th:text="${#dates.format(m.create_time, 'yyyy年MM月dd日  HH:mm')+'发布'}">8000</span>
+	                        </div> -->
+	                        <div class="clr"></div>
+	                        </a>
+	                    </li>
+	                    <div class="clr"></div>
+	                </ul>
+                </div>
+            </div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+			var elem = document.getElementById('slider');
+			window.mySwipe = Swipe(elem, {
+				auto : 3000,
+				callback : function(index, element) {
+					$('#slider_on li').removeClass('on')
+					$('#slider_on li').eq(index).addClass('on');
+				}
+			});
+		$('.mainImgNav a').each(function(index) {
+			$(this).click(function(){
+				if(index==0){
+					$('.wjj').fadeIn();
+					$('.zzj').fadeOut();
+					$('.headerNav a').removeClass('headerNavA');
+					$(this).addClass('headerNavA');
+				}
+				else{
+					$('.wjj').fadeOut();
+					$('.zzj').fadeIn();
+					$('.headerNav a').removeClass('headerNavA');
+					$(this).addClass('headerNavA');
+				}
+			})
+		});
+	});
+</script>
+</html>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.SysUsersDao">
+	<select id="queryCustomer" resultType="com.newexcavator.domain.Customer">
+		SELECT * FROM customer
+		WHERE 1=1
+		<if test="name!=null">
+		AND name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="IDCard!=null">
+		AND IDCard=#{IDCard}
+		</if>
+		<if test="phone_number!=null">
+		AND phone_number like CONCAT('%', #{phone_number}, '%')
+		</if>
+		ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCustomerByName" resultType="java.lang.Integer">
+		SELECT count(1) FROM customer WHERE name=#{name}
+		<if test="id!=null">
+		AND id!=#{id}
+		</if>
+	</select>
+	
+	<select id="queryCustomer_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM customer
+		WHERE 1=1
+		<if test="name!=null">
+		AND name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="IDCard!=null">
+		AND IDCard=#{IDCard}
+		</if>
+		<if test="phone_number!=null">
+		AND phone_number like CONCAT('%', #{phone_number}, '%')
+		</if>
+	</select>
+	
+	<select id="querySysUsers" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users
+		WHERE id!=1
+		<if test="name!=null">
+		AND name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="cell_phone!=null">
+		AND cell_phone like CONCAT('%', #{cell_phone}, '%')
+		</if>
+		<if test="invited_id!=null">
+		AND invited_id = #{invited_id}
+		</if>
+		ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	
+	<select id="querySysUsers_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users
+		WHERE id!=1
+		<if test="name!=null">
+		AND name like CONCAT('%', #{name}, '%')
+		</if>
+		<if test="cell_phone!=null">
+		AND cell_phone like CONCAT('%', #{cell_phone}, '%')
+		</if>
+		<if test="invited_id!=null">
+		AND invited_id = #{invited_id}
+		</if>
+	</select>
+	
+    <select id="querySysUserByUsername" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE username=#{username}
+		<if test="password != null">
+			and password=#{password}
+		</if>
+		ORDER BY id DESC
+	</select>
+	
+	<select id="querySysUserByOpenid" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE openid=#{openid}
+	</select>
+	
+	<select id="queryTopicUserByOpenid" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE openid=#{openid} AND ispermission=1;
+	</select>
+	
+	<select id="queryTopicUserOpenid" resultType="java.lang.String">
+		SELECT openid FROM sys_users WHERE ispermission=1;
+	</select>
+	
+	
+	<select id="querySysUserByName" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users WHERE name=#{name}
+		<if test="id!=null">
+		AND id!=#{id}
+		</if>
+		ORDER BY id DESC
+	</select>
+	
+	<select id="queryCustomerById" resultType="com.newexcavator.domain.Customer">
+		SELECT * FROM customer WHERE id=#{id} ORDER BY id DESC
+	</select>
+	
+	<select id="querySysUserByid" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE id=#{id} 
+	</select>
+	
+	<select id="queryUserMenusByUsrId" resultType="com.newexcavator.domain.SysMenus">
+		SELECT sm.* FROM sys_roles_users sru, sys_roles_menus srm, sys_menus sm
+		WHERE sru.user_id = #{user_id} AND sru.role_id = srm.role_id AND srm.menu_id = sm.id
+		ORDER BY sm.parent_id ASC, sm.weight ASC
+	</select>
+	
+	
+	<update id="removeUserPermission">
+		UPDATE sys_users SET ispermission=0 WHERE id=#{id}
+	</update>
+	
+	<update id="updatePermission">
+		UPDATE sys_users SET ispermission=1 WHERE id=#{id}
+	</update>
+	
+	<update id="updatePassword">
+		UPDATE sys_users SET password=#{password} WHERE id=#{id}
+	</update>
+	
+	<update id="updateLoginInfor">
+		UPDATE sys_users SET last_login_time=now() WHERE id=#{id}
+	</update>
+	
+	<update id="updateSysUsers" parameterType="com.newexcavator.domain.SysUsers">
+		UPDATE sys_users SET head=#{head}, nickname=#{nickname} WHERE id=#{id}
+	</update>
+	
+	<select id="querySysUserRank" resultType="com.newexcavator.domain.SysUsers">
+		SELECT *,
+       	(SELECT COUNT(*) FROM sys_users WHERE `point` > a.point) + 1 rank
+  		FROM sys_users a WHERE a.id!=1
+ 		ORDER BY rank
+ 		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="querySysUserRank_count" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+  		FROM sys_users WHERE id!=1
+ 		
+	</select>
+	
+	<update id="addPoint">
+		UPDATE sys_users SET point=point+#{point} WHERE id=#{id}
+	</update>
+	
+	<update id="subPoint">
+		UPDATE sys_users SET point=point-#{point} WHERE id=#{id}
+	</update>
+	
+	<update id="updateShareTime">
+		UPDATE sys_users SET `point`=`point`+2, share_time=NOW() WHERE id=#{id} AND (share_time!=DATE_FORMAT(NOW(),'%Y-%m-%d') OR share_time IS NULL)
+	</update>
+	
+	<update id="updateSysUsersById" parameterType="com.newexcavator.domain.SysUsers">
+		UPDATE sys_users SET name=#{name}, cell_phone=#{cell_phone} WHERE id=#{id}
+	</update>
+	
+	<insert id="saveSysUser" parameterType="com.newexcavator.domain.SysUsers" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO sys_users(username, name, cell_phone, create_time, openid,head,nickname,invited_id) VALUES(#{username}, #{name}, #{cell_phone}, now(), #{openid},#{head},#{nickname},#{invited_id});
+	</insert>
+	
+	<delete id="delCustomer" parameterType="map">
+		delete from customer where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</delete>
+	
+	<insert id="saveCustomer" parameterType="com.newexcavator.domain.Customer" useGeneratedKeys="true" keyProperty="id">
+	   INSERT INTO customer(total_number,sn,sale_date,vei_date,name,type,type_attribute,machine_number,engine_number,
+             phone_number,sale_area,sale_rep,customer_area,IDCard,customer_type,comments,price,freight,
+             payment_method,contract_deposit,vender_deposit,need_deposit,actual_deposit,debt) 
+       VALUES(#{total_number},#{sn},#{sale_date},#{vei_date},#{name},#{type},#{type_attribute},#{machine_number},
+             #{engine_number},#{phone_number},#{sale_area},#{sale_rep},#{customer_area},#{IDCard},#{customer_type},
+             #{comments},#{price},#{freight},#{payment_method},#{contract_deposit},#{vender_deposit},#{need_deposit},
+             #{actual_deposit},#{debt});
+	</insert>
+	
+	<update id="updateCustomer">
+		UPDATE customer SET total_number=#{total_number},sn=#{sn},sale_date=#{sale_date},vei_date=#{vei_date},
+		name=#{name},type=#{type},type_attribute=#{type_attribute},machine_number=#{machine_number},
+        engine_number=#{engine_number},phone_number=#{phone_number},sale_area=#{sale_area},sale_rep=#{sale_rep},
+        customer_area=#{customer_area},IDCard=#{IDCard},customer_type=#{customer_type},comments=#{comments},
+        price=#{price},freight=#{freight},payment_method=#{payment_method},contract_deposit=#{contract_deposit},
+        vender_deposit=#{vender_deposit},need_deposit=#{need_deposit},actual_deposit=#{actual_deposit},debt=#{debt}
+		WHERE id=#{id}
+	</update>
+	
+	<select id="queryOne" resultType="java.lang.Integer">
+		SELECT 1 FROM sys_users LIMIT 1
+	</select>
+	
+	<select id="querySysUserByPhone" resultType="com.newexcavator.wechat.model.message.response.UserInfo">
+		SELECT * FROM sys_users WHERE cell_phone = #{cell_phone} 
+	</select>
+	
+	<select id="queryCountSysUserByUsername" resultType="java.lang.Integer">
+		SELECT count(1) FROM sys_users WHERE username=#{username}
+	</select>
+	
+	<select id="queryPoint" resultType="com.newexcavator.domain.Point">
+		SELECT * FROM `point` LIMIT 1
+	</select>
+	<update id="updatePoint" >
+		UPDATE `point` SET point=#{point}
+	</update>
+</mapper>

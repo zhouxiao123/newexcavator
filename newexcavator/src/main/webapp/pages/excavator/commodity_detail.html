@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title th:text="${co.name}">挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="webPage">
+	
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+        	<a th:href="@{/mobile/index}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>商品兑换</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            
+            <div class="main">
+            	<div class="picture">
+            		<img  class="pictureimg"  th:src="@{'/img/'+${#strings.replace(co.path,'.','_S.')}}"/>
+            	</div>
+            	
+               <div class="tc mb20">
+               	<h4 style="font-size:20px;display:block" th:text="${co.name}"></h4>
+               	<label style="margin-top:10px;display:block;font-size:19px;margin:10px 10px 0 10px" th:text="${co.description}"></label>
+               </div>
+               <div class="tc mb20" style="color:#ff7f21">
+               	<label style="font-size:17px">所需积分</label>
+               	<label style="font-size:17px" th:text="${co.point}"></label>
+               </div>
+                <div class="tc mb20" style="color:red">
+               	<label style="font-size:17px">当前积分</label>
+               	<label style="font-size:17px" th:text="${su.point}"></label>
+               </div>
+               <form th:if="${su.point gt co.point or su.point==co.point }" class="loginForm" id="saveForm" method="post" th:action="@{/mobile/commodity_change_save}">
+                	<ul class="tc">
+                    	<li>
+                    		<label>用户姓名</label>
+                        	<input style="display:inline;width:175px" type="text" th:value="${su.name}" name="name" placeholder="请输入姓名" />
+                        </li>
+                        <li>
+                        	<label>联系电话</label>
+                        	<input style="display:inline;width:175px" type="tel" th:value="${su.username}" name="phone" placeholder="请输入手机号"/>
+                        </li>
+                        <li>
+                        	<label>收货地址</label>
+                        	<input style="display:inline;width:175px" type="text" name="address" placeholder="请输入收货地址"/>
+                        </li>
+                        
+                        <li>
+                        	<input type="button" id="blind" value="兑换" />
+                        	<input type="hidden" name="user_id" th:value="${su.id}"/>
+                        	<input type="hidden" name="id" th:value="${co.id}"/>
+                        </li>
+                    </ul>
+                </form>
+                <div class="tc mb20" style="color:red" th:if="${su.point lt co.point }">
+                	<label style="font-size:17px">您的当前积分不足,无法换取该商品</label>
+                </div>
+            </div>
+        </section>
+        
+        <footer style="margin-bottom:100px">
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+    <!-- <div class="blackBg"></div>
+    <img class="bigImg" id="bigImg" src="" /> -->
+    <!--< div class="bigPicBg"></div>
+	<div class="bigPicBox">
+			<div class="closeTop">
+				<span id="closeSpan">&times;</span>
+				<div class="clr"></div>
+			</div>
+			<img class="bigPic" id="bigPic" />
+	</div> -->
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+     if([[${change}]]!=null && [[${change}]]==1){
+    	 alert("修改成功");
+     }
+     
+     if([[${error}]]!=null && [[${error}]]==1){
+    	 alert("积分不足");
+     }
+     
+     if([[${success}]]!=null && [[${success}]]==1){
+    	 alert("兑换成功，稍后会有工作人员与您联系");
+     }
+     
+     $(document).ready(function(){
+     $(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+   $("#blind").click(function(){
+	   //判断
+	   
+	  	var name = $("input[name=name]").val();
+	  	var phone = $("input[name=phone]").val();
+	  	var address = $("input[name=address]").val();
+	  	
+		if(name.length==0){
+			alert('请填写联系人姓名');
+			return;
+		}
+		if(phone.length==0){
+			alert('请输入电话号码');
+			return;
+		}
+		
+		patrn = /^[0-9]{8,11}$/;  
+	    if(!patrn.exec(phone)) {  
+	    	alert("请输入正确的电话号码");
+			return;
+	    }
+	    
+	    if(address.length==0){
+			alert('请输入收货地址');
+			return;
+		}
+	    
+	    if(address.length > 500){
+			alert('收货地址长度不可超过500');
+			return;
+		}
+	    $("#saveForm").submit();
+	    
+   });
+	 
+     });     
+/*]]>*/
+</script>
+</body>
+</html>

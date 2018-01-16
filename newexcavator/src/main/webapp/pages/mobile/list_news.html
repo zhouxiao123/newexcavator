@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+</head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	var totalheight = 0;   
+	
+    var main = $("div#datalist");//主体元素 
+    var totalPage = [[${#httpServletRequest.getAttribute('pageSupport').getTotalPage()}]];
+    totalPage = parseInt(totalPage);
+    var currentPage = 1;
+    $(window).scroll(function(){  
+        var srollPos = $(window).scrollTop();    //滚动条距顶部距离(页面超出窗口的高度)  
+          
+        totalheight = parseFloat($(window).height()) + parseFloat(srollPos);
+        
+        /*<![CDATA[*/
+        if($(document).height() <= totalheight && currentPage < totalPage) {
+        	/*]]>*/
+        	currentPage++;
+        	$.ajax({
+       			url : [[@{/mobile/loadNextNews}]],
+       			data : {
+       				type:[[${type}]],
+       				next:currentPage
+       			},
+       			dataType: 'html',
+       			type:	'post',
+       			async: false,
+       			success : function(data, textStatus, jqXHR) {
+       				main.append(data);
+       			}
+       		});
+             
+             
+        }else if(currentPage>= totalPage){
+			$("#nomoreresults").show();
+				$("#nomoreresults").fadeOut(3000);
+    }    
+    }); 
+});
+</script>
+<body>
+	<div class="two_top" style="">
+		<div class="two_top_left" id="ti1" style="width:100%; text-align:center;">
+			<h3 th:text="${type=='activity' ? '最新活动' : '最新新闻'}">类型名称</h3>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	<div class="two_content">
+		<span th:unless="${news!=null and not #lists.isEmpty(news)}">暂无数据</span>
+		<div id="datalist">
+		<div class="two_li" th:each="n,status:${news}" th:onclick="'location.href=\''+@{/mobile/detail_news(type=${type},id=${n.id})}+'\''">
+			<div class="two_li_left">
+				<img style="border-radius: 5px;" width="76" height="76" th:src="@{'/img/' + ${n.thumb_url}}" src="head_img/ftlw.jpg" />
+			</div>
+			<div class="two_li_right" style=" height:74px; position:relative;">
+				<div class="two_right_top">
+					<h3 style="color: #4F93E8;" th:text="${n.title}">最新消息列表</h3>
+				</div>
+				<div class="two_right_bottom" style=" position:absolute; bottom:0; left:0;">
+					<a th:href="@{/mobile/detail_news(type=${type},id=${n.id})}">
+						<img border="0" align="right" width="63" height="23" th:src="@{/assets/images/head_img/blue.jpg}" />
+					</a>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+		</div>
+		<div class="loading" id="loading" style="display:none">加载中....</div>
+       <div class="loading" id="nomoreresults" style="display:none;bottom:20px;
+       position:relative;text-align: center">没有更多数据了.</div>
+	</div>
+	<div class="copyright">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+</html>

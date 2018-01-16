@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$(".click").click(function() {
+			return confirm("是否确认删除？");
+		});
+		$("input[name=savetopic]").click(function(){
+			var t_name = $.trim($("input[name=topicname]").val());
+			if (t_name.length == 0 || t_name.length > 50) {
+				alert("长度不能为空且不能大于50!");
+				return;
+			}else{
+			
+			$("#addform").submit();
+			}
+		});
+	});
+</script>
+<body>
+<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>v圈管理 </li>
+	    	<li>话题管理：</li>
+	    </ul>
+    </div>
+    <div class="rightinfo">
+    <div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<form th:action="@{/admin/list_topic}" id="addform" method="post">
+		<ul class="seachform">
+			<li>
+				<label>输入话题名</label>
+				<input name="topicname" type="text" class="scinput"/>
+				<input name="savetopic" type="button" class="scbtn" value="添加"/>
+			</li>
+		</ul>
+		</form>
+		<div style="width: 400px;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="100">话题名</th>
+			        <th width="100">操作</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:each="topic,status:${topicname}">
+			        <td th:text="${status.count}">编号</td>
+			        <td th:text="${topic.topicname}">姓名</td>
+			       <td>
+			        	<a th:href="@{'/admin/del_topic?id=' + ${topic.id}}" class="tablelink click">删除</a>
+			        </td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+    	</div>
+		
+	</div>
+
+</body>
+</html>

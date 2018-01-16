@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+        	<a th:href="@{/mobile/index}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>挖友圈</h4>
+            <a href="person" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            <div class="main">
+            	<form class="addForm" id="addForm" method="post" th:action="@{/mobile/user_update}">
+            		<div class="formLi">
+            			<ul>
+            				<li>
+            					<label>用户名：</label>
+            					<label th:text="${su.username}"></label>
+	            				<input type="hidden" th:value="${su.username}" name="username" />
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>姓名：</label>
+	            				<input type="text" th:value="${su.name}" name="name" placeholder="联系人姓名"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label style="text-align:center;width:100%">如需修改密码,请填写下方内容</label>
+            					<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>原密码：</label>
+	            				<input type="password"  name="h_password" placeholder="原密码"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>新密码：</label>
+	            				<input type="password"  name="password" placeholder="新密码"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>重复密码：</label>
+	            				<input type="password"  name="re_password" placeholder="重复密码"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li style="text-align:center;">
+            					<input  type="button" style=" width:70px;padding:5px" id="save_change" value="保存修改" />
+            					<input  type="hidden" name="id" th:value="${su.id}" />
+            					<input  type="hidden" name="update" value="1" />
+            				</li>
+            			</ul>
+            			<div class="clr"></div>
+            		<div>
+            		</div>
+            		</div>  
+                </form>
+            </div>
+        </section>
+        
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+        $(document).ready(function(){
+        		if([[${update}]]!=null && [[${update}]]==0){
+        			alert("原密码错误!");
+        		}
+        	
+        	$(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+        	$(".formLi").slideDown();
+        	
+        	$("#save_change").click(function(){
+        		var name = $("input[name=name]").val();
+        		var h_password = $("input[name=h_password]").val();
+        		var password = $("input[name=password]").val();
+        		var re_password = $("input[name=re_password]").val();
+        		if(name.length==0&&name.length>10){
+        			alert("姓名不可为空并且长度要小于10");
+        			return;
+        		}
+        		if(h_password.length>0 || password.length>0 || re_password.length>0){
+        			if(h_password==0){
+        				alert("请输入原始密码!");
+        				return;
+        			}
+        			if(password==0){
+        				alert("请输入新密码!");
+        				return;
+        			}
+        			if(re_password==0){
+        				alert("请再次输入密码!");
+        				return;
+        			}
+        			if(password!=re_password){
+        				alert("两次密码不一致");
+        				return;
+        			}
+        		}
+        		  
+        	    $("#addForm").submit();
+        	});
+        	
+        });
+		/*]]>*/
+	</script>
+</body>
+</html>

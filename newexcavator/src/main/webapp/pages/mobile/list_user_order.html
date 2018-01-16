@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+	<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+	<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+	<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+</head>
+<body>
+	<div class="two_top" style="">
+		<div class="two_top_left" id="ti1" style="width:100%; text-align:center;">
+			<h3>购买记录</h3>
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+	<div class="two_content">
+		<span th:unless="${customers!=null and not #lists.isEmpty(customers)}">暂无数据</span>
+		<div class="two_li" >
+			<div class="two_li_left" style="width:100%;">
+				<table th:if="${customers!=null and not #lists.isEmpty(customers)}" style="width:100%;">
+					<tr>
+						<td>销售日期</td>
+						<td>报Vei日期</td>
+						<td>付款方式</td>
+						<td>提机应付首付</td>
+						<td>提机实付首付</td>
+						<td>提机首付欠款</td>
+					</tr>
+					<tr th:each="customer,status:${customers}">
+					    <td th:text="${#dates.format(customer.sale_date, 'yyyy-MM-dd')}">销售日期</td>
+						<td th:text="${#dates.format(customer.vei_date, 'yyyy-MM-dd')}">报Vei日期</td>
+						<td th:text="${customer.payment_method}">付款方式</td>
+						<td th:text="${customer.need_deposit}">提机应付首付</td>
+						<td th:text="${customer.actual_deposit}">提机实付首付</td>
+						<td th:text="${customer.debt}">提机首付欠款</td>
+					</tr>
+				</table>
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+	</div>
+	<div class="copyright">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+</html>

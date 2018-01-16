@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+
+</head>
+<body style="line-height: 20px;">
+	<div class="three_main">
+		<h3 th:if="${type=='activity'}">最新活动</h3>
+		<h3 th:if="${type=='news'}">行业新闻</h3>
+	</div>
+	<div class="three_top">
+		<div class="three_t_top">
+			<h3 th:text="${news.title}">消息名称</h3>
+		</div>
+		<div class="three_t_bottom">
+			<img th:src="@{'/img/' + ${news.thumb_url}}" />
+		</div>
+	</div>
+	<div class="three_bottom">
+		<div class="three_b_center">
+			<img align="top" width="20" height="20" th:src="@{/assets/images/head_img/gs.jpg}" />
+			<font style="margin-left: 3px;">内容：</font>
+		</div>
+		<div class="three_b_bottom" th:utext="${news.content}"></div>
+	</div>
+	<div class="copyright">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+</html>

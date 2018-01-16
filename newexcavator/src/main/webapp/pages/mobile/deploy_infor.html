@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+</head>
+<body>
+	<div class="three_main">
+		<h3 th:text="${di.type==1?'最新活动':'最新新闻'}">栏目</h3>
+	</div>
+	<div class="three_top">
+		<div class="three_t_top">
+			<h3 th:text="${di.title}"></h3>
+		</div>
+		<div class="three_t_bottom">
+			<img th:src="@{'/img/' + ${di.thumb_url}}" />
+		</div>
+	</div>
+	<div class="three_bottom" th:utext="${di.content}"></div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	$('#editor1').ckeditor();
+	
+	$("#saveButton").click(function() {
+		var title = $.trim($("input[name=title]").val());
+		if (title.length == 0 || title.length > 200) {
+			alert("标题长度不能为空且不能大于200!");
+			return;
+		}
+		
+		var file = $("#file").val();
+		if (file.length > 0) {
+			var extension = file.substring(file.lastIndexOf('.'), file.length).toLowerCase();
+			if (extension != '.jpg' && extension != '.jpeg') {
+				alert("图片格式仅支持jpg格式，请先转换为jpg!");
+				return;
+			}
+		}
+		
+		$("#saveform").submit();
+	});
+});
+/*]]>*/
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>信息发布管理 </li>
+	    	<li th:if="${type=='activity'}">最新活动编辑：</li>
+			<li th:if="${type=='news'}">新闻编辑：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/saveNews}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li>
+		    	<label>标题:</label>
+		    	<input type="text" th:value="${di.title}" name="title" class="dfinput" />
+		    	<input  th:if="${di.issend==1}" value='1' type="checkbox" name="issend"  style="margin-left:50px;margin-right:10px;" checked="checked"/>
+		    	<input  th:if="${di.issend!=1}" value='1' type="checkbox" name="issend"  style="margin-left:50px;margin-right:10px;" />是否推送
+		    </li>
+		    <li>
+		    	<label>缩略图:</label>
+		    	<input type="file" onchange="checkImgFile(this)" name="file" id="file" />
+		    	<i>缩略图较好的效果为360*200；图片格式仅支持jpg，如果不是请先将图片转换为jpg格式，否则会发送不成功</i>
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<img alt="缩略图" height="50" th:src="@{'/img/' + ${di.thumb_url}}" />
+		    </li>
+		    <li>
+		    	<label>描述:</label>
+		    	<textarea cols="10" class="textinput" name="description" th:text="${di.description}" rows="5"></textarea>
+		    </li>
+		    <li>
+		    	<label>图文内容:</label>
+		    </li>
+		    <li>
+		    	<textarea cols="100" id="editor1" class="textinput" th:text="${di.content}" name="content" rows="10"></textarea>
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+		    	<input type="hidden" name="type" th:value="${type}" />
+				<input type="hidden" name="id" th:value="${di.id}" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="确认保存"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

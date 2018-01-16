@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.Wechat_tbDao">
+	<insert id="saveWechatNo" parameterType="com.newexcavator.domain.Wechat_tb" useGeneratedKeys="true" keyProperty="id">
+		insert into wechat_tb(wechatNo) values(#{wechatNo})
+	</insert>
+	
+	<update id="updateWechatNo" parameterType="com.newexcavator.domain.Wechat_tb">
+		update wechat_tb set wechatNo=#{wechatNo} where id=#{id}
+	</update>
+
+	<select id="queryWechatNo" resultType="com.newexcavator.domain.Wechat_tb">
+		SELECT * FROM wechat_tb LIMIT 1
+	</select>
+</mapper>

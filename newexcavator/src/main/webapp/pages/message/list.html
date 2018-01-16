@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script th:src="@{/assets/js/thickbox.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/thickbox.css}" />
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("a.replyTxt").click(function() {
+		var msgid = $(this).attr("id");
+		var openid= $(this).attr("openid");
+		var replied= $(this).attr("replied");
+		
+		var path=[[@{/admin/reply/text/}]];
+		path += msgid;
+		path += "/";
+		path += openid;
+		path += "/";
+		path += replied;
+		
+		
+		/*<![CDATA[*/
+		TB_show('消息回复', path + '?KeepThis=true&TB_iframe=true&height=500&width=600&modal=true', false);
+		/*]]>*/
+	});
+	
+	$("a.replyImg").click(function() {
+		var msgid = $(this).attr("id");
+		var openid= $(this).attr("openid");
+		var replied= $(this).attr("replied");
+		
+		var path=[[@{/admin/reply/image/}]];
+		path += msgid;
+		path += "/";
+		path += openid;
+		path += "/";
+		path += replied;
+		
+		/*<![CDATA[*/
+		TB_show('消息回复', path + '?KeepThis=true&TB_iframe=true&height=500&width=600&modal=true', false);
+		/*]]>*/
+	});
+});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>信息发布管理 </li>
+	    	<li>查询消息：</li>
+	    </ul>
+    </div>
+    <div class="rightinfo">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <div style="width: 560px;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="180">内容</th>
+			        <th width="100">是否回复</th>
+			        <th width="200">操作</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:each="m,status:${msgList}">
+			        <td th:text="${status.count}">编号</td>
+			        <td>
+			        	<span th:if="${m.msg_type=='text'}" th:text="${m.content}"></span>
+			        	<img th:if="${m.msg_type=='image'}" alt="图片消息" th:src="@{'/img/' + ${m.pic_url}}" />
+			        </td>
+			        <td th:text="${m.replied == 1 ? '已回复' : '未回复'}"></td>
+			        <td>
+			        	<a href="#" th:id="${m.id}" th:attr="openid=${m.open_id},replied=${m.replied}" class="tablelink replyTxt">回复文字消息</a>
+			        	<a href="#" th:id="${m.id}" th:attr="openid=${m.open_id},replied=${m.replied}" class="tablelink replyImg">回复图片消息</a>
+			        </td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+	    	<div class="paginate" th:if="${msgList!=null and not #lists.isEmpty(msgList)}" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+	        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+	        	
+	            <a th:href="@{/admin/list_message(page.offset=0)}" class="paginate-first">首页</a>
+	            <a th:href="@{/admin/list_message(page.offset=${ps.getPrevPage()})}" class="paginate-previous">上一页</a>
+	            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+	            <a th:href="@{/admin/list_message(page.offset=${ps.getNextPage()})}" class="paginate-next">下一页</a>
+	            <a th:href="@{/admin/list_message(page.offset=${ps.getLastPage()})}" class="paginate-last">末页</a>
+	        </div>
+    	</div>
+    </div>
+</body>
+<script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+</script>
+</html>

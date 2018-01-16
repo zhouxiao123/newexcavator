@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+        <header class="header">
+        	<a th:href="@{/mobile/index}" class="fl ml10"><img th:src="@{/assets/images/home.png}" width="20" /></a>
+            <h4>找回密码</h4>
+            <!-- <a href="#" class="fr mr10"><img src="../assets/images/header_r.png" width="20" /></a> -->
+        </header>        
+        <section>
+            <div class="main">
+            	<img class="logoImg" width="120" th:src="@{/assets/images/wyqLogo.png}" />
+	<form class="loginForm" method="post" id="saveForm2" th:action="@{/mobile/changePass}" >
+        <ul class="tc">
+        	<li>
+        		<input type="tel" placeholder="手机号码" name="username" id="username" th:value="${username!=null?username:''}"/>
+        	</li>
+        	<li class="getCheck">
+        		<div class="getTime">(<span id="second2">60</span>秒后重新获取)</div>
+        		<input class="forgetBut mr20" id="code2" value="获取验证码" type="button" />
+        	</li>
+        	<div class="clr"></div>
+        	<li>
+        		<input class="forget3" type="text" placeholder="请填写验证码" name="valicode" />
+        	</li>
+        	<li>
+        		<input class="forget2" type="password" placeholder="新密码" name="password" id="password" />
+        	</li>
+        	<li>
+        		<input class="forget2" type="password" placeholder="确认新密码" name="repassword" id="repassword" />
+        	</li>
+        	<li>
+        		<label style="color:red">如无法找回密码请联系QQ:968276</label>
+        	</li>
+        	<li>  	
+		        <input id="forgetSub" type="button" value="确认" />
+        	</li>
+        </ul>
+    </form>
+</div>
+        </section>
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+           if([[${msg}]]!=null){
+        	   alert([[${msg}]]);
+           }
+            //设定倒数秒数  
+	 var t = 10;  
+	//显示倒数秒数  
+	function showTime(code,id){  
+	    t -= 1;  
+	    document.getElementById(id).innerHTML= t;  
+	    if(t==0){ 
+	    	$("#"+code).removeAttr("disabled");
+	    	document.getElementById(id).innerHTML= "60";
+	    	return;
+	    }  
+	    //每秒执行一次,showTime()  
+	    setTimeout("showTime(\'"+code+"\',\'"+id+"\')",1000);  
+	}   
+	$(document).ready(function(){
+
+	
+	$("#code2").click(function(){
+		var usern = $.trim($("#username").val());
+		if(usern.length==0){
+			alert("请先输入手机号码");
+			return;
+		}
+		var ex = true;
+		$.ajax({
+			url : [[@{/mobile/getvalidate}]],
+			data : {
+				username:usern,
+				type:"mod"
+			},
+			dataType: 'json',
+			type: 'post',
+			async: false,
+			success : function(data) {
+				if(data != "ok"){
+					alert(data);
+					ex=false;
+				} else {
+					alert("发送成功");
+				}
+			}
+		});
+		if(!ex){
+			//alert("该手机号已经注册！");
+			return;
+		}
+		t=60;
+		$(this).attr("disabled","disabled");
+		//执行showTime()  
+		showTime("code2","second2");  
+		
+		//测试使用-------------------------------
+		/* $.ajax({
+			url : [[@{/getval}]],
+			data : {
+				username:usern
+			},
+			dataType: 'json',
+			type: 'post',
+			async: false,
+			success : function(data, textStatus, jqXHR) {
+				$("input[name=valicode2]").val(eval(data))
+			} 
+		});*/
+		//测试使用-------------------------------
+	}); 	
+	
+	$("#forgetSub").click(function(){
+		var usern = $.trim($("#username").val());
+		if(usern.length==0){
+			alert("请先输入手机号码");
+			return;
+		}
+		var vali = $("input[name=valicode]").val();
+		if(vali.length==0){
+			alert("请先输入验证码");
+			return;
+		}
+		var password = $.trim($("#password").val());
+		var repassword = $.trim($("#repassword").val());
+		
+		if (password.length == 0 && repassword.length == 0) {
+			alert("密码不能为空！");
+			return;
+		} else if ((password.length != 0 || repassword.length != 0) && password != repassword) {
+			alert("两次密码不一致！");
+			return;
+		}
+		
+		$("#saveForm2").submit();
+		
+	});
+});
+/*]]>*/
+</script> 
+</html>

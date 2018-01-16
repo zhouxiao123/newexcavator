@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<body style="min-width: 100%">
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+		<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/reply/save}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li th:if="${msgType=='text'}">
+		    	<label>回复内容:</label>
+		    	<textarea rows="10" cols="15" name="content" class="textinput" th:text="${reply != null ? reply.content : ''}"></textarea>
+		    </li>
+		    <li th:if="${msgType=='image'}">
+		    	<label>回复图片:</label>
+		    	<input type="file" class="thumb" name="file" onchange="checkImgFile(this)" id="file" />
+		    </li>
+		    <li>
+		    	<label>&nbsp;</label>
+				<input type="hidden" name="msgType" id="msgType" th:value="${msgType}" />
+				<input type="hidden" name="msgid" id="msgid" th:value="${msgid}" />
+				<input type="hidden" name="openid" id="openid" th:value="${openid}" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="确认回复"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+    <div class="rightinfo">
+	    <div style="width: 560px; height: 300px; overflow-y:auto;">
+	    	<table class="tablelist">
+	    		<thead>
+		    	<tr>
+			        <th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+			        <th width="280">内容</th>
+			        <th width="200">回复时间</th>
+		        </tr>
+	        	</thead>
+		        <tbody>
+		        <tr th:if="${replies != null}" th:each="m,status:${replies}">
+			        <td th:text="${status.count}">编号</td>
+			        <td>
+			        	<span th:if="${m.msg_type=='text'}" th:text="${m.content}"></span>
+			        	<img th:if="${m.msg_type=='image'}" width="50" alt="图片消息" th:src="@{'/img/' + ${m.path}}" />
+			        </td>
+			        <td th:text="${beans.dateFormatter.formatDateToStr(m.create_time)}"></td>
+		        </tr> 
+		        </tbody>
+	    	</table>
+    	</div>
+    </div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		var msgType = $("#msgType").val();
+		if (msgType == 'text') {
+			var content = $.trim($("textarea[name=content]").val());
+			if (content.length == 0) {
+				alert("回复内容长度不能为空!");
+				return;
+			}
+		} else {
+			var file = $.trim($("input[name=file]").val());
+			if (file.length == 0) {
+				alert("回复图片不能为空!");
+				return;
+			}
+		}
+		
+		$("#saveform").submit();
+	});
+});
+</script>
+</html>

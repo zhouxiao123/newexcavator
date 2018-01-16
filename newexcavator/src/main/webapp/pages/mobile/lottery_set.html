@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<meta charset="UTF-8" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/js_css/cssstyle.css}" />
+<script th:src="@{/assets/js/swipe.js}"></script>
+<script th:src="@{/assets/js/zepto.js}"></script>
+<script>
+	$(function() {
+		var elem = document.getElementById('slider');
+		window.mySwipe = Swipe(elem, {
+			auto : 3000,
+			callback : function(index, element) {
+				$('#slider_on li').removeClass('on')
+				$('#slider_on li').eq(index).addClass('on');
+			}
+		});
+		
+		$("#del").click(function(){
+			if(confirm("确认清空用户?")){
+				window.location.href='lottery_clear';
+			}
+		});
+	});
+</script>
+<title>大至工程机械 </title>
+
+<body style="font-size: 14px;">
+	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	<ul>
+		<li style="text-align:center;margin:10px 0 10px 0">
+			<label style="font-size:34px">抽奖系统操作页面</label>
+		</li>
+		<li style="text-align:center;margin-top:50px">
+			<input type="button" value="清除数据" id="del" class="btn"/>
+		</li>
+		<li style="text-align:center;margin-top:50px">
+			<input type="button" value="导出数据" onclick="window.location.href='lottery_exp'" class="btn"/>
+		</li>
+	</ul>
+	<div class="copyright" style="">
+					<font>&copy;2014 大至工程机械 </font>
+	</div>
+</body>
+</html>

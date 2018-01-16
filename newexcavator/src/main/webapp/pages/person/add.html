@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+    	<header class="header">
+        	<a th:href="@{/mobile/per_list}" class="fl ml10"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>招聘</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+            <!-- <input value="发布" id="public" class="fr mr10" type="button" form="addForm" style="font-size:12px;" /> -->
+        </header>
+        <section>
+            <div class="main">
+            	<form class="addForm" id="addForm" method="post" th:action="@{/mobile/per_save}">
+            		<div class="formLi">
+            			<ul>
+            				<li>
+            					<label>机器类型：</label>
+	            				<select name="excavator_type">
+	            					<option th:value="${e.id}" th:each="e:${et}" th:text="${e.name}">请选择机型</option>
+	            				</select>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>职位：</label>
+	            				<input type="text"  name="job" placeholder="需要的职位"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>工资：</label>
+	            				<input style="width:160px" type="text" name="salary" placeholder="工资" />
+	            				<label style="width:40px">元/月</label>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>地址：</label>
+	            				<select id="select_p" name="province">
+                                   	<option th:each="c:${cs}" th:text="${c.name}" th:value="${c.id}" th:selected="${c.id==23}"></option>
+                                </select>
+                                <div class="clr"></div>
+            				</li>
+            				<li>
+                                	<label>&nbsp;</label>
+                                    <select id="select_c" name="city">
+                                    </select>
+                                    <div class="clr"></div>
+                            </li>
+                            <li>
+            					<label>联系人：</label>
+	            				<input type="text" th:value="${su.name}" name="link_name" placeholder="联系人姓名"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>电话号码：</label>
+	            				<input type="tel" th:value="${su.cell_phone}" name="phone" placeholder="手机号码"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>详细描述：</label>
+	            				<textarea name="description" placeholder="简单的描述下你的招聘要求,500字以内"></textarea>
+	            				<div class="clr"></div>
+            				</li>
+            			</ul>
+            			<input class="nextBut" id="public" type="button" value="保存发布" />
+            		</div>
+                </form>
+            </div>
+        </section>
+        
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+        $(document).ready(function(){
+        	$("select[name=excavator_type]").trigger("change");
+        	
+        	$(".header h4").css("margin-left",($(".header").width()-102)/2+"px");
+    			$.ajax({
+    	   			url : [[@{/mobile/getCity}]],
+    	   			data : {
+    	   				cid : $("#select_p").val()
+    	   			},
+    	   			dataType: 'json',
+    	   			type: 'get',
+    	   			async: false,
+    	   			success : function(data, textStatus, jqXHR) {
+    	   				$("#select_c").empty();
+    	   				var content='';
+    	   				for(var i=0;i<data.length;i++){
+    	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+    	   				}
+    	   				$("#select_c").append(content);
+    	   			}
+    	   		}); 
+        	
+        	
+        	
+        	//$('.ulLiMain3').slideUp();
+        	$('.formLi').eq(0).slideDown();
+ 
+        	
+        	var checkSubmitFlg = false;
+        	$("#public").click(function(){
+        		if($("select[name=excavator_type]").val()==0){
+					alert("请选择机器类型");
+					return;
+				}
+        		
+        		var job = $('input[name=job]').val();
+        		if(job.length==0 || job.length > 50){
+        			alert('职位不可为空，或大于50字');
+        			return;
+        		}
+        		
+        		var price = $('input[name=salary]').val();
+        		if(price.length==0){
+        			alert('请填写工资');
+        			return;
+        		}
+        		var priceExp = /^\d+\.?\d{0,2}$/;
+				if(!priceExp.test(price)){
+					alert("工资必须为数字且最多保留两位小数！");
+					return;
+				}
+        		
+        		
+        		var link_name = $('input[name=link_name]').val();
+        		if(link_name.length==0){
+        			alert('请填写联系人姓名');
+        			return;
+        		}
+        		var phone = $('input[name=phone]').val();
+        		if(phone.length==0){
+        			alert('请输入电话号码');
+        			return;
+        		}
+        		
+        		patrn = /^[0-9]{8,11}$/;  
+        	    if(!patrn.exec(phone)) {  
+        	    	alert("请输入正确的电话号码");
+        			return;
+        	    }  
+        		
+				
+				var description = $('textarea[name=description]').val();
+				if(description.length > 0 && description.length >500){
+					alert('描述不可超过500字');
+					return;
+				}
+        	    
+        	    
+        		$(this).attr("disabled","disabled");
+        		
+        		if(checkSubmitFlg)return false;
+        		checkSubmitFlg=true;
+        		$("#addForm").submit();
+        	});
+        });
+        
+        
+        
+		$('.liTxt').each(function(index) {
+            $(this).click(function(){
+				if($(this).next().is(":hidden")){
+					$(this).find("i").addClass("liTxtiA");
+					$(this).next().slideDown();	
+				}
+				else{
+					$(this).next().slideUp();
+					$(this).find("i").removeClass("liTxtiA");
+				}
+			})
+        });
+		
+		
+		
+		
+		$("#select_p").change(function(){
+			$.ajax({
+	   			url : [[@{/mobile/getCity}]],
+	   			data : {
+	   				cid : $("#select_p").val()
+	   			},
+	   			dataType: 'json',
+	   			type: 'get',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				$("#select_c").empty();
+	   				var content='';
+	   				for(var i=0;i<data.length;i++){
+	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+	   				}
+	   				$("#select_c").append(content);
+	   			}
+	   		}); 
+		});
+		
+		/* $('.ulLi2 li').each(function(index) {
+            $(this).click(function(){
+				var liTxt = $(this).text();	
+				$(this).parent().prev().find('span').text(liTxt);
+				$(this).parent().slideUp();
+			})
+        }); */
+		
+		
+		/*]]>*/
+	</script>
+</body>
+</html>

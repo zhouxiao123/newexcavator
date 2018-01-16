@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript">
+$(function(){	
+	//顶部导航切换
+	$(".nav li a").click(function(){
+		$(".nav li a.selected").removeClass("selected")
+		$(this).addClass("selected");
+	})	
+})	
+</script>
+<body th:style="'background:url(' + @{/assets/images/topbg.gif} + ') repeat-x;'">
+
+    <div class="topleft">
+    <a href="main.html" target="_parent"><img th:src="@{/assets/images/logo.png}" title="系统首页" /></a>
+    </div>
+            
+    <div class="topright">    
+	    <ul>
+	    	<li><a th:text="${sec.principal.name}">登录用户名</a></li>
+	    	<li><a href="javascript:void(0);" th:onclick="'javascript:exit(\'' + @{/logout} + '\');'">退出</a></li>
+	    </ul>
+    </div>
+</body>
+</html>

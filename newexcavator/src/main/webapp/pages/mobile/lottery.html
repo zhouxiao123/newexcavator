@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>抽奖</title>
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<link rel="stylesheet" th:href="@{/assets/css/lotterystyle.css}" />
+</head>
+
+<body>
+	<div class="webPage">
+    	<div class="choujiang">
+    		<input id="result" type="text" readonly="readonly" />
+        	<div class="but">
+            	<img id="star" onclick="setTimer()" alt="开始" src="../assets/images/star.png" />
+                <img id="stop" onclick="clearTimer()" alt="停止" src="../assets/images/stop.png" />
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+$(document).ready(function() {
+	 //chang=false;
+	
+});       
+	var randnum;
+	var cellnum =1;
+	 var mobile = new Array();
+		//var i=0;
+		var lotteryList=[[${lotteryList}]];
+		var sz = [[${lotteryList.size()}]];
+		//mobile = lotteryList;
+		//var lotteryList = "${requestScope.lotteryList}";
+		//alert(lotteryList[0].phone)
+		//alert([[${lotteryList.size()}]])
+		  for(var i=0;i<sz; i++ ){
+			//alert(lotteryList[i].username)
+			mobile[i] = lotteryList[i].username+":"+lotteryList[i].phone;
+		} 
+		//alert(sz)
+	/* mobile[0]="陈璐:13020000100";
+	mobile[1]="Aaron:13020000101";
+	mobile[2]="Silence:13020000102";
+	mobile[3]="Helen:13020000103";
+	mobile[4]="Eric:13020000104"; */
+	var num = mobile.length - 1;
+	var time=0;
+	function GetRnd(m,n){
+		randnum = parseInt(Math.random()*(n-m+1));
+		return randnum;	
+	}
+	function getRandNum(){
+		var y = GetRnd(0,num);
+		document.getElementById("result").value = mobile[y];	
+	}
+	function setTimer(){
+		if(time!=0){
+			clearInterval(time);
+		}
+			time = setInterval("getRandNum()",5);
+
+	}
+	function clearTimer(){
+		
+			clearInterval(time);
+			noDupNum();
+			$.ajax({
+	   			url : [[@{/mobile/lottery_save}]],
+	   			data : {
+	   				phone:document.getElementById("result").value
+	   			},
+	   			dataType: 'json',
+	   			type: 'post',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				alert(textStatus)
+	   			}
+	   		});
+			
+	}
+	function noDupNum(){
+		mobile.removeEleAt(randnum);
+		var o = 0;
+		for(var p=0;p<mobile.length;p++){
+			if(typeof mobile[p]!='undefine'){
+				mobile[o] = mobile[p]	
+			}
+			o++;	
+		}
+		num = mobile.length-1;
+	}
+	Array.prototype.removeEleAt = function(dx){
+		this.splice(dx,1);
+	}
+	
+	$("#star").hover(function(){
+		$(this).attr("src","../assets/images/star_hover.png");	
+	},
+		function(){
+		$(this).attr("src","../assets/images/star.png");	
+	})
+	$("#stop").hover(function(){
+		$(this).attr("src","../assets/images/stop_hover.png");	
+	},
+		function(){
+		$(this).attr("src","../assets/images/stop.png");	
+	})
+	/*]]>*/
+</script>
+</html>

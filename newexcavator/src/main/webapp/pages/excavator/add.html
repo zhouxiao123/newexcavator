@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>挖掘机</title>
+
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+<script th:src="@{/assets/js/plupload.full.min.js}"></script>
+</head>
+
+<body style="background:#f3f3f3;">
+	<div class="webPage">
+    	<header class="header">
+        	<a th:href="@{/mobile/index}" class="fl ml10"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>挖友圈</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+            <!-- <input value="发布" id="public" class="fr mr10" type="button" form="addForm" style="font-size:12px;" /> -->
+        </header>
+        <section>
+            <div class="main">
+            	<form class="addForm" id="addForm" method="post" th:action="@{/mobile/save}">
+            		<div class="formLi">
+            			<ul>
+            				<li>
+            					<label>车辆信息：</label>
+	            				<select name="excavator_type">
+	            					<option th:value="${e.id}" th:each="e:${et}" th:text="${e.name}">请选择机型</option>
+	            				</select>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>&nbsp;</label>
+	            				<select name="excavator_brand">
+	            					<option>请选择品牌</option>
+	            				</select>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>&nbsp;</label>
+	            				<select name="excavator_version">
+	            					<option>请选择型号</option>
+	            				</select>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>使用时间：</label>
+	            				<input style="width:170px" type="number" name="used_time" placeholder="单位：小时" />
+	            				<label style="width:30px">小时</label>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>出售价格：</label>
+	            				<input style="width:170px" type="text" name="price" placeholder="单位：万元" />
+	            				<label style="width:30px">万元</label>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<!-- <label>&nbsp;</label>
+	            				<input type="radio" name="change_price" value="1"/>
+	            				<span>可议价</span>
+	            				<input type="radio" name="change_price" value="0" checked="checked"/>
+	            				<span>不可议价</span>
+	            				<div class="clr"></div> -->
+	            				<!-- 隐藏可议价,设置默认值 -->
+	            				<input name="change_price" value="0" type="hidden"/>
+            				</li>
+            				<li>
+            					<label>停放地址：</label>
+	            				<select id="select_p" name="province">
+                                   	<option th:each="c:${cs}" th:text="${c.name}" th:value="${c.id}" th:selected="${c.id==23}"></option>
+                                </select>
+                                <div class="clr"></div>
+            				</li>
+            				<li>
+                                	<label>&nbsp;</label>
+                                    <select id="select_c" name="city">
+                                    </select>
+                                    <div class="clr"></div>
+                            </li>
+                            
+            			</ul>
+            			<input class="nextBut" id="next1" type="button" value="下一步" />
+            		</div>
+            		<!-- <div class="formLi">
+            			<ul>
+            				
+            				
+            				
+            				
+            			</ul>
+            			
+            				<input class="previewBut" type="button" style=" width:70px; float:left; margin:0 10px 20px 110px;" value="上一步" />
+            				<input class="nextBut" type="button" style=" width:70px; float:left; margin:0 0 20px 0;" value="下一步" />
+            				<div class="clr"></div>
+            		</div> -->
+            		<div class="formLi">
+            			<ul>
+            			<li>
+            					<label>合格证</label>
+            					<input type="radio" name="qualified" value="1"/>
+            					<span>有</span>
+            					<input type="radio" name="qualified" value="0" checked="checked"/>
+            					<span>无</span>
+            					<div class="clr"></div>
+            				</li>
+            				<li>
+            					<!-- <label>生产日期：</label>
+	            				<input type="date" style=" width:180px;" name="production_date"/>
+	            				<div class="clr"></div> -->
+	            				<!-- 隐藏生产日期,设置默认值 -->
+	            				<input name="production_date" value="1970-1-1" type="hidden"/>
+            				</li>
+            				<li>
+            					<label>购买日期：</label>
+	            				<input type="date" style=" width:180px;" name="buy_date"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<!-- <label>是否进口：</label>
+	            				<select name="imported">
+                                    <option value="0">国产机</option>
+                                   	<option value="1">进口机</option>
+                                    <option value="2">其他</option>
+                                </select>
+                                <div class="clr"></div> -->
+                                <!-- 隐藏是否进口,设置默认值 -->
+	            				<input name="imported" value="0" type="hidden"/>
+            				</li>
+            				<li>
+            					<label>设备序列号：</label>
+	            				<input type="text" name="code_no" placeholder="可以为空"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>发票</label>
+            					<input type="radio" name="receipt" value="1"/>
+            					<span>有</span>
+            					<input type="radio" name="receipt" value="0" checked="checked"/>
+            					<span>无</span>
+            					<div class="clr"></div>
+            				</li>
+            				<li>
+            					<!-- <label>有无改装：</label>
+	            				<select name="modified">
+                                    <option value="0">部分做过漆</option>
+                                    <option value="1">全部做过漆</option>
+                                    <option value="2">原车漆</option>
+                                </select>
+                                <div class="clr"></div> -->
+                                <!-- 隐藏有无改装,设置默认值 -->
+	            				<input name="modified" value="0" type="hidden"/>
+            				</li>
+            				<li>
+            					<label>原车车况：</label>
+	            				<select name="old_level">
+                                    <option value="0">较好</option>
+                                    <option value="1">类似新车</option>
+                                    <option value="2">一般</option>
+                                    <option value="3">良好</option>
+                                </select>
+                                <div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>原车用途：</label>
+	            				<select name="use">
+                                    <option value="0">自用设备</option>
+                                    <option value="1">租赁设备</option>
+                                    <option value="2">用途不确定</option>
+                                    <option value="3">厂家测试机</option>
+                                </select>
+                                <div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>当前状态：</label>
+	            				<select name="current_status">
+                                    <option value="0">停用待售</option>
+                                    <option value="1">正在施工</option>
+                                    <option value="2">不清楚</option>
+                                </select>
+                                <div class="clr"></div>
+            				</li>
+            				<li>
+            					<!-- <label>有无大修</label>
+            					<input type="radio" name="fixed" value="1"/>
+            					<span>有</span>
+            					<input type="radio" name="fixed" value="0" checked="checked"/>
+            					<span>无</span>
+            					<div class="clr"></div> -->
+            					<!-- 隐藏有无大修,设置默认值 -->
+	            				<input name="fixed" value="0" type="hidden"/>
+            				</li>
+            				<li>
+            					<label>产品描述：</label>
+	            				<textarea name="description" placeholder="简单的描述下你的机械,500字以内"></textarea>
+	            				<div class="clr"></div>
+            				</li>
+            			</ul>
+            			<input class="previewBut" type="button" style=" width:70px; float:left; margin:0 10px 20px 110px;" value="上一步" />
+            			<input class="nextBut" type="button" style=" width:70px; float:left; margin:0 0 20px 0;" value="下一步" />
+            			<div class="clr"></div>
+            			</div>
+            		
+            		<div class="formLi">
+            			<ul>
+            				<li>
+            					<label>联系人：</label>
+	            				<input type="text" th:value="${su.name}" name="link_name" placeholder="联系人姓名"/>
+	            				<div class="clr"></div>
+            				</li>
+            				<li>
+            					<label>电话号码：</label>
+	            				<input type="tel" th:value="${su.cell_phone}" name="phone" placeholder="手机号码"/>
+	            				<div class="clr"></div>
+            				</li>
+            			</ul>
+            			<div class="liTxt">
+                        	<input type="hidden" name="first_num"/>
+                            <span>选择照片</span>
+                            <i></i>
+                            <div class="clr"></div>
+                        </div>
+                        <ul class="ulLiMain3">
+                            <li style="padding:0 20px;">
+                            	<div class="ml10">仅支持JPG/JPEG格式文件</div>
+                            	<div class="jdtBox">
+                            		<h4>上传进度：</h4>
+	                            	<div class="jdt">
+	                            		<div class="innerjdt"></div>
+	                            	</div>
+	                            	<div class="clr"></div>
+                            	</div>
+		    					<label>图片上传:</label>
+		    					<div class="mb10 mt15">
+									<div id="filelist" class="filelist">
+									您的浏览器不支持Flash, Silverlight或者HTML5，不能够上传.
+									</div>
+								</div>
+								<div id="container" class="container">
+									<div class="fileBox" id="pickfiles">
+					    				<input type="button"  class="shangchuanModi" value="选择文件" />
+					    				<div class="pickfileDiv">+</div>
+					    			</div>
+								</div>
+								<br />
+								<div class="clr"></div>
+		    				</li>
+                        </ul>
+                        <input class="previewBut" type="button" style=" width:70px; float:left; margin:0 10px 20px 110px;" value="上一步" />
+            			<input  type="button" style=" width:70px; float:left; margin:0 0 20px 0;" id="public" value="发布" />
+            			<input  type="hidden" name="token" th:value="${token}" />
+            			<div class="clr"></div>
+            		<div>
+            		</div>
+            		</div>
+            				
+                            
+            		
+            		
+            		
+            		
+            	
+                	<!-- <ul>
+                    	<li>
+                        	<div class="liTxt">
+                            	<span>请选择机型</span>
+                                <i></i>
+                                <div class="clr"></div>
+                            </div>
+                            <ul class="ulLi2 tc" id="ex_type">
+                            	<li th:id="${'type_'+e.id}" th:each="e:${et}" th:text="${e.name}"></li>
+                            </ul>
+                            <input type="hidden" name="excavator_type"/>
+                        </li>
+                        <li>
+                        	<div class="liTxt">
+                            	<span>请选择品牌</span>
+                                <i></i>
+                                <div class="clr"></div>
+                            </div>
+                            <ul class="ulLi2 tc ulLi2Li" id="ex_brand">
+                            		
+                            </ul>
+                            <input type="hidden" name="excavator_brand"/>
+                        </li>
+                        <li>
+                        	<div class="liTxt">
+                            	<span>请选择型号</span>
+                                <i></i>
+                                <div class="clr"></div>
+                            </div>
+                            <ul class="ulLi2 tc" id="ex_version">
+                            	
+                            </ul>
+                            <input type="hidden" name="excavator_version"/>
+                        </li>
+                        <li>
+                        	<div class="liTxt">
+                            	<h4>其他信息</h4>
+                                <i></i>
+                                <div class="clr"></div>
+                            </div>
+                            <ul class="ulLiMain2" style="background:#fff;">
+                                <li>
+                                	<label>使用时间：</label>
+                                    <input type="number" name="used_time" placeholder="单位：小时" />
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>产品报价：</label>
+                                    <input type="text" name="price" placeholder="单位：万元" />
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>停放地址：</label>
+                                    <select id="select_p" name="province">
+                                    	<option th:each="c:${cs}" th:text="${c.name}" th:value="${c.id}"></option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>&nbsp;</label>
+                                    <select id="select_c" name="city">
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>是否进口</label>
+                                    <select name="imported">
+                                        <option value="0">国产机</option>
+                                    	<option value="1">进口机</option>
+                                        <option value="2">其他</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>合格证：</label>
+                                    <select name="qualified">
+                                    	<option value="0">无</option>
+                                    	<option value="1">有</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>发票：</label>
+                                    <select name="receipt">
+                                    	<option value="0">无</option>
+                                    	<option value="1">有</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>生产日期：</label>
+                                    <input type="date" name="production_date"/>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>购买日期：</label>
+                                    <input type="date" name="buy_date"/>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>设备序列号：</label>
+                                    <input type="text" name="code_no"/>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>有无改装：</label>
+                                    <select name="modified">
+                                    	<option value="0">部分做过漆</option>
+                                    	<option value="1">全部做过漆</option>
+                                    	<option value="2">原车漆</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>有无大修：</label>
+                                    <select name="fixed">
+                                    	<option value="0">无</option>
+                                    	<option value="1">有</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>原车车况：</label>
+                                    <select name="old_level">
+                                    	<option value="0">较好</option>
+                                    	<option value="1">类似新车</option>
+                                    	<option value="2">一般</option>
+                                    	<option value="3">良好</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>原车用途：</label>
+                                    <select name="use">
+                                    	<option value="0">自用设备</option>
+                                    	<option value="1">租赁设备</option>
+                                    	<option value="2">用途不确定</option>
+                                    	<option value="3">厂家测试机</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>当前状态：</label>
+                                    <select name="current_status">
+                                    	<option value="0">停用待售</option>
+                                    	<option value="1">正在施工</option>
+                                    	<option value="2">不清楚</option>
+                                    </select>
+                                    <div class="clr"></div>
+                                </li>
+                                <li style="height:100px;">
+                                	<label>产品描述： </label>
+                                    <textarea name="description"></textarea>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>联系人：</label>
+                                    <input type="text" name="link_name"/>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>手机号：</label>
+                                    <input type="tel" name="phone"/>
+                                    <div class="clr"></div>
+                                </li>
+                                <li>
+                                	<label>QQ号：</label>
+                                    <input type="text" name="qq"/>
+                                    <div class="clr"></div>
+                                </li>
+                            </ul>
+                        </li> 
+                
+                    </ul>-->
+                    
+                    
+                </form>
+            </div>
+        </section>
+        
+        <footer>
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+        $(document).ready(function(){
+        	$("select[name=excavator_type]").trigger("change");
+        	
+        	$(".header h4").css("margin-left",($(".header").width()-102)/2+"px");
+    			$.ajax({
+    	   			url : [[@{/mobile/getCity}]],
+    	   			data : {
+    	   				cid : $("#select_p").val()
+    	   			},
+    	   			dataType: 'json',
+    	   			type: 'get',
+    	   			async: false,
+    	   			success : function(data, textStatus, jqXHR) {
+    	   				$("#select_c").empty();
+    	   				var content='';
+    	   				for(var i=0;i<data.length;i++){
+    	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+    	   				}
+    	   				$("#select_c").append(content);
+    	   			}
+    	   		}); 
+        	
+        	
+        	
+        	//$('.ulLiMain3').slideUp();
+        	$('.formLi').eq(0).slideDown();
+        	$('.nextBut').each(function(index){
+        		$(this).click(function(){
+        			switch(index){
+        			case 0 : {
+        				if($("select[name=excavator_type]").val()==0){
+        					alert("请选择机器类型");
+        					return;
+        				}
+                		var used_time = $('input[name=used_time]').val();
+                		if(used_time.length==0){
+                			alert('请正确填写使用时间');
+                			return;
+                		}
+                		var price = $('input[name=price]').val();
+                		if(price.length==0){
+                			alert('请填写产品报价');
+                			return;
+                		}
+                		var priceExp = /^\d+\.?\d{0,2}$/;
+        				if(!priceExp.test(price)){
+        					alert("价格必须为数字且最多保留两位小数！");
+        					return;
+        				}
+        				
+        				break;
+        				
+        			}
+        			case 1:{
+        				var buy_date = $('input[name=buy_date]').val();
+        				var dateExp =/[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}/;
+        				
+        				if(buy_date.length==0){
+        					alert('请选择购买日期');
+        					return;
+        					
+        				}
+        				if(!dateExp.test(buy_date)){
+        					alert("日期格式错误,例子:2015-01-30");
+        					return;
+        				}
+        				var description = $('textarea[name=description]').val();
+        				if(description.length > 0 && description.length >500){
+        					alert('描述不可超过500字');
+        					return;
+        				}
+        				if(!is_init){
+        					uploader.init();
+        					is_init=true;
+        				}
+        				break
+        			}
+        			}
+					$(this).parent().next().slideDown();
+					$(this).parent().slideUp();
+        		})
+        	})
+        	
+        	$(".previewBut").each(function(index){
+        		$(this).click(function(){
+        			$(this).parent().prev().slideDown();
+					$(this).parent().slideUp();
+        		});
+        	});
+        	
+        	var checkSubmitFlg = false;
+        	$("#public").click(function(){
+        		var link_name = $('input[name=link_name]').val();
+        		if(link_name.length==0){
+        			alert('请填写联系人姓名');
+        			return;
+        		}
+        		var phone = $('input[name=phone]').val();
+        		if(phone.length==0){
+        			alert('请输入电话号码');
+        			return;
+        		}
+        		
+        		patrn = /^[0-9]{8,11}$/;  
+        	    if(!patrn.exec(phone)) {  
+        	    	alert("请输入正确的电话号码");
+        			return;
+        	    }  
+        		
+        		if(!upload_finished){
+        			alert("图片正在上传");
+        			return;
+        		}
+        		if($(".imgBox").size() < 5){
+        			alert("至少上传五张图片");
+        			return;
+        		}
+        		$(this).attr("disabled","disabled");
+        		
+        		if(checkSubmitFlg)return false;
+        		checkSubmitFlg=true;
+        		$("#addForm").submit();
+        	});
+        });
+        
+        
+        
+		$('.liTxt').each(function(index) {
+            $(this).click(function(){
+				if($(this).next().is(":hidden")){
+					$(this).find("i").addClass("liTxtiA");
+					$(this).next().slideDown();	
+				}
+				else{
+					$(this).next().slideUp();
+					$(this).find("i").removeClass("liTxtiA");
+				}
+			})
+        });
+		
+		$("select[name=excavator_type]").change(function(){
+			var liTxt = $(this).text();	
+			var liId = $(this).val();	
+			$(this).find("option[value=0]").remove();
+			//$(this).parent().prev().find('span').text(liTxt);
+			//$(this).parent().parent().find('input[name=excavator_type]').val(liId);
+			$.ajax({
+	   			url : [[@{/mobile/getBrand}]],
+	   			data : {
+	   				id : liId
+	   			},
+	   			dataType: 'json',
+	   			type: 'get',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$("#ex_brand").slideUp();
+	   				$("select[name=excavator_brand]").empty();
+	   				var content='';
+	   				for(var i=0;i<data.length;i++){
+	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+	   				}
+	   				$("select[name=excavator_brand]").append(content);
+	   				//$("#ex_brand").parent().find('span').text('请选择品牌');
+	   				//$("#ex_brand").parent().find('input[name=excavator_brand]').val('');
+	   				$("select[name=excavator_version]").empty();
+	   				//$("#ex_version").parent().find('span').text('请选择型号');
+	   				//$("#ex_version").parent().find('input[name=excavator_version]').val('');
+	   				
+	   				$("select[name=excavator_brand]").trigger("change");
+	   			}
+	   		});
+			//$(this).parent().slideUp();
+		});
+		
+		$("select[name=excavator_brand]").change(function(){
+			var liTxt = $(this).text();	
+			var liId = $(this).val();	
+			//$(this).parent().prev().find('span').text(liTxt);
+			//$(this).parent().parent().find('input[name=excavator_brand]').val(liId);
+			 $.ajax({
+	   			url : [[@{/mobile/getVersion}]],
+	   			data : {
+	   				tid : $("select[name=excavator_type]").val(),
+	   				bid : liId
+	   			},
+	   			dataType: 'json',
+	   			type: 'get',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				//$("#ex_version").slideUp();
+	   				$("select[name=excavator_version]").empty();
+	   				var content='';
+	   				for(var i=0;i<data.length;i++){
+	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+	   				}
+	   				$("select[name=excavator_version]").append(content);
+	   				//$("#ex_version").parent().find('span').text('请选择型号');
+	   				//$("#ex_version").parent().find('input[name=excavator_version]').val('');
+	   				//$("#ex_version").trigger("change");
+	   			}
+	   		}); 
+		});
+		
+		/* $("#ex_version").change(function(){
+			$("#ex_version li").each(function(){
+				$(this).click(function(){
+			var liTxt = $(this).text();	
+			var liId = parseInt($(this).attr("id").split("_")[1]);	
+			$(this).parent().prev().find('span').text(liTxt);
+			$(this).parent().parent().find('input[name=excavator_version]').val(liId);
+			
+			$(this).parent().slideUp();
+				});
+		});
+		}); */
+		
+		
+		$("#select_p").change(function(){
+			$.ajax({
+	   			url : [[@{/mobile/getCity}]],
+	   			data : {
+	   				cid : $("#select_p").val()
+	   			},
+	   			dataType: 'json',
+	   			type: 'get',
+	   			async: false,
+	   			success : function(data, textStatus, jqXHR) {
+	   				$("#select_c").empty();
+	   				var content='';
+	   				for(var i=0;i<data.length;i++){
+	   					content += '<option value="'+data[i].id+'">'+data[i].name+'</option>'
+	   				}
+	   				$("#select_c").append(content);
+	   			}
+	   		}); 
+		});
+		
+		/* $('.ulLi2 li').each(function(index) {
+            $(this).click(function(){
+				var liTxt = $(this).text();	
+				$(this).parent().prev().find('span').text(liTxt);
+				$(this).parent().slideUp();
+			})
+        }); */
+		
+        var is_init = false;
+		var upload_finished = true;
+		var uploader = new plupload.Uploader({
+			runtimes : 'html5,flash,silverlight,html4',
+			browse_button : 'pickfiles', // you can pass in id...
+			container: document.getElementById('container'), // ... or DOM Element itself
+			url : [[@{/admin/uploadFile}]],
+			flash_swf_url : [[@{/assets/js/Moxie.swf}]],
+			silverlight_xap_url : [[@{/assets/js/Moxie.xap}]],
+			chunk_size: '10mb',
+			max_retries: 5,
+			prevent_duplicates: true,
+			unique_names: true,
+			filters : {
+				max_file_size : '10mb',
+				mime_types: [
+					{title : "图片文件", extensions : "jpg,jpeg"}
+				]
+			},
+			
+			init: {
+				PostInit: function() {
+					document.getElementById('filelist').innerHTML = '<div class="clr"></div>';
+					
+					/* document.getElementById('uploadfiles').onclick = function() {
+						var picsize = $("ul.suoluePic li").length;
+						picsize = picsize + uploader.files.length;
+						if(picsize > 5){
+							alert("最多上传5张图片");
+							return false;
+						}
+						$("a.class_fileupload").each(function() {
+							$(this).hide();
+						});
+						$("#filename").val('');
+						uploader.start();
+						$("#pickfiles").prop("disabled", true);
+						$("#uploadfiles").prop("disabled", true);
+						upload_finished = false;
+						return false; 
+					};*/
+				},
+
+				FilesAdded: function(up, files) {
+					
+					 if(up.files.length>10){
+						alert("图片最多上传10张")
+						plupload.each(files, function(file) {
+							var fi = file.id;
+							up.removeFile(file);
+						});
+					} else{
+						upload_finished = false;
+						plupload.each(files, function(file) {
+							//var fi = file.id;
+							//选择缩略图
+							//$('#filelist').append('<div class="imgBox" onclick="setFirst(this)"><input type="hidden" name="filename"/><div class="imgBox2"><img class="mainImg" src="'+window.URL.createObjectURL(file.getNative())+'"/></div><a id="'+file.id+'" href="javascript:void(0);" onclick="delImage(this)"></a><img class="first" src="../assets/images/first.png" width="77" /></div>');
+							//显示默认图片
+							$('#filelist').append('<div class="imgBox" onclick="setFirst(this)"><input type="hidden" name="filename"/><div class="imgBox2"><img class="mainImg" /></div><a id="'+file.id+'" href="javascript:void(0);" onclick="delImage(this)"></a><img class="first" src="/newexcavator/assets/images/first.png" width="77" /></div>');
+							
+						});
+						uploader.start();
+					} 
+				},
+				
+				FileUploaded: function(up, file, response) {
+					/* var name = $("#filename").val();
+					if (name != '') {
+						name += ";";
+					}
+					$("#filename").val(name + response.response); */
+					
+						
+					//document.getElementById('filelist').innerHTML += '<div  style="float:left; margin-bottom:10px;"id="' + fi + '"><div style="float:left;">' + file.name + ' (' + plupload.formatSize(file.size) + ')</div> <a href="#" style="border:1px solid #ccc;" class="class_fileupload fl ml5 mr5" onclick="removeFile(' + fi + ')">删除</a><b class="clr"></b></div>';
+					//$('#filelist').append('<div class="imgBox"><div class="imgBox2"><img class="mainImg" src="/newexcavator/img/temp/'+response.response+'"/></div><a href="javascript:void(0);"></a><img class="first" src="../assets/images/first.png" width="77" /></div>');
+					//var contents='<div><img width="100px" height="100px" src="/newexcavator/img/temp/'+response.response+'"/></div>';
+					//document.getElementById('filelist').append(contents);
+					$("#"+file.id).parent().find("input[name=filename]").val(response.response);
+					//加上图片缩略图
+					var urlString = response.response.split(".");
+					$("#"+file.id).parent().find(".mainImg").attr("src","/newexcavator/img/temp/"+urlString[0]+"_S."+urlString[1]);
+					var img_flag=false;
+					$('.imgBox').each(function(index){
+						if($(this).find('.first').css("display")=="block"){
+							img_flag=true;
+						}
+					});
+					if(!img_flag){
+						//$('.imgBox').find('.first').css("display","none");
+						$(".imgBox:first").find('.first').css("display","block");
+						$("input[name=first_num]").val(0);
+	        		}
+					
+			
+				},
+				
+				UploadComplete: function(up, file) {
+					upload_finished = true;
+					
+				},
+
+				UploadProgress: function(up, file) {
+					//document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = '<span style="display:inline; border:1px solid black;">' + file.percent + "%</span>";
+					$(".innerjdt").css("width",up.total.percent+"%")
+				},
+
+				Error: function(up, err) {
+					var alt = false;
+					switch(err.code) {
+					case -601:
+						alert("仅支持JPG格式图片!");
+						alt = true;
+						break;
+					case -602:
+						alert("不能选择重复的文件!");
+						alt = true;
+						break;
+					case -200:
+						alert("网络异常上传失败，请重新上传!");
+						alt = true;
+						break;
+					}
+					if (!alt) 
+						alert("\nError #" + err.code + ": " + err.message);
+				},
+				FilesRemoved: function(up, files) {
+					plupload.each(files, function(file) {
+						$("div#" + file.id).remove();
+					});
+				}
+			}
+			
+		});
+
+		
+
+		function removeFile(id) {
+			if (confirm("确认删除？")) {
+				uploader.removeFile(id);
+			}
+		}
+		
+		function setFirst(this_){
+			//$('.imgBox').each(function(index){
+				//$(this).click(function(){
+				if($(this_).parent().length>0){	
+					if(confirm("确定将该图设置为首图？")){
+						$('.imgBox').find('.first').css("display","none");
+						$(this_).find('.first').css("display","block");
+						$("input[name=first_num]").val($(this_).index(".imgBox"));
+					//alert($(this_).parent().length)
+					}
+				}
+					//console.log($(this).find('.first').is(":visible"));
+				//})
+			//})
+		}
+		
+		
+		function delImage(this_){
+			//$('.imgBox a').each(function(index){
+				//$(this).click(function(){
+				//console.log(index);
+				
+				if(upload_finished){
+					var this_t=$(this_);
+					if(confirm("是否确认删除？")){
+						$.ajax({
+				   			url : [[@{/admin/uploadFile_del}]],
+				   			data : {
+				   				name : this_t.parent().find("input[name=filename]").val()
+				   			},
+				   			dataType: 'json',
+				   			type: 'post',
+				   			async: false,
+				   			success : function(data, textStatus, jqXHR) {
+				   				uploader.removeFile(this_t.attr("id"));
+								if(this_t.parent().find('.first').css('display')=="block"){
+									this_t.parent().remove();
+									$(".imgBox:first").find(".first").css("display","block");
+									$("input[name=first_num]").val(0);
+								} else{
+								//$("input[name=first_num]").val($(".first:not(:hidden)").index(".first"));
+									this_t.parent().remove();
+								}
+								//alert($(".first:not(:hidden)").index(".first"));
+								$("input[name=first_num]").val($(".first:not(:hidden)").index(".first"));
+				   			}
+				   		});
+						
+					}
+				} else {
+					alert("图片正在上传")
+				}
+			//})
+			//})
+        }
+		
+		/*]]>*/
+	</script>
+</body>
+</html>

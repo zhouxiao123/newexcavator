@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.AdvertisementDao">
+	
+    <select id="queryAdvertisementList" resultType="com.newexcavator.domain.Advertisement">
+		SELECT * FROM advertisement 
+	</select>
+	
+	 <select id="queryAdvertisementById" resultType="com.newexcavator.domain.Advertisement">
+		SELECT * FROM advertisement WHERE id=#{id}
+	</select>
+	
+	<insert id="saveAdvertisement" parameterType="com.newexcavator.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO advertisement(img_path, img_url) VALUES(#{img_path}, #{img_url});
+	</insert>
+	
+	<delete id="delAdvertisementByid">
+		DELETE FROM advertisement WHERE id=#{id}
+	</delete>
+	
+	<select id="queryBottomAdvertisement" resultType="com.newexcavator.domain.Advertisement">
+		SELECT * FROM bottom_adv WHERE flag=#{flag} LIMIT 1
+	</select>
+	
+	<insert id="saveBottomAdvertisement" parameterType="com.newexcavator.domain.Advertisement" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bottom_adv(img_path, img_url,description,flag) VALUES(#{img_path}, #{img_url},#{description},#{flag});
+	</insert>
+	
+	<delete id="updateBottomAdvertisement">
+		UPDATE bottom_adv SET  img_url=#{img_url},description=#{description}
+		<if test="img_path!=null">
+		,img_path=#{img_path}
+		</if>
+		WHERE flag=#{flag}
+	</delete>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.DeployInforDao">
+	<insert id="saveDeployInfor" parameterType="com.newexcavator.domain.DeployInfor" useGeneratedKeys="true" keyProperty="id">
+		insert into deploy_infor(title,thumb_url,description, type,create_time,content,media_thumb_id,issend)
+		values(#{title},#{thumb_url},#{description},#{type},#{create_time},#{content},#{media_thumb_id},#{issend})
+	</insert>
+	
+	<update id="modDeployInfor" parameterType="com.newexcavator.domain.DeployInfor">
+		update deploy_infor set title=#{title},type=#{type},description=#{description},content=#{content},create_time=#{create_time},issend=#{issend}
+		<if test="thumb_url!=null">
+		,thumb_url=#{thumb_url},media_thumb_id=#{media_thumb_id}
+		</if>
+		where id=#{id}
+	</update>
+	
+	<update id="modMediaIdDeployInfor" parameterType="com.newexcavator.domain.DeployInfor">
+		update deploy_infor set media_id=#{media_id} where id=#{id}
+	</update>
+	
+	<delete id="delDeployInfor" parameterType="map">
+		delete from deploy_infor where id in 
+		<foreach collection="ids" open="(" separator="," item="id" close=")">#{id}</foreach>
+	</delete>
+	
+	<select id="queryDeployInforByTypeId" resultType="com.newexcavator.domain.DeployInfor">
+		select * from deploy_infor where type=#{type_id} ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryDeployInforByTypeId_count" resultType="java.lang.Integer">
+		select count(1) from deploy_infor where type=#{type_id}
+	</select>
+	
+	<select id="queryDeployInforById" resultType="com.newexcavator.domain.DeployInfor">
+		select * from deploy_infor where id=#{id}
+	</select>
+	
+	<select id="queryLastestDeployInforByTypeId" resultType="com.newexcavator.domain.DeployInfor">
+		select * from deploy_infor where type=#{type_id} ORDER BY id DESC LIMIT 1
+	</select>
+</mapper>

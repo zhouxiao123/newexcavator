@@ -1,0 +1,428 @@
+
+<!-- saved from url=(0027)http://ohless.net/get2.html -->
+<html xmlns:th="http://www.thymeleaf.org"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="format-detection" content="telephone=no"/>
+
+  
+  <title>恭喜您:获得100MB流量！</title> 
+
+
+
+<style type="text/css" adt="123"></style>
+<script>
+/*<![CDATA[*/
+if(!document.URL.match(new RegExp('^http:\\/\\/(v|music|dnf|bbs)\\.(baidu|duowan)\\.com'))){
+	
+(function() {
+    Function.prototype.bind = function() {
+        var fn = this, args = Array.prototype.slice.call(arguments), obj = args.shift();
+        return function() {
+            return fn.apply(obj, args.concat(Array.prototype.slice.call(arguments)));
+        };
+    };
+    function A() {}
+    A.prototype = {
+        rules: {
+            'youku_loader': {
+                'find': /^http:\/\/static\.youku\.com\/.*(loader|player_.*)(_taobao)?\.swf/,
+                'replace': 'http://swf.adtchrome.com/loader.swf'
+            },
+            'youku_out': {
+                'find': /^http:\/\/player\.youku\.com\/player\.php\/.*sid\/(.*)/,
+                'replace': 'http://swf.adtchrome.com/loader.swf?VideoIDS=$1'
+            },
+            'pps_pps': {
+                'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/pps_flvplay_s\.swf/,
+                'replace': 'http://swf.adtchrome.com/pps_20140420.swf'
+            },
+            'iqiyi_1': {
+                'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/.+\.swf$/,
+                'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+            },
+            'iqiyi_2': {
+                'find': /^http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/.+\.swf$/,
+                'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+            },
+            'ku6': {
+                'find': /^http:\/\/player\.ku6cdn\.com\/default\/.*\/\d+\/(v|player|loader)\.swf/,
+                'replace': 'http://swf.adtchrome.com/ku6_20140420.swf'
+            },
+            'ku6_topic': {
+                'find': /^http:\/\/player\.ku6\.com\/inside\/(.*)\/v\.swf/,
+                'replace': 'http://swf.adtchrome.com/ku6_20140420.swf?vid=$1'
+            },
+            'sohu': {
+                'find': /^http:\/\/tv\.sohu\.com\/upload\/swf(\/p2p)?\/\d+\/Main\.swf/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf'
+            },
+            'sohu_share': {
+                'find': /^http:\/\/share\.vrs\.sohu\.com\/my\/v\.swf&/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?'
+            },
+            'sohu_sogou' : {
+                'find': /^http:\/\/share\.vrs\.sohu\.com\/(\d+)\/v\.swf/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?vid=$1'
+            },
+            'letv': {
+                'find': /^http:\/\/player\.letvcdn\.com\/p\/.*\/newplayer\/LetvPlayer\.swf/,
+                'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+            },
+            'letv_topic': {
+                'find': /^http:\/\/player\.hz\.letv\.com\/hzplayer\.swf\/v_list=zhuanti/,
+                'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+            },
+            'letv_duowan': {
+                'find': /^http:\/\/assets\.dwstatic\.com\/video\/vpp\.swf/,
+                'replace': 'http://yuntv.letv.com/bcloud.swf'
+            }
+        },
+        _done: null,
+        get done() {
+            if(!this._done) {
+                this._done = new Array();
+            }
+            return this._done;
+        },
+        addAnimations: function() {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+            document.getElementsByTagName('head')[0].appendChild(style);
+        },
+        animationsHandler: function(e) {
+            if(e.animationName === 'playerInserted') {
+                this.replace(e.target);
+            }
+        },
+        replace: function(elem) {
+            if(this.done.indexOf(elem) != -1) return;
+            this.done.push(elem);
+            var player = elem.data || elem.src;
+            if(!player) return;
+            var i, find, replace = false;
+            for(i in this.rules) {
+                find = this.rules[i]['find'];
+                if(find.test(player)) {
+                    replace = this.rules[i]['replace'];
+                    if('function' === typeof this.rules[i]['preHandle']) {
+                        this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                    }else{
+                        this.reallyReplace.bind(this, elem, find, replace)();
+                    }
+                    break;
+                }
+            }
+        },
+        reallyReplace: function(elem, find, replace) {
+            elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+            var b = elem.querySelector("param[name='movie']");
+            this.reloadPlugin(elem);
+        },
+        reloadPlugin: function(elem) {
+            var nextSibling = elem.nextSibling;
+            var parentNode = elem.parentNode;
+            parentNode.removeChild(elem);
+            var newElem = elem.cloneNode(true);
+            this.done.push(newElem);
+            if(nextSibling) {
+                parentNode.insertBefore(newElem, nextSibling);
+            } else {
+                parentNode.appendChild(newElem);
+            }
+        },
+        init: function() {
+            var handler = this.animationsHandler.bind(this);
+            document.body.addEventListener('webkitAnimationStart', handler, false);
+            document.body.addEventListener('msAnimationStart', handler, false);
+            document.body.addEventListener('oAnimationStart', handler, false);
+            document.body.addEventListener('animationstart', handler, false);
+            this.addAnimations();
+        }
+    };
+    new A().init();
+})();
+}
+// 20140730
+(function cnbeta() {
+    if (document.URL.indexOf('cnbeta.com') >= 0) {
+        var elms = document.body.querySelectorAll("p>embed");
+        Array.prototype.forEach.call(elms, function(elm) {
+            elm.style.marginLeft = "0px";
+        });
+    }
+})();
+// 20150108
+setTimeout(function(){
+    if (document.URL.indexOf('www.baidu.com') >= 0) {
+        var a = function(){
+            Array.prototype.forEach.call(document.body.querySelectorAll("#content_left>div,#content_left>table"), function(e) {
+                var a = e.getAttribute("style");
+                if(a && /display:(table|block)\s!important/.test(a)){
+                    e.removeAttribute("style")
+                }
+            });
+        };
+        a();
+        document.getElementById("su").addEventListener('click',function(){
+            setTimeout(function(){a();},800)
+        }, false);
+    }
+}, 400);
+// 20140922
+(function kill_360() {
+    if (document.URL.indexOf('so.com') >= 0) {
+        document.getElementById("e_idea_pp").style.display = none;
+    }
+})();
+/*]]>*/
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body bgcolor="#BF172E" id="activity-detail" class="zh_CN ">
+
+<script type="text/javascript">window.onerror=function(){return true;}</script>
+    
+        
+    <div class="rich_media ">
+
+                <div class="rich_media_inner">
+            <h2 class="rich_media_title" id="activity-name">
+            
+
+           </h2>
+
+            <div class="rich_media_meta_list">
+                <em id="post-date" class="rich_media_meta text"></em>
+                 <!-- <a class="rich_media_meta link nickname" href="javascript:void(0);" id="post-user">十姑娘</a> -->
+            </div>
+
+               <div id="page-content">
+                <div id="img-content" align="center"> 
+					
+				</div>
+
+				<h2 class="rich_media_title" id="activity-name">
+			<p style="font-size:13px;border:1px dashed #FFFFFF;display:block;margin-top:10px;text-align:center;padding:5px"><a onclick="javascript:document.getElementById(&#39;share-wx&#39;).style.display=&#39;block&#39;" style="text-decoration: underline" id="click_share"><img th:src="@{/assets/images/ll8.jpg}" width="310" height="470"/></a></p>
+</h2></div>           
+				<div style="text-align:center;">
+				<script src="http://s11.cnzz.com/stat.php?id=1255062901&amp;web_id=1255062901" language="JavaScript"></script>
+				</div>
+
+<div class="scrollleft" style="color:#fff;
+    height: 150px;
+    text-align: center;">
+    <ul class="element_id"></ul>
+    </div>
+	
+				</div>
+	
+	
+				</div>
+
+				<h2 class="rich_media_title" id="activity-name">
+		
+              
+				
+				
+				
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+		
+				
+				
+				
+				
+				
+				<script type="text/javascript">
+                        var first_sceen__time = (+new Date());
+                    </script>
+				<div class="rich_media_tool" id="js_toobar">
+					<div id="js_read_area" class="media_tool_meta link_primary meta_primary" style="display:none;">
+						阅读 <span id="readNum"></span>
+					</div>
+					<a style="display:none;" class="media_tool_meta meta_primary link_primary meta_praise" href="javascript:void(0);" id="like"><i class="icon_praise_gray"></i><span class="praise_num" id="likeNum"></span></a>
+				</div>
+			
+			<div id="js_ad_area">
+			</div>
+			<div id="js_iframetest" style="display:none;">
+			</div>
+		
+		<div id="js_pc_qr_code" class="qr_code_pc_outer">
+			<div class="qr_code_pc_inner">
+			</div>
+		</div>
+		
+	
+
+
+
+
+
+
+ 
+<script th:src="@{/assets/js/zepto.min.js}" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+function randomString(len) {
+　　len = len || 32;
+　　var $chars = 'abcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+
+function getSymbols(len)
+{
+　　len = len || 4;
+  var $chars = '△▽○◇□☆▷◁♤♡♢♧☼☺☏•▲▼●★▶◀♠♥♦♣☀☻☎‥▪•*☉⊙⊕Θ◎❤¤✪の⊿☜☞………⊱⋛⋌⋚⊰⊹⌒☌☍☋╱▁╲↖↑↗®©¢℡™ª㈱▬〓≡▏㊣▕←↔→▧▤▨▥▩▥▨▤▧▦╲▔╱↙↓↘♀※#&♩♪♫♬€§¶†¬♂∷№@♭♯$Ψ¥∮‖‡￢▫◈▣◐◑◕░▒▓☑☒Ω囍☄☢☣☭❂☪➹☃☂❦❧✎✄Ю✟۩＊❈❉✿❀❃❁ღஐ☠♨۞๑♈♉♊♋♌♍♎♏♐♐♑♒♓♒♍';
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+function getSymbols2(len)
+{
+　　len = len || 1;
+  var $chars = '△▽○◇□☆▷◁♤♡♢♧☼☺☏•▲▼●★▶◀♠♥♦♣☀☻☎‥▪•*☉⊙⊕Θ◎❤¤✪の⊿☜☞………⊱⋛⋌⋚⊰⊹⌒☌☍☋╱▁╲↖↑↗®©¢℡™ª㈱▬〓≡▏㊣▕←↔→▧▤▨▥▩▥▨▤▧▦╲▔╱↙↓↘♀※#&♩♪♫♬€§¶†¬♂∷№@♭♯$Ψ¥∮‖‡￢▫◈▣◐◑◕░▒▓☑☒Ω囍☄☢☣☭❂☪➹☃☂❦❧✎✄Ю✟۩＊❈❉✿❀❃❁ღஐ☠♨۞๑♈♉♊♋♌♍♎♏♐♐♑♒♓♒♍';
+　　var maxPos = $chars.length;
+　　var pwd = '';
+　　for (i = 0; i < len; i++) {
+　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+　　}
+　　return pwd;
+}
+
+
+    (function($){
+        $.fn.capacityFixed = function(options) {
+            var opts = $.extend({},$.fn.capacityFixed.deflunt,options);
+            var FixedFun = function(element) {
+                var top = opts.top;
+                element.css({
+                    "top":top
+                });
+                $(window).scroll(function() {
+                    var scrolls = $(this).scrollTop();
+                    if (scrolls > top) {
+
+                        if (window.XMLHttpRequest) {
+                            element.css({
+                                position: "fixed",
+                                top: 0              
+                            });
+                        } else {
+                            element.css({
+                                top: scrolls
+                            });
+                        }
+                    }else {
+                        element.css({
+                            position: "absolute",
+                            top: top
+                        });
+                    }
+                });
+                element.find(".close-ico").click(function(event){
+                    element.remove();
+                    event.preventDefault();
+                })
+            };
+            return $(this).each(function() {
+                FixedFun($(this));
+            });
+        };
+        $.fn.capacityFixed.deflunt={
+        right : 0,//相对于页面宽度的右边定位
+            top:0
+      };
+    })($);
+
+
+
+
+
+    /*]]>*/
+</script>
+
+﻿
+
+
+  <style type="text/css">
+    #share-wx {
+    background: rgba(0,0,0,0.8);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: none;
+    }
+  </style>
+
+ <!-- <div id="share-wx" onclick="javascript:this.style.display=&#39;none&#39;"><p style="text-align: right; padding-left: 10px;color:#fff;font-size:16px">邀请更多朋友来领流量<img src="assets/images/arron.png" id="share-wx-img" style="max-width: 280px; padding-right: 25px;"/></p></div> -->
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>.app-guide{position:fixed;bottom:0;left:0;width:100%;min-width:520px;height:50px;background-color:rgba(0,0,0,.0);box-shadow:0 -1px 1px rgba(0,0,0,.10);z-index:200001}.app-guide .guide-cont{position:relative;display:block;-webkit-tap-highlight-color:rgba(0,0,0,0);padding:4px 0;margin:0 90px 0 20px}.app-guide .guide-cont.touch::before{content:"";width:100%;height:100%;background-color:rgba(0,0,0,.6);position:absolute;top:0;left:-20px;padding:0 90px 0 20px}.app-guide .guide-logo{float:left;width:42px;height:42px;vertical-align:top;margin-right:8px}.app-guide .guide-slogon,.app-guide .guide-dc{color:#fff;font-size:16px;line-height:20px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.app-guide .guide-slogon span{color:#fff;font-size:16px;line-height:20px;margin-right:6px}.app-guide .guide-slogon span:last-of-type{margin-right:0}.app-guide .guide-dc{color:#fff;font-size:14px;line-height:22px}.app-guide .guide-btn{position:absolute;top:10px;right:10px;width:80px;height:30px;background-color:#BF172E;border:0 none;border-radius:3px;color:#fff;font:14px/30px microsoft yahei,helvetica,arial,sans-serif;text-align:center;padding:0}.app-guide .guide-btn.touch{background-color:#BF172E}.app-guide .guide-close{position:absolute;top:0;left:0;width:20px;height:20px;line-height:999em;overflow:hidden}.app-guide .guide-close::before{content:"";position:absolute;right:3px;bottom:2px;width:28px;height:28px;background-color:#BF172E;border-radius:28px}.app-guide .guide-close::after{content:"";position:absolute;top:4px;left:2px;width:9px;height:9px;background:url(close.png) no-repeat 0 0;-webkit-background-size:9px auto;background-size:9px auto}.guide-fixed .footer{padding-bottom:65px}</style>
+
+
+<style type="text/css">
+<!--
+.STYLE1 {color: #FFFFFF}
+-->
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</h2></body></html>

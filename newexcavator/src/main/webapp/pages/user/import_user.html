@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<script type="text/javascript" th:inline="javascript">
+$(document).ready(function() {
+	$("#saveButton").click(function() {
+		var file = $("#file").val();
+		if (file.length > 0)
+			$("#saveform").submit();
+	});
+});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>用户管理 </li>
+	    	<li>用户资料导入：</li>
+	    </ul>
+    </div>
+    <div class="formbody">
+    	<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+	    <form th:action="@{/admin/import_user}" id="saveform" method="post" enctype="multipart/form-data">
+	    <ul class="forminfo">
+		    <li>
+		    	<input type="file" name="file" id="file" />
+		    	<input name="saveButton" id="saveButton" type="button" class="btn" value="开始导入"/>
+		    </li>
+	    </ul>
+	    </form>
+    </div>
+</body>
+</html>

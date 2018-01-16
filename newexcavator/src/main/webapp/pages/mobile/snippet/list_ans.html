@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+				<div  th:each="ta : ${topicans}">
+				<font class="ht_t_d_t"  th:text="${ta.ansname}+':'"></font>
+				<font class="ht_t_d_r" th:text="${ta.anscontent}"></font>
+				</div>
+</html>

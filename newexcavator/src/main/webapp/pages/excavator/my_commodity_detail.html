@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title th:text="${o.co_name}">挖掘机</title>
+<link rel="stylesheet" th:href="@{/assets/css/mobile/style.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/mobile/basic.css}" />
+<script th:src="@{/assets/js/jquery-1.9.1.js}"></script>
+</head>
+
+<body>
+	<div class="webPage">
+	
+    	<header class="header">
+        	<a href="javascript:location.href = document.referrer" class="fl ml10"><img src="/newexcavator/assets/images/left.jpg" width="11" /></a>
+        	<a th:href="@{/mobile/index}" class="fl ml20"><img src="/newexcavator/assets/images/home.png" width="20" /></a>
+            <h4>我兑换的商品</h4>
+            <a th:href="@{/mobile/person}" class="fr mr10"><img src="/newexcavator/assets/images/header_r.png" width="20" /></a>
+        </header>
+        <section>
+            
+            <div class="main">
+            	<div class="picture">
+            		<img  class="pictureimg"  th:src="@{'/img/'+${#strings.replace(o.co_path,'.','_S.')}}"/>
+            	</div>
+            	
+               <div class="tc mb20">
+               	<h4 style="font-size:20px;display:block" th:text="${o.co_name}"></h4>
+               	<label style="margin-top:10px;display:block;font-size:19px;margin:10px 10px 0 10px" th:text="${o.co_description}"></label>
+               </div>
+               <div class="tc mb20" style="color:#ff7f21">
+               	<label style="font-size:17px">所需积分</label>
+               	<label style="font-size:17px" th:text="${o.co_point}"></label>
+               </div>
+               <div class="tc mb20" >
+               	<label style="font-size:17px">兑换人:</label>
+               	<label style="font-size:17px" th:text="${o.name}"></label>
+               </div>
+               <div class="tc mb20" >
+               	<label style="font-size:17px">兑换人联系方式:</label>
+               	<label style="font-size:17px" th:text="${o.phone}"></label>
+               </div>
+               <div class="tc mb20" >
+               	<label style="font-size:17px">兑换人收货地址:</label>
+               	<label style="font-size:17px" th:text="${o.address}"></label>
+               </div>
+               <div class="tc mb20" >
+               	<label style="font-size:17px">兑换时间:</label>
+               	<label style="font-size:17px" th:text="${#dates.format(o.create_time, 'yyyy年MM月dd日  HH:mm:ss')}"></label>
+               </div>
+                
+               
+            </div>
+        </section>
+        
+        <footer style="margin-bottom:100px">
+        	<div class="copyRight">
+            	&copy;2015 挖友圈 版权信息
+            </div>
+            <div class="copyRight">
+            	备案号:蜀ICP备13012136号-10
+            </div>
+            <div class="copyRight">
+            	<script src="http://s95.cnzz.com/stat.php?id=1255170654&amp;web_id=1255170654" language="JavaScript"></script>
+            </div>
+        </footer>
+    </div>
+    <!-- <div class="blackBg"></div>
+    <img class="bigImg" id="bigImg" src="" /> -->
+    <!--< div class="bigPicBg"></div>
+	<div class="bigPicBox">
+			<div class="closeTop">
+				<span id="closeSpan">&times;</span>
+				<div class="clr"></div>
+			</div>
+			<img class="bigPic" id="bigPic" />
+	</div> -->
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+     if([[${change}]]!=null && [[${change}]]==1){
+    	 alert("修改成功");
+     }
+     
+     if([[${error}]]!=null && [[${error}]]==1){
+    	 alert("积分不足");
+     }
+     
+     if([[${success}]]!=null && [[${success}]]==1){
+    	 alert("兑换成功，稍后会有工作人员与您联系");
+     }
+     
+     $(document).ready(function(){
+     $(".header h4").css("margin-left",($(".header").width()-163)/2+"px");
+   $("#blind").click(function(){
+	   //判断
+	   
+	  	var name = $("input[name=name]").val();
+	  	var phone = $("input[name=phone]").val();
+	  	
+		if(name.length==0){
+			alert('请填写联系人姓名');
+			return;
+		}
+		if(phone.length==0){
+			alert('请输入电话号码');
+			return;
+		}
+		
+		patrn = /^[0-9]{8,11}$/;  
+	    if(!patrn.exec(phone)) {  
+	    	alert("请输入正确的电话号码");
+			return;
+	    }
+	    $("#saveForm").submit();
+	    
+   });
+	 
+     });     
+/*]]>*/
+</script>
+</body>
+</html>

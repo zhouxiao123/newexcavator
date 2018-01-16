@@ -25,7 +25,7 @@ import com.newexcavator.wechat.model.message.response.ResponseStatus;
 import com.newexcavator.wechat.model.message.response.UserInfo;
 
 public class Sign {
-	public static String jsapi_ticket = "";
+	public static String jsapi_ticket = "2";
 	
     public static synchronized Map<String, String> getSign(String url) {
     	

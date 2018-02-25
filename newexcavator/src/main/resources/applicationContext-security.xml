@@ -15,6 +15,7 @@
     <http pattern="/get" security="none"/>
     <http pattern="/get2" security="none"/>
     <http pattern="/mobile/**" security="none"/>
+    <http pattern="/wx/**" security="none"/>
     <http pattern="/assets/**" security="none"/>
     <http pattern="/wechat/**" security="none"/>
     <http pattern="/admin/uploadFile" security="none"/>

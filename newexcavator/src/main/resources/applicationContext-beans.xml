@@ -6,6 +6,7 @@
     xsi:schemaLocation="  
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+          
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.newexcavator.dao" />
 	</bean>

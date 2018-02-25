@@ -11,7 +11,7 @@
 	<mvc:resources location="/assets/images/" mapping="/assets/images/**" /> 
 	<mvc:resources location="/assets/css/" mapping="/assets/css/**" />
 	<mvc:resources location="/assets/js/" mapping="/assets/js/**" />
-	
+	<mvc:annotation-driven/>
 	<bean id="securityInterceptor" class="com.newexcavator.security.SecurityInterceptor"/>
 	
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">

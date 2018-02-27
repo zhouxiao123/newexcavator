@@ -85,4 +85,26 @@ public class MiniProgramController {
 		pa.put("ms2", ms2);
 		return pa;
 	}
+	
+	@RequestMapping(value = "/mobile/detail", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> mobile_detail(Model model,HttpServletRequest request,@RequestParam Integer id,@RequestParam(required=false) String type,@RequestParam(required=false) Integer change) {
+		Machine m = machineService.queryMachineById(id);
+		Map<String,Object> pa = new  HashMap<String,Object>();
+		pa.put("m", m);
+		Advertisement adv = advertisementService.queryBottomAdvertisement(1);
+		pa.put("adv", adv);
+		if(!StringUtils.isBlank(type)){
+			pa.put("type", type);
+		}
+		if(change!=null && change.intValue() == 1){
+			pa.put("change", change);
+		}
+		
+		/*Map<String,String> param = new HashMap<String,String>();
+		param = Sign.getSign(SettingUtils.getCommonSetting("base.url")+request.getServletPath()+(StringUtils.isBlank(request.getQueryString())?"":"?"+request.getQueryString()));
+		System.out.println(request.getServletPath()+"?"+request.getQueryString()+"--------------");
+		model.addAttribute("sign", param);*/
+		return pa;
+	}
 }

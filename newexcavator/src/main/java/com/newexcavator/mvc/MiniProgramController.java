@@ -107,4 +107,47 @@ public class MiniProgramController {
 		model.addAttribute("sign", param);*/
 		return pa;
 	}
+	
+	@RequestMapping(value = "/mobile/list", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Map<String,Object> list(Model model,HttpServletRequest request,
+			@RequestParam(required=false) String search_name,
+			@RequestParam(required=false) Integer type,
+			@RequestParam(required=false) Integer city_id,
+			@RequestParam(required=false) String city_name,
+			@RequestParam(required=false) Integer exb_id,
+			@RequestParam(required=false) String exb_name) {
+		PageSupport ps =PageSupport.initPageSupport(request);
+		Map<String,Object> pa = new  HashMap<String,Object>();
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("list", 1);
+		if(!StringUtil.isBlank(search_name)){
+			param.put("search_name", search_name);			
+			pa.put("search_name", search_name);
+		} 
+			if(type!=null && type.intValue() > 0){
+				param.put("type", type);
+				pa.put("type", type);
+				List<Brand> bs = machineService.queryBrandByExcavatorTypeId(type);
+				pa.put("bs", bs);
+			}
+			if(city_id!=null && city_id.intValue() > 0){
+				param.put("city", city_id);
+				pa.put("city_id", city_id);
+				pa.put("city_name", city_name);
+			}
+			if(exb_id!=null && exb_id.intValue() > 0){
+				param.put("brand", exb_id);
+				pa.put("exb_id", exb_id);
+				pa.put("exb_name", exb_name);
+			}
+			
+			List<Machine> ms = machineService.queryMachine(param,ps);
+			List<City> cs = machineService.queryCityByPid(0);			
+			pa.put("cs", cs);
+			pa.put("ms", ms);
+			return pa;
+		
+		
+	}
 }

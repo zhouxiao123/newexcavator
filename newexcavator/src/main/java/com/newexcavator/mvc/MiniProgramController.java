@@ -1,6 +1,8 @@
 package com.newexcavator.mvc;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -116,12 +118,16 @@ public class MiniProgramController {
 			@RequestParam(required=false) Integer city_id,
 			@RequestParam(required=false) String city_name,
 			@RequestParam(required=false) Integer exb_id,
-			@RequestParam(required=false) String exb_name) {
+			@RequestParam(required=false) String exb_name) throws UnsupportedEncodingException {
 		PageSupport ps =PageSupport.initPageSupport(request);
 		Map<String,Object> pa = new  HashMap<String,Object>();
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("list", 1);
+		request.setCharacterEncoding("UTF-8");  
+
+		//search_name  = URLDecoder.decode(search_name, "UTF-8"); 
 		if(!StringUtil.isBlank(search_name)){
+			search_name = new String(search_name.getBytes("ISO8859-1"), "UTF-8"); 
 			param.put("search_name", search_name);			
 			pa.put("search_name", search_name);
 		} 

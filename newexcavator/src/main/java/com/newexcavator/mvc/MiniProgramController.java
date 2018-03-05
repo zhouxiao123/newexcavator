@@ -156,4 +156,29 @@ public class MiniProgramController {
 		
 		
 	}
+	
+	@RequestMapping(value = "/mobile/add", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> mobile_add(Model model, HttpServletRequest request,@RequestParam (required = false) String openid) {
+		/*SysUsers sus = validateSession(request);
+		if (sus == null) {
+			return "redirect:login";
+		}*/
+		//SysUsers sysuser = userService.querySysUserByOpenid(openid);
+		//SysUsers sysuser = userService.querySysUserByOpenid("oCwisjrKR1NbpMetmZYpeYm5fGBk");
+		/*if (sysuser == null) {
+			return "redirect:login";
+		}*/
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		List<ExcavatorType> et = machineService.queryExcavatorType();
+		List<City> cs = machineService.queryCityByPid(0);
+		pa.put("et", et);
+		pa.put("cs", cs);
+		//model.addAttribute("su", sus);
+		//String token = DataUtil.generateRandomString(8);
+		//request.getSession().setAttribute("token", token);
+		//model.addAttribute("token", token);
+		return pa;
+
+	}
 }

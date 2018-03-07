@@ -717,6 +717,40 @@ public class DataUtil {
 		}
 	}
 	
+	
+	public static String uploadFile2(HttpServletRequest req) {
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) req;
+		String sep = System.getProperty("file.separator");
+		String fileDir = SettingUtils.getCommonSetting("upload.file.temp.path");// 存放文件文件夹名称
+
+		File dirPath = new File(fileDir);
+		if (!dirPath.exists()) {
+			dirPath.mkdirs();
+		}
+		
+		MultipartFile mf = multiRequest.getFile("file");
+		String name =  mf.getOriginalFilename(); 
+		System.out.println(name);
+		try {
+			byte [] src = mf.getBytes();
+			if (src != null && src.length != 0) {
+				File dst = new File(fileDir + sep + name);
+				copy(src, dst);
+				String heightS = SettingUtils.getCommonSetting("thumbnailator.height");
+				String widthS = SettingUtils.getCommonSetting("thumbnailator.width");
+
+				Integer height = !StringUtils.isBlank(heightS) ? Integer.valueOf(heightS) : 0;
+				Integer width = !StringUtils.isBlank(widthS) ? Integer.valueOf(widthS) : 0;
+
+				ImageResizer.resizeImage(fileDir + sep + name, width, height, "_S");
+			}
+			return name;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	private static void copy(byte [] src, File dst) {
 		OutputStream out = null;
 		try {

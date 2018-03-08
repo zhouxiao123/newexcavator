@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.helper.StringUtil;
@@ -981,7 +982,7 @@ public class MobileController {
 	 * @return
 	 */
 	@RequestMapping(value = "/mobile/getvalidate", method = RequestMethod.POST)
-	public @ResponseBody String getvalidate(HttpServletRequest request, Model model, @RequestParam String username, @RequestParam(required = false) String type, @RequestParam(required=false) Integer id) {
+	public @ResponseBody String getvalidate(HttpServletRequest request,HttpServletResponse response, Model model, @RequestParam String username, @RequestParam(required = false) String type, @RequestParam(required=false) Integer id) {
 		String info = "ok";
 			if (StringUtils.equals(type, "mod")) {
 				Integer count = userService.queryCountSysUserByUsername(username);
@@ -1007,6 +1008,7 @@ public class MobileController {
 			} else {
 				info = "短信发送失败！"+Sendsms.getMsg();
 			}
+			response.setContentType("application/json;charset=utf-8");
 		return JsonUtil.toJson(info);
 	}
 	

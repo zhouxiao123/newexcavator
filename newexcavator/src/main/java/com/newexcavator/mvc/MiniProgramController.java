@@ -1,6 +1,7 @@
 package com.newexcavator.mvc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
@@ -189,6 +190,19 @@ public class MiniProgramController {
 		return pa;
 
 	}
+	
+		
+	@RequestMapping(value = "/mobile/uploadFile", method = RequestMethod.POST)
+	public void uploadApp(Model model, HttpServletRequest request,
+			 PrintWriter pw) {
+		//String sessionId = request.getSession().getId();
+
+		String name = DataUtil.uploadFile2(request);
+		System.out.println(name);
+		pw.write(name);
+		pw.flush();
+	}
+	
 	
 	/**
 	 * 获取校验码

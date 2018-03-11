@@ -50,8 +50,10 @@ import com.newexcavator.util.DateFormatter;
 import com.newexcavator.util.JsonUtil;
 import com.newexcavator.util.PageSupport;
 import com.newexcavator.util.SettingUtils;
+import com.newexcavator.util.WechatUtils;
 import com.newexcavator.util.sms.Sendsms;
 import com.newexcavator.wechat.Sign;
+import com.newexcavator.wechat.model.message.response.WebOpenidModel;
 
 @Controller
 @RequestMapping(value = "/wx")
@@ -301,6 +303,118 @@ public class MiniProgramController {
 		}
 	}
 	
+    @RequestMapping(value="/login",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> login(@RequestParam("code") String code) {
+    	Map<String,Object> pa = new HashMap<String ,Object>();
+        WebOpenidModel wom = WechatUtils.getOpenidInfor(code);
+        if(StringUtils.isBlank(wom.getOpenid())){
+        	pa.put("oid","");
+            return pa;
+        }
+        pa.put("oid",wom.getOpenid());
+        return pa;
+    }
+    
+    @RequestMapping(value="/getUserDetail",method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String,Object> userDetail(@RequestParam String oid) {
+    	Map<String,Object> pa = new HashMap<String ,Object>();
+        SysUsers u = userService.querySysUserByOpenid(oid);
+        if(u == null) {
+        	pa.put("info", "fail");
+        	return pa;
+        }
+       pa.put("info", "ok");
+       pa.put("user", u);
+        return pa;
+    }
+    
+    @RequestMapping(value="/updateUser",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> updateUser(@RequestParam String oid,@RequestParam String nickname,@RequestParam String head) {
+    	Map<String,Object> pa = new HashMap<String ,Object>();
+    	if(!StringUtils.isBlank(oid)&&!StringUtils.isBlank(head)) {
+    		SysUsers u = new SysUsers();
+        	u.setOpenid(oid);
+        	u.setHead(head);
+        	u.setNickname(nickname);
+        	userService.updateNickNameAndHead(u);
+    	}
+       pa.put("info", "ok");
+        return pa;
+    }
+    
+    @RequestMapping(value = "/mobile/bind_oid", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> BindOid(Model model,RedirectAttributes redirect,HttpServletRequest request,@RequestParam String phone,@RequestParam String oid,@RequestParam String nickname,@RequestParam String head,@RequestParam String name, @RequestParam(required = false)String invited,@RequestParam(required = false) String valicode) throws UnsupportedEncodingException {
+		//注册保存
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		Integer invited_id=0;
+		SysUsers sus = userService.querySysUserByOpenid(oid);
+		if(sus == null){
+			if(!StringUtils.isBlank(invited)){
+				SysUsers s = userService.querySysUserByUsername(invited, null);
+				if(s==null){
+					pa.put("phone", phone);
+					pa.put("name", name);
+					pa.put("info", "邀请人不存在!");
+					return pa;
+				}
+				invited_id=s.getId();
+				Point p = userService.queryPoint();
+				userService.addPoint(s.getId(), p.getPoint());
+			}
+			
+		/*Object vco = request.getSession().getAttribute("VC_" + phone);
+		if(vco == null || !valicode.toLowerCase().equals(((String)vco).toLowerCase())) {
+			redirect.addAttribute("phone", phone);
+			redirect.addAttribute("name", name);
+			return "redirect:reg?vali=1&invited="+invited;
+		}*/
+		
+		//PasswordEncoder pe = new BCryptPasswordEncoder();
+		SysUsers su2 = userService.querySysUserByUsername(phone, null);	
+		if(su2 != null && su2.getOpenid()==null) {
+			SysUsers su = new SysUsers();
+//			su.setInvited_id(invited_id);
+			su.setUsername(phone);
+			su.setOpenid(oid);
+			su.setNickname(nickname);
+			su.setHead(head);
+			userService.updateOpenidAndNickNameAndHead(su);
+		} else {
+			SysUsers su = new SysUsers();
+			su.setCell_phone(phone);
+			su.setUsername(phone);
+			su.setName(name);
+			su.setInvited_id(invited_id);
+			su.setOpenid(oid);
+			su.setNickname(nickname);
+			su.setHead(head);
+			//su.setPassword(pe.encode(password));
+			userService.saveUser(su);
+			//userService.updatePassword(pe.encode(password), su.getId());
+		}
+		
+		//request.getSession().removeAttribute("VC_" + phone);
+		
+		//加入session
+		//userService.updateLoginInfor(su.getId());
+		//su.setLast_login_time(new Date());
+		//userService.addPoint(su.getId(), 1);
+		//request.getSession().setAttribute("sysUsers", su);
+		//pa.put("sessionId", request.getSession().getId());
+			pa.put("info", "ok");
+			return pa;
+		} else {
+			pa.put("phone", phone);
+			pa.put("name", name);
+			pa.put("info", "账号已存在!");
+			return pa;
+		}
+	}
+        
 	@RequestMapping(value = "/mobile/login_save", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public Map<String,Object> mobile_login_save(Model model,HttpServletRequest request,@RequestParam String phone, @RequestParam String password) {
@@ -334,5 +448,90 @@ public class MiniProgramController {
 		pa.put("info","账号密码错误!");
 			return pa;
 		
+	}
+	
+	
+	@RequestMapping(value = "/mobile/save", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> save(Model model,HttpServletRequest request,
+			@RequestParam Integer excavator_type,
+			@RequestParam Integer excavator_brand,
+			@RequestParam Integer excavator_version,
+			@RequestParam Integer used_time,
+			@RequestParam Float price,
+			@RequestParam Integer change_price,
+			@RequestParam Integer province,
+			@RequestParam Integer city,
+			@RequestParam Integer imported,
+			@RequestParam Integer qualified,
+			@RequestParam Integer receipt,
+			@RequestParam String production_date,
+			@RequestParam String buy_date,
+			@RequestParam String code_no,
+			@RequestParam Integer modified,
+			@RequestParam Integer fixed,
+			@RequestParam Integer old_level,
+			@RequestParam Integer use,
+			@RequestParam Integer current_status,
+			@RequestParam String description,
+			@RequestParam String link_name,
+			@RequestParam String phone,
+			@RequestParam String oid,
+			@RequestParam String[] filename,
+			@RequestParam Integer first_num) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers sus = userService.querySysUserByOpenid(oid);
+		if (sus == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		
+		
+		Machine m = new Machine();
+		
+		m.setUser_id(sus.getId());
+		//m.setUser_id(1);
+		
+		m.setBrand(excavator_brand);
+		m.setBuy_date(DateFormatter.stringToDate(buy_date, "yyyy-MM-dd"));
+		m.setCode_no(code_no);
+		m.setCurrent_status(current_status);
+		m.setDescription(description);
+		m.setFixed(fixed);
+		m.setImported(imported);
+		m.setLink_name(link_name);
+		m.setM_type(excavator_type);
+		m.setModified(modified);
+		m.setOld_level(old_level);
+		m.setPhone(phone);
+		m.setPlace_c(city);
+		m.setPlace_p(province);
+		m.setPrice(price);
+		m.setChange_price(change_price);
+		m.setProduction_date(DateFormatter.stringToDate(production_date, "yyyy-MM-dd"));
+		//m.setQq(qq);
+		m.setQualified(qualified);
+		m.setReceipt(receipt);
+		m.setUse(use);
+		m.setUsed_time(used_time);
+		m.setVersion(excavator_version);
+		for(String fn:filename){
+			MachinePic mp = new MachinePic();
+			String path="";
+			try {
+				 path = DataUtil.copyToDir(fn, true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			mp.setPath(path);
+			mp.setCover(0);
+			m.addMp(mp);
+		}
+		m.getMp().get(first_num).setCover(1);
+		
+		machineService.saveMachine(m);
+		pa.put("info","ok");
+		return pa;
 	}
 }

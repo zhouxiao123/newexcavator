@@ -58,6 +58,10 @@ public interface SysUsersDao {
 	
 	public void updatePermission(Map<String, Object> param);
 	
+	public void updateOpenidAndNickNameAndHead(SysUsers sysUsers);
+	
+	public void updateNickNameAndHead(SysUsers sysUsers);
+	
 	public SysUsers queryTopicUserByOpenid(String openid);
 	
 	public List<String> queryTopicUserOpenid();

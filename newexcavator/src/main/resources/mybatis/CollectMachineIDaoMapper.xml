@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.CollectMachineDao">
+	<insert id="saveCollectMachine" parameterType="com.newexcavator.domain.CollectMachine" useGeneratedKeys="true" keyProperty="id">
+		insert into collectmachine (userid,m_id,createtime)
+		values(#{userid},#{m_id},now())
+	</insert>
+	
+	
+	
+	<delete id="deleteCollectMachine" parameterType="com.newexcavator.domain.CollectMachine" >
+		delete from collectmachine where userid=#{userid} and m_id=#{m_id} 
+	</delete>
+	
+	<select id="queryCollectMachineByUserid" resultMap="queryCollectMachineByUseridResult">
+		select * from collectmachine where userid=#{userid}
+		
+		ORDER BY id DESC
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryCollectMachineByUserid_count" resultType="java.lang.Integer">
+		select count(1) from collectmachine where userid=#{userid}
+	</select>
+	
+	<resultMap type="com.newexcavator.domain.CollectMachine" id="queryCollectMachineByUseridResult">
+		<id column="id" property="id"/>
+		<result column="userid" property="userid"/>
+		<result column="m_id" property="m_id"/>
+		<result column="createtime" property="createtime"/>
+
+		<collection property="mi" select="queryMachineList" column="m_id" javaType="List" ofType="com.newexcavator.domain.Machine"/>  
+	</resultMap>
+	
+	<select id="queryMachineList" resultType="com.newexcavator.domain.Machine">
+		select * from machine where id=#{m_id} 
+	</select>
+	
+	<select id="findByUseridAndMid" resultType="com.newexcavator.domain.CollectMachine">
+		select * from collectmachine where userid=#{userid} and m_id=#{m_id} 
+	</select>
+	
+	
+</mapper>

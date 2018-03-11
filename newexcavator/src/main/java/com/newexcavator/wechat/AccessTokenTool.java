@@ -23,10 +23,10 @@ import org.json.JSONObject;
 public class AccessTokenTool {
 	
 	//订阅号
-	public static final String AppId = "wx0f60a8adb6eeb889";
+	public static final String AppId = "wxc30890405ed1a8b3";
 
 	//订阅号
-	public static final String AppSecret = "db8108f564b7158c05877e8307068968";
+	public static final String AppSecret = "8edd959e477502db80dce76163311a44";
 	public static final String GET_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
 			+ AppId + "&secret=" + AppSecret;
 	public static String access_token = "";

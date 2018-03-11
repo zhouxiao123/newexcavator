@@ -31,6 +31,8 @@ public interface UserService {
 	
 	public void updateSysUsersById(SysUsers sysUsers);
 	
+	public void updateNickNameAndHead(SysUsers sysUsers);
+	
 	public void updateLoginInfor(Integer id);
 	
 	public void delCustomer(List<Integer> ids);
@@ -68,6 +70,8 @@ public interface UserService {
 	public SysUsers querySysUserByid(Integer id);
 	
 	public void updatePermission(Map<String, Object> param);
+	
+	public void updateOpenidAndNickNameAndHead(SysUsers su);
 	
 	public SysUsers queryTopicUserByOpenid(String openid);
 	

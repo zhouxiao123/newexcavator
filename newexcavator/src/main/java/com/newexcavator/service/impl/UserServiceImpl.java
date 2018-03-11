@@ -225,5 +225,17 @@ public class UserServiceImpl extends AbstractModuleSuport implements UserService
 		sysUsersDao.updatePoint(point);
 		
 	}
+
+	@Override
+	public void updateOpenidAndNickNameAndHead(SysUsers su) {
+		
+		sysUsersDao.updateOpenidAndNickNameAndHead(su);
+	}
+
+	@Override
+	public void updateNickNameAndHead(SysUsers sysUsers) {
+		sysUsersDao.updateNickNameAndHead(sysUsers);
+		
+	}
 	
 }

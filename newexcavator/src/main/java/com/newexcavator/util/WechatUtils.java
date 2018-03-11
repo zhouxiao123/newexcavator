@@ -77,8 +77,8 @@ public class WechatUtils {
 	 * @return
 	 */
 	public static WebOpenidModel getOpenidInfor(String code) {
-		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + AccessTokenTool.AppId + "&secret=" + AccessTokenTool.AppSecret + "&code=" + code + "&grant_type=authorization_code";
-		
+		String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AccessTokenTool.AppId + "&secret=" + AccessTokenTool.AppSecret + "&js_code=" + code + "&grant_type=authorization_code";
+		System.out.println("-=-=-=-=-=-=URL-=-=-"+url);
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpGet httpGet = new HttpGet(url);
 		try {

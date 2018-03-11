@@ -125,6 +125,15 @@
 		UPDATE sys_users SET ispermission=1 WHERE id=#{id}
 	</update>
 	
+	<update id="updateOpenidAndNickNameAndHead" parameterType="com.newexcavator.domain.SysUsers">
+		UPDATE sys_users SET head=#{head}, nickname=#{nickname},openid=#{openid} WHERE username=#{username}
+	</update>
+	
+	
+	<update id="updateNickNameAndHead" parameterType="com.newexcavator.domain.SysUsers">
+		UPDATE sys_users SET head=#{head}, nickname=#{nickname} WHERE openid=#{openid}
+	</update>
+	
 	<update id="updatePassword">
 		UPDATE sys_users SET password=#{password} WHERE id=#{id}
 	</update>

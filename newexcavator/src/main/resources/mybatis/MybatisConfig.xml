@@ -34,5 +34,6 @@
     	<mapper resource="mybatis/AdvertismentDaoMapper.xml" />
     	<mapper resource="mybatis/TopicDaoMapper.xml" />
     	<mapper resource="mybatis/LotteryDaoMapper.xml" />
+    	<mapper resource="mybatis/CollectMachineDaoMapper.xml" />
     </mappers>
 </configuration>

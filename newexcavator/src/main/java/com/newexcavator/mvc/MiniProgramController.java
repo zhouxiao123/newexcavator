@@ -36,12 +36,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.newexcavator.domain.Advertisement;
 import com.newexcavator.domain.Brand;
 import com.newexcavator.domain.City;
+import com.newexcavator.domain.CollectMachine;
 import com.newexcavator.domain.ExcavatorType;
 import com.newexcavator.domain.Machine;
 import com.newexcavator.domain.MachinePic;
 import com.newexcavator.domain.Point;
 import com.newexcavator.domain.SysUsers;
 import com.newexcavator.service.AdvertisementService;
+import com.newexcavator.service.CollectMachineService;
 import com.newexcavator.service.DeployInforService;
 import com.newexcavator.service.MachineService;
 import com.newexcavator.service.UserService;
@@ -67,6 +69,9 @@ public class MiniProgramController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CollectMachineService collectMachineService;
 	
 	@RequestMapping(value = "/mobile", method = RequestMethod.GET)
 	@ResponseBody
@@ -449,6 +454,106 @@ public class MiniProgramController {
 			return pa;
 		
 	}
+	
+	 /**
+     * 是否已经收藏
+     * @return
+     */
+    @RequestMapping(value="/is_collect_machine", method= {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Map isCollectMachine(@RequestParam Integer mid,@RequestParam String oid){
+        Map param = new HashMap();
+        SysUsers u = userService.querySysUserByOpenid(oid);
+        if(u==null){
+            param.put("result","fail");
+            return param;
+        }
+        CollectMachine cm = collectMachineService.findByUseridAndMid(u.getId(), mid);
+        if(cm!=null){
+            param.put("result","ok");
+            return param;
+        }
+        param.put("result","fail");
+        return param;
+    }
+
+
+    /**
+     * 收藏专家
+     * @return
+     */
+    @RequestMapping(value="/collect_machine", method= {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Map collectMachine(@RequestParam Integer mid,@RequestParam String oid){
+        Map param = new HashMap();
+        SysUsers u = userService.querySysUserByOpenid(oid);
+        if(u==null){
+            param.put("result","not");
+            return param;
+        }
+        CollectMachine cm = collectMachineService.findByUseridAndMid(u.getId(), mid);
+        if(cm!=null){
+            param.put("result","fail");
+            return param;
+        }
+        cm = new CollectMachine();
+        cm.setCreatetime(new Date());
+        cm.setM_id(mid);
+        cm.setUserid(u.getId());
+        collectMachineService.saveCollectMachine(cm);
+        param.put("result","ok");
+        return param;
+    }
+
+    /**
+     * 取消收藏专家
+     * @return
+     */
+    @RequestMapping(value="/cancel_collect_machine", method= {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Map cancelCollectMachine(@RequestParam Integer mid,@RequestParam String oid){
+        Map param = new HashMap();
+        SysUsers u = userService.querySysUserByOpenid(oid);
+        if(u==null){
+            param.put("result","not");
+            return param;
+        }
+        CollectMachine cm = collectMachineService.findByUseridAndMid(u.getId(), mid);
+        if(cm==null){
+            param.put("result","fail");
+            return param;
+        }
+
+        collectMachineService.deleteCollectMachine(cm);
+        param.put("result","ok");
+        return param;
+    }
+    
+    /**
+     * 收藏列表
+     * @return
+     */
+    @RequestMapping(value="/collect_list", method= {RequestMethod.POST,RequestMethod.GET})
+    @ResponseBody
+    public Map collectionLecturerList(HttpServletRequest request,@RequestParam(required = false) String search_name,@RequestParam String oid){
+        Map param = new HashMap();
+        String f_yxname = "%%";
+        if(!StringUtils.isBlank(search_name)){
+            f_yxname = "%"+search_name+"%";
+
+        }
+        SysUsers u = userService.querySysUserByOpenid(oid);
+        if(u==null){
+            param.put("result","fail");
+            return param;
+        }
+        PageSupport pageSupport = PageSupport.initPageSupport(request);
+        List<CollectMachine> cm = collectMachineService.queryCollectMachineByUserid(u.getId(), pageSupport);
+        param.put("result","ok");
+        param.put("collectMachine",cm);
+        
+        return param;
+    }
 	
 	
 	@RequestMapping(value = "/mobile/save", method = RequestMethod.POST)

@@ -9,13 +9,13 @@ public class CollectMachine {
 	private Integer userid;
 	private Integer m_id;
 	private Date createtime;
-	private List<Machine> mi;
+	private Machine mi;
 	
 	
-	public List<Machine> getMi() {
+	public Machine getMi() {
 		return mi;
 	}
-	public void setMi(List<Machine> mi) {
+	public void setMi(Machine mi) {
 		this.mi = mi;
 	}
 	public Long getId() {

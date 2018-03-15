@@ -28,7 +28,7 @@ public interface CollectMachineService {
 	
 	public CollectMachine findByUseridAndMid(Integer userid,Integer mid);
 	
-	public CollectMachine saveCollectMachine(CollectMachine cm);
+	public void saveCollectMachine(CollectMachine cm);
 	
 	public void deleteCollectMachine(CollectMachine cm);
 	

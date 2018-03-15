@@ -48,9 +48,9 @@ public class CollectMachineServiceImpl extends AbstractModuleSuport implements C
 	}
 
 	@Override
-	public CollectMachine saveCollectMachine(CollectMachine cm) {
+	public void saveCollectMachine(CollectMachine cm) {
 		// TODO Auto-generated method stub
-		return collectMachineDao.saveCollectMachine(cm);
+		collectMachineDao.saveCollectMachine(cm);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class CollectMachineServiceImpl extends AbstractModuleSuport implements C
 	public List<CollectMachine> queryCollectMachineByUserid(Integer userid, PageSupport pageSupport) {
 		Map<String,Object> param = new HashMap<String, Object>();
 		param.put("userid", userid);
-		return this.getListPageSupportByManualOperation("com.excavator.dao.CollectMachineDao.queryCollectMachineByUserid", "com.excavator.dao.CollectMachineDao.queryCollectMachineByUserid_count", param, pageSupport);
+		return this.getListPageSupportByManualOperation("com.newexcavator.dao.CollectMachineDao.queryCollectMachineByUserid", "com.newexcavator.dao.CollectMachineDao.queryCollectMachineByUserid_count", param, pageSupport);
 	}
 	
 	

@@ -18,7 +18,7 @@ public interface CollectMachineDao {
 	
 	public CollectMachine findByUseridAndMid(@Param(value="userid")Integer userid,@Param(value="m_id")Integer mid);
 	
-	public CollectMachine saveCollectMachine(CollectMachine cm);
+	public void saveCollectMachine(CollectMachine cm);
 	
 	public void deleteCollectMachine(CollectMachine cm);
 	

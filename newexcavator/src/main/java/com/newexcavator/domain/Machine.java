@@ -9,6 +9,7 @@ public class Machine {
 	private Integer id;
 	private Integer user_id;
 	private Integer m_type;
+	private Integer big_type;
 	private String type_name;
 	private Integer brand;
 	private String brand_name;
@@ -283,6 +284,12 @@ public class Machine {
 	}
 	public void setPrice2(Float price2) {
 		this.price2 = price2;
+	}
+	public Integer getBig_type() {
+		return big_type;
+	}
+	public void setBig_type(Integer big_type) {
+		this.big_type = big_type;
 	}
 	
 }

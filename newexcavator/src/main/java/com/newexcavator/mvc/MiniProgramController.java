@@ -560,6 +560,7 @@ public class MiniProgramController {
 	@ResponseBody
 	public Map<String,Object> save(Model model,HttpServletRequest request,
 			@RequestParam Integer excavator_type,
+			@RequestParam Integer big_type,
 			@RequestParam Integer excavator_brand,
 			@RequestParam Integer excavator_version,
 			@RequestParam Integer used_time,
@@ -596,7 +597,7 @@ public class MiniProgramController {
 		
 		m.setUser_id(sus.getId());
 		//m.setUser_id(1);
-		
+		m.setBig_type(big_type);
 		m.setBrand(excavator_brand);
 		m.setBuy_date(DateFormatter.stringToDate(buy_date, "yyyy-MM-dd"));
 		m.setCode_no(code_no);

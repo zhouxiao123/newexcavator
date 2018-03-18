@@ -99,6 +99,15 @@ public class MiniProgramController {
 				}
 			}
 		}*/
+		for(Machine m:ms1) {
+			if((System.currentTimeMillis() - m.getCreate_time().getTime())/3600000 <= 24)
+			m.setIsNew(1);
+		}
+		for(Machine m:ms2) {
+			if((System.currentTimeMillis() - m.getCreate_time().getTime())/3600000 <= 24)
+			m.setIsNew(1);
+		}
+		
 		pa.put("ms1", ms1);
 		pa.put("ms2", ms2);
 		return pa;
@@ -165,7 +174,11 @@ public class MiniProgramController {
 			}
 			
 			List<Machine> ms = machineService.queryMachine(param,ps);
-			List<City> cs = machineService.queryCityByPid(0);			
+			List<City> cs = machineService.queryCityByPid(0);
+			for(Machine m:ms) {
+				if((System.currentTimeMillis() - m.getCreate_time().getTime())/3600000 <= 24)
+				m.setIsNew(1);
+			}
 			pa.put("cs", cs);
 			pa.put("ms", ms);
 			return pa;
@@ -638,6 +651,64 @@ public class MiniProgramController {
 		
 		machineService.saveMachine(m);
 		pa.put("info","ok");
+		return pa;
+	}
+	
+	
+	@RequestMapping(value = "/mobile/publicList", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Map<String,Object> publicList(Model model,HttpServletRequest request,@RequestParam String oid,@RequestParam(required=false) Integer change) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers sus = userService.querySysUserByOpenid(oid);
+		if (sus == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		PageSupport ps =PageSupport.initPageSupport(request);
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("userId", sus.getId());
+		//param.put("userId", 1);
+		List<Machine> ms = machineService.queryMachine(param,ps);
+		pa.put("ms", ms);
+		if(change!=null && change.intValue() == 1){
+			pa.put("change", change);
+		}
+		pa.put("info", "ok");
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/change_close", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> change_close(Model model,RedirectAttributes redirect,HttpServletRequest request,@RequestParam Integer id,@RequestParam Integer close) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		machineService.updateMachineClose(id, close);
+		pa.put("change", 1);
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/rank", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Map<String,Object> rank(Model model,RedirectAttributes redirect,HttpServletRequest request,@RequestParam String oid) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		Map<String,Object> param = new HashMap<String,Object>();
+		PageSupport pageSupport = PageSupport.initPageSupport(request);
+		pageSupport.setPageSize(100);
+		List <SysUsers> sus = userService.querySysUserRank(param, pageSupport);
+		Integer flag = 0;
+		for(SysUsers s:sus){
+			s.setUsername(s.getUsername().replace(s.getUsername().substring(3,7), "****"));
+			if(s.getId()==ss.getId()){
+				flag = s.getRank();
+			}
+		}
+		
+		pa.put("flag", flag);
+		pa.put("sus", sus);
 		return pa;
 	}
 }

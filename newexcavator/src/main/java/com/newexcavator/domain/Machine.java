@@ -44,6 +44,7 @@ public class Machine {
 	private Integer deleted;
 	private Date deleted_time;
 	private Integer verify;
+	private Integer isNew;
 	private String cover_path;
 	private List<MachinePic> mp = new ArrayList<MachinePic>();
 	
@@ -290,6 +291,12 @@ public class Machine {
 	}
 	public void setBig_type(Integer big_type) {
 		this.big_type = big_type;
+	}
+	public Integer getIsNew() {
+		return isNew;
+	}
+	public void setIsNew(Integer isNew) {
+		this.isNew = isNew;
 	}
 	
 }

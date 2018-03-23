@@ -34,17 +34,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.newexcavator.domain.Advertisement;
+import com.newexcavator.domain.Ask;
 import com.newexcavator.domain.Brand;
 import com.newexcavator.domain.City;
 import com.newexcavator.domain.CollectMachine;
 import com.newexcavator.domain.ExcavatorType;
+import com.newexcavator.domain.JuBao;
 import com.newexcavator.domain.Machine;
 import com.newexcavator.domain.MachinePic;
 import com.newexcavator.domain.Point;
 import com.newexcavator.domain.SysUsers;
 import com.newexcavator.service.AdvertisementService;
+import com.newexcavator.service.AskService;
 import com.newexcavator.service.CollectMachineService;
 import com.newexcavator.service.DeployInforService;
+import com.newexcavator.service.JuBaoService;
 import com.newexcavator.service.MachineService;
 import com.newexcavator.service.UserService;
 import com.newexcavator.util.DataUtil;
@@ -72,6 +76,12 @@ public class MiniProgramController {
 	
 	@Autowired
 	private CollectMachineService collectMachineService;
+	
+	@Autowired
+	private JuBaoService juBaoService;
+	
+	@Autowired
+	private AskService askService;
 	
 	@RequestMapping(value = "/mobile", method = RequestMethod.GET)
 	@ResponseBody
@@ -710,5 +720,59 @@ public class MiniProgramController {
 		pa.put("flag", flag);
 		pa.put("sus", sus);
 		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/jubao_save", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_jubao_save(Model model,HttpServletRequest request,@RequestParam Integer m_id,@RequestParam String oid, @RequestParam String content) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		JuBao jb = new JuBao();
+		jb.setContent(content);
+		jb.setCreatetime(new Date());
+		jb.setM_id(m_id);
+		jb.setUserid(ss.getId());
+		juBaoService.saveJuBao(jb);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/ask_save", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_ask_save(Model model,HttpServletRequest request,@RequestParam Integer m_id,@RequestParam String oid, @RequestParam String content) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		Ask a = new Ask();
+		a.setContent(content);
+		a.setCreatetime(new Date());
+		a.setM_id(m_id);
+		a.setUserid(ss.getId());
+		a.setAnswercount(0);
+		askService.saveAsk(a);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/ask_list", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_ask_list(Model model,HttpServletRequest request,@RequestParam Integer m_id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		
+		PageSupport pageSupport = PageSupport.initPageSupport(request);
+		List<Ask> as = askService.queryAskListByMid(m_id,pageSupport);
+		pa.put("askList", as);
+		pa.put("info", "ok");
+		return pa;
+		
 	}
 }

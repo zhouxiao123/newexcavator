@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.AskDao">
+	
+    <select id="queryAskListByMid" resultMap="queryAskListByMidResult">
+		SELECT * FROM ask WHERE m_id=#{mid}
+		
+		ORDER BY id DESC
+		
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryAskListByMid_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM ask WHERE m_id=#{mid}
+	</select>
+	
+		<resultMap type="com.newexcavator.domain.Ask" id="queryAskListByMidResult">
+		<id column="id" property="id"/>
+		<result column="userid" property="userid"/>
+		<result column="m_id" property="m_id"/>
+		<result column="content" property="content"/>
+		<result column="createtime" property="createtime"/>
+
+		<collection property="user" select="queryUser" column="userid"  ofType="com.newexcavator.domain.SysUsers"/>  
+	</resultMap>
+	
+	<select id="queryUser" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE id=#{userid}
+	</select>
+	
+	 <select id="queryAdvertisementById" resultType="com.newexcavator.domain.Ask">
+		SELECT * FROM advertisement WHERE id=#{id}
+	</select>
+	
+	<insert id="saveAsk" parameterType="com.newexcavator.domain.Ask" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO ask(userid, m_id,content,createtime,answercount) VALUES(#{userid}, #{m_id},#{content},#{createtime},#{answercount});
+	</insert>
+	
+	<delete id="delAskByid">
+		DELETE FROM ask WHERE id=#{id}
+	</delete>
+	
+	
+</mapper>

@@ -37,5 +37,6 @@
     	<mapper resource="mybatis/CollectMachineDaoMapper.xml" />
     	<mapper resource="mybatis/JuBaoDaoMapper.xml" />
     	<mapper resource="mybatis/AskDaoMapper.xml" />
+    	<mapper resource="mybatis/AnswerDaoMapper.xml" />
     </mappers>
 </configuration>

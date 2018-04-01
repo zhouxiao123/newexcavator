@@ -3,9 +3,9 @@
 <mapper namespace="com.newexcavator.dao.AskDao">
 	
     <select id="queryAskListByMid" resultMap="queryAskListByMidResult">
-		SELECT * FROM ask WHERE m_id=#{mid}
+		SELECT * FROM ask WHERE m_id=#{mid} AND `delete` != 1
 		
-		ORDER BY id DESC
+		
 		
 		<if test="limit != null">
 		LIMIT #{limit} OFFSET #{offset}
@@ -13,7 +13,7 @@
 	</select>
 	
 	<select id="queryAskListByMid_count" resultType="java.lang.Integer">
-		SELECT count(1) FROM ask WHERE m_id=#{mid}
+		SELECT count(1) FROM ask WHERE m_id=#{mid} AND `delete` != 1
 	</select>
 	
 		<resultMap type="com.newexcavator.domain.Ask" id="queryAskListByMidResult">
@@ -30,17 +30,20 @@
 		SELECT * FROM sys_users WHERE id=#{userid}
 	</select>
 	
-	 <select id="queryAdvertisementById" resultType="com.newexcavator.domain.Ask">
-		SELECT * FROM advertisement WHERE id=#{id}
+	 <select id="queryAskById" resultMap="queryAskListByMidResult">
+		SELECT * FROM ask WHERE id=#{id} and `delete`!=1
 	</select>
 	
 	<insert id="saveAsk" parameterType="com.newexcavator.domain.Ask" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO ask(userid, m_id,content,createtime,answercount) VALUES(#{userid}, #{m_id},#{content},#{createtime},#{answercount});
+		INSERT INTO ask(userid, m_id,content,createtime,answercount,`delete`) VALUES(#{userid}, #{m_id},#{content},#{createtime},#{answercount},0);
 	</insert>
 	
-	<delete id="delAskByid">
-		DELETE FROM ask WHERE id=#{id}
-	</delete>
+	<update id="delAskByid">
+		UPDATE ask set `delete` =1 and delete_time=now()  WHERE id=#{id}
+	</update>
 	
+	<update id="updateAsk">
+		UPDATE ask set content=#{content},answercount=#{answercount}  WHERE id=#{id}
+	</update>
 	
 </mapper>

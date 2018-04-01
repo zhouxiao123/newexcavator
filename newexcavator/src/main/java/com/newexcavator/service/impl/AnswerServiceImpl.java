@@ -13,10 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.newexcavator.dao.AdvertisementDao;
+import com.newexcavator.dao.AnswerDao;
 import com.newexcavator.dao.AskDao;
 import com.newexcavator.domain.Advertisement;
+import com.newexcavator.domain.Answer;
 import com.newexcavator.domain.Ask;
 import com.newexcavator.service.AdvertisementService;
+import com.newexcavator.service.AnswerService;
 import com.newexcavator.service.AskService;
 import com.newexcavator.util.AbstractModuleSuport;
 import com.newexcavator.util.DataUtil;
@@ -29,42 +32,38 @@ import com.newexcavator.util.PageSupport;
  *
  */
 @Service
-public class AskServiceImpl extends AbstractModuleSuport implements AskService {
+public class AnswerServiceImpl extends AbstractModuleSuport implements AnswerService {
 
 	@Autowired
-	private AskDao askDao;
+	private AnswerDao answerDao;
 
 	@Override
-	public void delAskByid(Integer id) {
+	public void delAnswerByid(Integer id) {
 		// TODO Auto-generated method stub
-		askDao.delAskByid(id);
+		answerDao.delAnswerByid(id);
 	}
 
 	@Override
-	public void saveAsk(Ask a) {
+	public void saveAnswer(Answer a) {
 		// TODO Auto-generated method stub
-		askDao.saveAsk(a);
+		answerDao.saveAnswer(a);
 	}
 
 	@Override
-	public List<Ask> queryAskListByMid(Integer mid, PageSupport p) {
+	public List<Answer> queryAnswerListByAskid(Integer askid, PageSupport p) {
+		// TODO Auto-generated method stub
 		Map<String,Object> param = new HashMap<String, Object>();
-		param.put("mid", mid);
-		return this.getListPageSupportByManualOperation("com.newexcavator.dao.AskDao.queryAskListByMid", "com.newexcavator.dao.AskDao.queryAskListByMid_count", param, p);
-
+		param.put("ask_id", askid);
+		return this.getListPageSupportByManualOperation("com.newexcavator.dao.AnswerDao.queryAnswerListByAskid", "com.newexcavator.dao.AnswerDao.queryAnswerListByAskid_count", param, p);
 	}
 
 	@Override
-	public Ask queryAskById(Integer id) {
+	public Answer queryAnswerById(Integer id) {
 		// TODO Auto-generated method stub
-		return askDao.queryAskById(id);
+		return answerDao.queryAnswerById(id);
 	}
 
-	@Override
-	public void updateAsk(Ask a) {
-		askDao.updateAsk(a);
-		
-	}
+	
 
 
 	

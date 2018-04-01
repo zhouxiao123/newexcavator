@@ -34,17 +34,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.newexcavator.domain.Advertisement;
+import com.newexcavator.domain.Answer;
 import com.newexcavator.domain.Ask;
 import com.newexcavator.domain.Brand;
 import com.newexcavator.domain.City;
 import com.newexcavator.domain.CollectMachine;
+import com.newexcavator.domain.Commodity;
 import com.newexcavator.domain.ExcavatorType;
 import com.newexcavator.domain.JuBao;
 import com.newexcavator.domain.Machine;
 import com.newexcavator.domain.MachinePic;
+import com.newexcavator.domain.Order;
 import com.newexcavator.domain.Point;
 import com.newexcavator.domain.SysUsers;
 import com.newexcavator.service.AdvertisementService;
+import com.newexcavator.service.AnswerService;
 import com.newexcavator.service.AskService;
 import com.newexcavator.service.CollectMachineService;
 import com.newexcavator.service.DeployInforService;
@@ -82,6 +86,9 @@ public class MiniProgramController {
 	
 	@Autowired
 	private AskService askService;
+	
+	@Autowired
+	private AnswerService answerService;
 	
 	@RequestMapping(value = "/mobile", method = RequestMethod.GET)
 	@ResponseBody
@@ -411,7 +418,10 @@ public class MiniProgramController {
 			su.setNickname(nickname);
 			su.setHead(head);
 			userService.updateOpenidAndNickNameAndHead(su);
-		} else {
+		} else if(su2 != null && su2.getOpenid()!=null){
+			pa.put("info", "手机号已注册!");
+			return pa;
+		}else{
 			SysUsers su = new SysUsers();
 			su.setCell_phone(phone);
 			su.setUsername(phone);
@@ -771,6 +781,197 @@ public class MiniProgramController {
 		PageSupport pageSupport = PageSupport.initPageSupport(request);
 		List<Ask> as = askService.queryAskListByMid(m_id,pageSupport);
 		pa.put("askList", as);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/ask_detail", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_ask_detail(Model model,HttpServletRequest request,@RequestParam Integer id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		
+		
+		Ask a = askService.queryAskById(id);
+		pa.put("ask", a);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	
+	@RequestMapping(value = "/mobile/answer_save", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_answer_save(Model model,HttpServletRequest request,@RequestParam Integer ask_id,@RequestParam String oid, @RequestParam String content) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		Answer a = new Answer();
+		a.setContent(content);
+		a.setCreatetime(new Date());
+		a.setAsk_id(ask_id);
+		a.setUserid(ss.getId());
+		answerService.saveAnswer(a);
+		Ask as = askService.queryAskById(ask_id);
+		as.setAnswercount(as.getAnswercount()+1);
+		askService.updateAsk(as);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/answer_list", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_answer_list(Model model,HttpServletRequest request,@RequestParam Integer ask_id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		
+		PageSupport pageSupport = PageSupport.initPageSupport(request);
+		List<Answer> as = answerService.queryAnswerListByAskid(ask_id, pageSupport);
+		pa.put("answerList", as);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/ask_delete", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_ask_delete(Model model,HttpServletRequest request,@RequestParam Integer id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		
+		
+		askService.delAskByid(id);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/answer_delete", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> mobile_answer_delete(Model model,HttpServletRequest request,@RequestParam Integer id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		Answer a = answerService.queryAnswerById(id);
+		Ask as = askService.queryAskById(a.getAsk_id());
+		if(as.getAnswercount() > 0) {
+			as.setAnswercount(as.getAnswercount()-1);
+			askService.updateAsk(as);
+		}
+		answerService.delAnswerByid(id);
+		pa.put("info", "ok");
+		return pa;
+		
+	}
+	
+	@RequestMapping(value = "/mobile/my_commodity", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> my_commodity(Model model,HttpServletRequest request,@RequestParam(required = false) Integer update,@RequestParam String oid) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		Map<String ,Object> param = new HashMap<String,Object>();
+		PageSupport ps = PageSupport.initPageSupport(request);
+		param.put("user_id", ss.getId());
+		List<Order> os = machineService.queryOrder(param,ps);
+		pa.put("os", os);
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/my_commodity_detail", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> my_commodity_detail(Model model,HttpServletRequest request,@RequestParam Integer id,@RequestParam String oid) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		Map<String ,Object> param = new HashMap<String,Object>();
+		PageSupport ps = PageSupport.initPageSupport(request);
+		param.put("id", id);
+		
+		List<Order> os = machineService.queryOrder(param, ps);
+		pa.put("o", os.get(0));
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/change_commodity", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Map<String,Object> change_commodity(Model model,RedirectAttributes redirect,HttpServletRequest request) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		Map<String,Object> param = new HashMap<String,Object>();
+		PageSupport pageSupport = PageSupport.initPageSupport(request);
+		List <Commodity> cos = machineService.queryCommodity(param, pageSupport);
+		pa.put("cos", cos);
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/commodity_change_save", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Map<String,Object> commodity_change_save(Model model,RedirectAttributes redirect,HttpServletRequest request,@RequestParam String name,@RequestParam String phone,@RequestParam String address,@RequestParam Integer user_id,@RequestParam Integer id) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		Order o = new Order();
+		o.setUser_id(user_id);
+		o.setCo_id(id);
+		o.setName(name);
+		o.setPhone(phone);
+		Commodity c = machineService.queryCommodityById(id);
+		o.setCo_name(c.getName());
+		o.setCo_description(c.getDescription());
+		o.setCo_path(c.getPath());
+		o.setCo_point(c.getPoint());
+		o.setAddress(address);
+		SysUsers su = userService.querySysUserByid(user_id);
+		if(su.getPoint() < c.getPoint()){
+			pa.put("error", 1);
+			return pa;
+		}
+		machineService.saveOrder(o);
+		userService.subPoint(user_id, c.getPoint());
+		pa.put("success", 1);
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/commodity_detail", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,Object> commodity_detail(Model model,RedirectAttributes redirect,HttpServletRequest request,@RequestParam Integer id,@RequestParam(required = false) Integer error,@RequestParam(required = false) Integer success,@RequestParam String oid) {
+		
+		
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers ss = userService.querySysUserByOpenid(oid);
+		if (ss == null) {
+			pa.put("info", "not");
+			return pa;
+		}
+		//SysUsers sysuser = new SysUsers();
+		pa.put("su", ss);
+		Commodity co = machineService.queryCommodityById(id);
+		pa.put("co", co);
+		/*if(error!=null && error==1){
+			model.addAttribute("error", error);
+		}
+		if(success!=null && success==1){
+			model.addAttribute("success", success);
+		}*/
+		return pa;
+	}
+	
+	@RequestMapping(value = "/mobile/user_update", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String,Object> user_update(Model model,HttpServletRequest request,RedirectAttributes redirect,@RequestParam Integer id,@RequestParam String name,@RequestParam String username) {
+		Map<String,Object> pa = new HashMap<String ,Object>();
+		SysUsers sysuser = new SysUsers();
+		sysuser.setId(id);
+		sysuser.setName(name);
+		sysuser.setCell_phone(username);
+		userService.updateSysUsersById(sysuser);
+		model.addAttribute("update", 1);
+		SysUsers u = userService.querySysUserByUsername(username, null);
+
 		pa.put("info", "ok");
 		return pa;
 		

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newexcavator.dao.AnswerDao">
+	
+    <select id="queryAnswerListByAskid" resultMap="queryAnswerListByMidResult">
+		SELECT * FROM answer WHERE ask_id=#{ask_id} AND `delete`!=1
+		
+		
+		
+		<if test="limit != null">
+		LIMIT #{limit} OFFSET #{offset}
+		</if>
+	</select>
+	
+	<select id="queryAnswerListByAskid_count" resultType="java.lang.Integer">
+		SELECT count(1) FROM answer WHERE ask_id=#{ask_id} AND `delete`!=1
+	</select>
+	
+		<resultMap type="com.newexcavator.domain.Answer" id="queryAnswerListByMidResult">
+		<id column="id" property="id"/>
+		<result column="userid" property="userid"/>
+		<result column="ask_id" property="ask_id"/>
+		<result column="content" property="content"/>
+		<result column="createtime" property="createtime"/>
+
+		<collection property="user" select="queryUser" column="userid"  ofType="com.newexcavator.domain.SysUsers"/>  
+	</resultMap>
+	
+	<select id="queryUser" resultType="com.newexcavator.domain.SysUsers">
+		SELECT * FROM sys_users WHERE id=#{userid}
+	</select>
+	
+	<select id="queryAnswerById" resultType="com.newexcavator.domain.Answer">
+		SELECT * FROM answer WHERE id=#{id}
+	</select>
+	
+	
+	<insert id="saveAnswer" parameterType="com.newexcavator.domain.Answer" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO answer(ask_id,userid, content,createtime,`delete`) VALUES(#{ask_id},#{userid}, #{content},#{createtime},0);
+	</insert>
+	
+	<update id="delAnswerByid">
+		UPDATE answer set `delete` =1 and delete_time=now()  WHERE id=#{id}
+	</update>
+	
+	
+</mapper>

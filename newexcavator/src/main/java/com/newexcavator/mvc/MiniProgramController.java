@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -160,6 +161,9 @@ public class MiniProgramController {
 			@RequestParam(required=false) Integer city_id,
 			@RequestParam(required=false) String city_name,
 			@RequestParam(required=false) Integer exb_id,
+			@RequestParam(required=false) Integer big_id,
+			@RequestParam(required=false) Integer year_id,
+			@RequestParam(required=false) Integer order_id,
 			@RequestParam(required=false) String exb_name) throws UnsupportedEncodingException {
 		PageSupport ps =PageSupport.initPageSupport(request);
 		Map<String,Object> pa = new  HashMap<String,Object>();
@@ -188,6 +192,72 @@ public class MiniProgramController {
 				param.put("brand", exb_id);
 				pa.put("exb_id", exb_id);
 				pa.put("exb_name", exb_name);
+			}
+			if(big_id!=null && big_id.intValue() > 0){
+				param.put("big_id", big_id);
+			}
+			if(year_id!=null && year_id.intValue() > 0){
+				param.put("year_id", year_id);
+		        Calendar c = Calendar.getInstance();
+		        Integer year = c.get(Calendar.YEAR);
+				switch(year_id){
+				case 1:{
+					param.put("year_s", year-2);
+					param.put("year_e", year);
+					break;
+				}
+				case 2:{
+					param.put("year_s", year-5);
+					param.put("year_e", year-3);
+					break;
+				}
+				case 3:{
+					param.put("year_s", year-8);
+					param.put("year_e", year-5);
+					break;
+				}
+				case 4:{
+					param.put("year_s", year-10);
+					param.put("year_e", year-8);
+					break;
+				}
+				case 5:{
+					param.put("year_s", 0);
+					param.put("year_e", year-10);
+					break;
+				}
+				default:{
+					param.put("year_s", 0);
+					param.put("year_e", year);
+				}
+				}
+
+			}
+			if(order_id!=null && order_id.intValue() > 0){
+				param.put("order_id", order_id);
+				String order_text = "";
+				switch(order_id){
+				case 1:{
+					order_text=" ORDER BY m.price ASC";
+					break;
+				}
+				case 2:{
+					order_text=" ORDER BY m.price DESC";
+					break;
+				}
+				case 3:{
+					order_text=" ORDER BY m.buy_date DESC";
+					break;
+				}
+				case 4:{
+					order_text=" ORDER BY m.buy_date ASC";
+					break;
+				}
+				default:{
+					order_text=" ORDER BY m.create_time DESC";
+				}
+				}
+				param.put("order_text",order_text);
 			}
 			
 			List<Machine> ms = machineService.queryMachine(param,ps);

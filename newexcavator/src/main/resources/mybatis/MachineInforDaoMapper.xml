@@ -184,7 +184,23 @@
 		<if test="userId!=null">
 		AND m.user_id=#{userId}
 		</if>
-		ORDER BY m.create_time DESC
+		<!-- 新加条件 -->
+		<if test="big_id!=null">
+		AND m.big_type=#{big_id}
+		</if>
+		
+		<if test="year_s!=null">
+		AND DATE_FORMAT(m.buy_date,'%Y') between #{year_s} and #{year_e}
+		</if>
+		
+		
+		<if test="order_id!=null">
+			${order_text}
+		</if>
+		<if test="order_id==null">
+			ORDER BY m.create_time DESC
+		</if>
+		
 		<if test="limit != null">
 		LIMIT #{limit} OFFSET #{offset}
 		</if>
@@ -220,7 +236,13 @@
 		<if test="userId!=null">
 		AND m.user_id=#{userId}
 		</if>
+		<if test="big_id!=null">
+		AND m.big_type=#{big_id}
+		</if>
 		
+		<if test="year_s!=null">
+		AND DATE_FORMAT(m.buy_date,'%Y') between #{year_s} and #{year_e}
+		</if>
 	</select>
 	
 	

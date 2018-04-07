@@ -11,7 +11,7 @@
 	<mvc:resources location="/assets/images/" mapping="/assets/images/**" /> 
 	<mvc:resources location="/assets/css/" mapping="/assets/css/**" />
 	<mvc:resources location="/assets/js/" mapping="/assets/js/**" />
-	<mvc:annotation-driven/>
+	
 	<bean id="securityInterceptor" class="com.newexcavator.security.SecurityInterceptor"/>
 	
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
@@ -22,17 +22,15 @@
 		</property>
 	</bean>
 	
-	<bean id="httpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
-		<property name="supportedMediaTypes" value = "text/plain;charset=UTF-8" />
-	</bean>
 	
-	<bean id="defaultMessageConverters" class="java.util.ArrayList">
-		<constructor-arg>
-	        <list>
-				<ref bean="httpMessageConverter"/>
-	        </list>
-	    </constructor-arg>   
-	</bean>
+    <bean id="jackson_hmc" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+    <bean id="defaultMessageConverters" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="jackson_hmc"/>
+            </list>
+        </constructor-arg>
+    </bean>
 	
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" >
 		 <property name="messageConverters" ref="defaultMessageConverters"/>
@@ -73,6 +71,5 @@
 	</bean>
 
 	<bean id="dateFormatter" class="com.newexcavator.util.DateFormatter"/>
-	
 			
 </beans>

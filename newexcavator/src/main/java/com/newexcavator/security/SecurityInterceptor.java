@@ -39,6 +39,7 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter
 			{
 				WebSecurityExpressionRoot sec = new WebSecurityExpressionRoot(authentication, filterInvocation);
 				sec.setTrustResolver(new AuthenticationTrustResolverImpl());
+				//System.out.println("-------"+sec);
 				modelAndView.getModel().put("sec", sec);
 			}
 		}

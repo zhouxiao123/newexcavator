@@ -686,7 +686,7 @@ public class MiniProgramController {
 			@RequestParam String link_name,
 			@RequestParam String phone,
 			@RequestParam String oid,
-			@RequestParam String[] filename,
+			@RequestParam String filename,
 			@RequestParam Integer first_num) {
 		Map<String,Object> pa = new HashMap<String ,Object>();
 		SysUsers sus = userService.querySysUserByOpenid(oid);
@@ -724,7 +724,7 @@ public class MiniProgramController {
 		m.setUse(use);
 		m.setUsed_time(used_time);
 		m.setVersion(excavator_version);
-		for(String fn:filename){
+		for(String fn:filename.split(",")){
 			MachinePic mp = new MachinePic();
 			String path="";
 			try {

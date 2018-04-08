@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -729,7 +730,12 @@ public class DataUtil {
 		}
 		
 		MultipartFile mf = multiRequest.getFile("file");
-		String name =  mf.getOriginalFilename(); 
+	    String fileName = mf.getOriginalFilename().toLowerCase();
+	    if (!fileName.endsWith("jpg")  && !fileName.endsWith("jpeg")) {
+	      return "";
+	    }
+		String ext = mf.getOriginalFilename().substring(mf.getOriginalFilename().lastIndexOf('.'));
+		String name =  UUID.randomUUID().toString().replaceAll("-", "")+ext; 
 		System.out.println(name);
 		try {
 			byte [] src = mf.getBytes();

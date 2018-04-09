@@ -33,5 +33,5 @@ public interface JuBaoService {
 	public void saveJuBao(JuBao jb);
 	public void deleteJuBao(JuBao jb);
 	
-	//public List<CollectMachine> queryCollectMachineByUserid(Integer userid, PageSupport pageSupport);
+	public List<JuBao> queryJuBaoMachineList( PageSupport pageSupport);
 }

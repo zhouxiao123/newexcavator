@@ -12,8 +12,8 @@
 		delete from jubao where id=#{id}
 	</delete>
 	
-	<!-- <select id="queryCollectMachineByUserid" resultMap="queryCollectMachineByUseridResult">
-		select * from collectmachine where userid=#{userid}
+	<select id="queryJuBaoMachineList" resultMap="queryJuBaoMachineListResult">
+		select j.* from jubao j left join machine m on m.id=j.m_id where m.deleted!=1
 		
 		ORDER BY id DESC
 		<if test="limit != null">
@@ -21,14 +21,15 @@
 		</if>
 	</select>
 	
-	<select id="queryCollectMachineByUserid_count" resultType="java.lang.Integer">
-		select count(1) from collectmachine where userid=#{userid}
+	<select id="queryJuBaoMachineList_count" resultType="java.lang.Integer">
+		select count(1) from jubao j left join machine m on m.id=j.m_id where m.deleted!=1
 	</select>
 	
-	<resultMap type="com.newexcavator.domain.CollectMachine" id="queryCollectMachineByUseridResult">
+	<resultMap type="com.newexcavator.domain.JuBao" id="queryJuBaoMachineListResult">
 		<id column="id" property="id"/>
 		<result column="userid" property="userid"/>
 		<result column="m_id" property="m_id"/>
+		<result column="content" property="content"/>
 		<result column="createtime" property="createtime"/>
 
 		<collection property="mi" select="queryMachineList" column="m_id"  ofType="com.newexcavator.domain.Machine"/>  
@@ -37,7 +38,7 @@
 	<select id="queryMachineList" resultType="com.newexcavator.domain.Machine">
 		SELECT m.id,m.used_time,m.verify,m.close,m.price,m.m_type,m.create_time,m.production_date,m.buy_date, t.name AS type_name,b.name AS brand_name,v.name AS version_name,c.name AS p_name,(SELECT name FROM city ci WHERE m.place_c=ci.id) AS c_name,mp.path AS cover_path FROM machine m,excavator_type t,brand b,version v,city c,machine_pic mp
 		WHERE t.id=m.m_type AND b.id=m.brand AND v.id=m.version AND c.id=m.place_p AND mp.m_id=m.id AND mp.cover=1 AND m.deleted!=1 AND m.id=#{m_id} 
-	</select> -->
+	</select>
 	
 	<select id="findByUseridAndMid" resultType="com.newexcavator.domain.JuBao">
 		select * from jubao where userid=#{userid} and m_id=#{m_id} 

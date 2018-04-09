@@ -13,6 +13,18 @@ public class JuBao {
 	private String content;
 	
 	private Date createtime;
+	
+	private Machine mi;
+	
+	
+
+	public Machine getMi() {
+		return mi;
+	}
+
+	public void setMi(Machine mi) {
+		this.mi = mi;
+	}
 
 	public Integer getId() {
 		return id;

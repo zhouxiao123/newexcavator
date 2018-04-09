@@ -62,6 +62,14 @@ public class JuBaoServiceImpl extends AbstractModuleSuport implements JuBaoServi
 		juBaoDao.deleteJuBao(jb);
 	}
 
+	@Override
+	public List<JuBao> queryJuBaoMachineList(PageSupport pageSupport) {
+		Map<String,Object> param = new HashMap<String, Object>();
+
+		return this.getListPageSupportByManualOperation("com.newexcavator.dao.JuBaoDao.queryJuBaoMachineList", "com.newexcavator.dao.JuBaoDao.queryJuBaoMachineList_count", param, pageSupport);
+
+	}
+
 	
 	
 	

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment/common :: header"></head>
+<link rel="stylesheet" th:href="@{/assets/css/page.css}" />
+<script type="text/javascript" th:inline="javascript">
+	$(document).ready(function() {
+		$(".click").click(function() {
+			return confirm("是否确认删除？");
+		});
+
+		$("#checkAll").click(function() {
+			var checked = $(this).prop("checked");
+			$("input[name='id']").each(function() {
+				$(this).prop("checked", checked);
+			});
+		});
+		
+		$("li[opt=delete]").click(function() {
+			/*[+
+			var url  = [[@{'/admin/del_jubao_machine?type=1&amp;'}]];
+			+]*/
+			var ids = $("input[name='id']").serialize();
+			if (ids.length == 0) {
+				alert("未选择删除项目！");
+				return;
+			}
+			if (confirm("是否确认删除？")) {
+				url += ids;
+				window.location.href = url;
+			}
+		});
+		$(".select1").uedSelect({
+			width : 168
+		});
+	});
+</script>
+<body>
+	<div class="place">
+    	<span>位置：</span>
+	    <ul class="placeul">
+	    	<li><a th:href="@{/welcome}">首页</a></li>
+	    	<li>举报管理 </li>
+	    	<li>查看所有举报</li>
+	    </ul>
+    </div>
+
+	<div class="rightinfo">
+		<div class="formtext" th:if="${msg!=null}">
+			<b th:text="${msg==null?'':msg}"></b>
+		</div>
+		<form id="searchForm" method="post" action="list">
+		<!--<ul class="seachform">
+			<li><label>名称</label><input name="searchName" th:value="${searchName}" type="text" class="scinput" /></li>
+			<li><label>类别</label></li>
+			<li>
+			<select name="type" class="select1">
+				<option value="0">全部</option>			
+				<option value="1" th:selected="${type==1}">挖掘机</option>
+				<option value="2" th:selected="${type==2}">装载机</option>
+			</select>
+			</li>
+			<li><label>城市</label></li>
+			<li>
+			<select name="city_id" class="select1">
+				<option value="0">全部</option>			
+				<option th:value="${c.id}" th:text="${c.name}" th:each="c:${cs}" th:selected="${city_id==c.id}">北京</option>
+			</select>
+			</li>
+			<li><label>审核状态</label></li>
+			<li>
+			<select name="verify" class="select1">
+				<option value="-1">全部</option>			
+				<option value="0" th:selected="${verify==0}">待审核</option>			
+				<option value="1" th:selected="${verify==1}">审核通过</option>
+				<option value="2" th:selected="${verify==2}">审核不通过</option>
+			</select>
+			</li>
+   			<li><label>&nbsp;</label><input id="searchButton" name="searchButton" type="submit" class="scbtn" value="查询"/></li>
+    	</ul>-->
+		<div class="tools" th:if="${js!=null and not #lists.isEmpty(js)}">
+			<ul class="toolbar">
+				<li opt="delete"><span><img th:src="@{/assets/images/t03.png}" /></span>删除</li>
+				<li><span></span><label th:text="${'共'+page.totalRecord+'条'}"></label></li>
+			</ul>
+		</div>
+		<div style="width: 1000px;">
+			<span th:unless="${ms!=null and not #lists.isEmpty(js)}" th:utext="暂无数据！"></span>
+		<table class="tablelist" th:if="${js!=null and not #lists.isEmpty(js)}">
+			<thead>
+				<tr>
+					<th width="40">
+						<input id="checkAll" name="checkAll" type="checkbox" />
+					</th>
+					<th width="80">编号<i class="sort"><img th:src="@{/assets/images/px.gif}" /></i></th>
+					<th width="180">图片</th>
+					<th width="200">名称</th>
+					<th width="200">描述</th>
+					<th width="180">发布时间</th>
+					<th width="100">审核状态</th>
+					<th width="100">上架状态</th>
+					<th width="200">举报内容</th>
+					<th width="100">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="j,status:${js}">
+					<td><input name="id" type="checkbox" th:value="${j.mi.id}" /></td>
+					<td th:text="${status.count}">编号</td>
+					<td><img alt="缩略图" th:src="@{${#strings.isEmpty(j.mi.cover_path) ? '/assets/images/default.jpg' : '/img/' + #strings.replace(j.mi.cover_path,'.','_S.')}}" width="150" height="100" /></td>
+					<td th:text="${j.mi.brand_name+'_'+j.mi.version_name+'&nbsp;'+j.mi.type_name}">名称</td>
+					<td th:text="${j.mi.description}">描述</td>
+					<td th:text="${#dates.format(j.mi.create_time, 'yyyy年MM月dd日  HH:mm:ss')}"></td>
+					<td th:text="${j.mi.verify==0?'待审核':j.mi.verify==1?'审核通过':'审核未通过'}">状态</td>
+					<td th:text="${j.mi.verify==1?j.mi.close==0?'上架':j.mi.close==1?'下架':'已出售':''}">状态</td>
+					<td th:text="${j.content}">状态</td>
+					<td>
+						<a th:href="@{'/admin/machine/detail?type=1&amp;id=' + ${j.mi.id}}" class="tablelink">详情</a> 
+						<a th:href="@{'/admin/del_jubao_machine?type=1&amp;id=' + ${j.mi.id}}" class="tablelink click">删除</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+        <!-- <div th:if="${mechines!=null and not #lists.isEmpty(mechines)}" class="paginate" th:with="ps=${#httpServletRequest.getAttribute('pageSupport')}">
+        	<label style="margin-right: 10px;">共<i style="color:blue" th:text="${ps.getTotalRecord()}">11</i>条记录 </label>
+        	
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=0)}" class="paginate-first">首页</a>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getPrevPage()})}" class="paginate-previous">上一页</a>
+            <label th:text="${ps.getCurrentPage() + '/' + ps.getTotalPage() +'页'}">2/100页</label>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getNextPage()})}" class="paginate-next">下一页</a>
+            <a th:href="@{/admin/list_mechine(type=${type},page.offset=${ps.getLastPage()})}" class="paginate-last">末页</a>
+        </div> -->
+        <div class="page" th:if="${ms!=null and not #lists.isEmpty(ms)}" th:include="fragment/cppaginationbar :: paginationbar"></div>
+        </div>
+        </form>
+	</div>
+</body>
+<script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+</script>
+</html>

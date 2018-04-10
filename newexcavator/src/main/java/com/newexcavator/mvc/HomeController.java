@@ -29,6 +29,7 @@ import com.newexcavator.domain.Advertisement;
 import com.newexcavator.domain.Brand;
 import com.newexcavator.domain.City;
 import com.newexcavator.domain.Commodity;
+import com.newexcavator.domain.JuBao;
 import com.newexcavator.domain.Machine;
 import com.newexcavator.domain.Order;
 import com.newexcavator.domain.Point;
@@ -37,6 +38,7 @@ import com.newexcavator.domain.SysUsers;
 import com.newexcavator.domain.User;
 import com.newexcavator.domain.Wechat_tb;
 import com.newexcavator.service.AdvertisementService;
+import com.newexcavator.service.JuBaoService;
 import com.newexcavator.service.MachineService;
 import com.newexcavator.service.UserService;
 import com.newexcavator.service.Wechat_tbService;
@@ -61,6 +63,9 @@ public class HomeController {
 
 	@Autowired
 	private AdvertisementService advertisementService;
+	
+	@Autowired
+	private JuBaoService juBaoService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model,
@@ -553,6 +558,67 @@ public class HomeController {
 			model.addAttribute("msg", "删除成功!");
 		}
 		return "pages/machine/list";
+	}
+	
+	
+	/**
+	 * 查看所有资料
+	 * @return
+	 */
+	@RequestMapping(value="/admin/jubao/jubao_list",method = {RequestMethod.GET,RequestMethod.POST})
+	public String Jubaolist(Model model,HttpServletRequest request,@RequestParam(required=false) Integer delete,
+			@RequestParam(required=false) String searchName,
+			@RequestParam(required=false) Integer type,
+			@RequestParam(required=false) Integer city_id,
+			@RequestParam(required=false) Integer exb_id,
+			@RequestParam(required=false) Integer close,
+			@RequestParam(required=false) Integer verify){
+		PageSupport ps = PageSupport.initPageSupport(request);
+		Map<String,Object> param = new HashMap<String,Object>();
+		//param.put("verify", 0);
+		if(!StringUtils.isBlank(searchName)){
+			param.put("search_name", searchName);
+			model.addAttribute("searchName", searchName);
+		}
+		if(city_id!=null && city_id.intValue() > 0){
+			param.put("city", city_id);
+			model.addAttribute("city_id", city_id);
+		}
+		if(exb_id!=null && exb_id.intValue() > 0){
+			param.put("brand", exb_id);
+			model.addAttribute("exb_id", exb_id);
+		}
+		if(close!=null && close.intValue() > 0){
+			param.put("close", close);
+			model.addAttribute("close", close);
+		}
+		if(verify!=null && verify.intValue() >= 0){
+			param.put("verify", verify);
+			model.addAttribute("verify", verify);
+		} 
+		List<JuBao> js = juBaoService.queryJuBaoMachineList(ps);
+		
+		model.addAttribute("js", js);
+
+		if(delete!=null && delete.intValue() ==1 ){
+			model.addAttribute("msg", "删除成功!");
+		}
+		return "pages/jubao/list";
+	}
+	
+	@RequestMapping(value = "/admin/del_jubao_machine", method = RequestMethod.GET)
+	public String del_jubao_mechine(Model model, @RequestParam Integer [] id, @RequestParam Integer type) {
+		
+		List<Integer> ids = Arrays.asList(id);
+		machineService.delMachineInfor(ids);
+		/*if(type==0){
+			return "redirect:/admin/machine/verify?delete=1";
+		} else if(type==1){
+			return "redirect:/admin/machine/list?delete=1";
+		} else if(type==2){
+			return "redirect:/admin/machine/send_list?delete=1";
+		}*/
+		return "redirect:/admin/jubao/jubao_list?delete=1";
 	}
 	
 	/**

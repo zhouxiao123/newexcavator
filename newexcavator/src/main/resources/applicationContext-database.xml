@@ -28,6 +28,7 @@
 		<property name="validationQuery" value="select 1" />
 		<property name="validationQueryTimeout" value="1" />
 		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="connectionInitSqls" value="set names utf8mb4;"/>
 	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
